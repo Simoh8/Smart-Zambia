@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:{code_name}",
+ "creation": "2024-11-05 12:31:31.817720",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "zra_payment_method_details_section",
+  "code",
+  "sort_order",
+  "column_break_cmmh",
+  "code_name",
+  "code_description"
+ ],
+ "fields": [
+  {
+   "fieldname": "zra_payment_method_details_section",
+   "fieldtype": "Section Break",
+   "label": "ZRA Payment Method Details"
+  },
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code"
+  },
+  {
+   "fieldname": "sort_order",
+   "fieldtype": "Int",
+   "label": "Sort Order",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_cmmh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "code_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code Name"
+  },
+  {
+   "fieldname": "code_description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code Description"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-05 15:07:40.782342",
+ "modified_by": "Administrator",
+ "module": "Smart Invoice",
+ "name": "ZRA Payment Method",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "code, code_name",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "code_name"
+}
