@@ -27,8 +27,11 @@
   },
   {
    "fieldname": "sort_order",
-   "fieldtype": "Data",
-   "label": "Sort Order"
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Sort Order",
+   "non_negative": 1
   },
   {
    "fieldname": "column_break_izkp",
@@ -48,7 +51,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-31 15:38:55.749262",
+ "modified": "2024-11-06 12:29:59.726278",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "Smart Zambia Country",
@@ -68,7 +71,7 @@
    "write": 1
   }
  ],
- "search_fields": "code, code_name",
+ "search_fields": "code, code_name,sort_order",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
