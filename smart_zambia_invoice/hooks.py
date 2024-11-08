@@ -242,3 +242,11 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+fixtures =[
+    "ZRA Tax Type",
+    "Smart Zambia Country",
+    "ZRA Transaction Type",
+    "ZRA Payment Method",
+    "ZRA Unit of Quantity",
+    "ZRA Packaging Unit"
+]
