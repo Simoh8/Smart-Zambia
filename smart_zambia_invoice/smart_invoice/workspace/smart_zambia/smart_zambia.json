@@ -1,0 +1,38 @@
+{
+ "charts": [],
+ "content": "[]",
+ "creation": "2024-10-29 11:12:21.432952",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "icon": "milestone",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Smart Zambia",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "ZRA Packaging Unit",
+   "link_count": 0,
+   "link_to": "ZRA Packaging Unit",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2024-11-08 15:03:23.980914",
+ "modified_by": "Administrator",
+ "module": "Smart Invoice",
+ "name": "Smart Zambia",
+ "number_cards": [],
+ "owner": "Administrator",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 0.0,
+ "shortcuts": [],
+ "title": "Smart Zambia"
+}
