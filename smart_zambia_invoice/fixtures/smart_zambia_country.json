@@ -1,0 +1,2522 @@
+[
+ {
+  "code": "YT",
+  "code_description": null,
+  "code_name": "MAYOTTE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.807803",
+  "name": "MAYOTTE",
+  "sort_order": 247
+ },
+ {
+  "code": "ZW",
+  "code_description": null,
+  "code_name": "ZIMBABWE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.833527",
+  "name": "ZIMBABWE",
+  "sort_order": 252
+ },
+ {
+  "code": "ZR",
+  "code_description": null,
+  "code_name": "(ZAIRE) SEE CD CONGO, DEMOCRATIC REPUBLIC",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.849610",
+  "name": "(ZAIRE) SEE CD CONGO, DEMOCRATIC REPUBLIC",
+  "sort_order": 251
+ },
+ {
+  "code": "ZM",
+  "code_description": null,
+  "code_name": "ZAMBIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.861694",
+  "name": "ZAMBIA",
+  "sort_order": 250
+ },
+ {
+  "code": "ZA",
+  "code_description": null,
+  "code_name": "SOUTH AFRICA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.876018",
+  "name": "SOUTH AFRICA",
+  "sort_order": 249
+ },
+ {
+  "code": "YU",
+  "code_description": null,
+  "code_name": "SERBIA AND MONTENEGRO (FORMER)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.889183",
+  "name": "SERBIA AND MONTENEGRO (FORMER)",
+  "sort_order": 248
+ },
+ {
+  "code": "YE",
+  "code_description": null,
+  "code_name": "YEMEN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.902433",
+  "name": "YEMEN",
+  "sort_order": 246
+ },
+ {
+  "code": "WS",
+  "code_description": null,
+  "code_name": "SAMOA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.916186",
+  "name": "SAMOA",
+  "sort_order": 245
+ },
+ {
+  "code": "WF",
+  "code_description": null,
+  "code_name": "WALLIS AND FUTUNA ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.931585",
+  "name": "WALLIS AND FUTUNA ISLANDS",
+  "sort_order": 244
+ },
+ {
+  "code": "VU",
+  "code_description": null,
+  "code_name": "VANUATU",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.944845",
+  "name": "VANUATU",
+  "sort_order": 243
+ },
+ {
+  "code": "VN",
+  "code_description": null,
+  "code_name": "VIET NAM",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.963791",
+  "name": "VIET NAM",
+  "sort_order": 242
+ },
+ {
+  "code": "VI",
+  "code_description": null,
+  "code_name": "VIRGIN ISLANDS (U.S.)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.978726",
+  "name": "VIRGIN ISLANDS (U.S.)",
+  "sort_order": 241
+ },
+ {
+  "code": "VG",
+  "code_description": null,
+  "code_name": "BRITISH VIRGIN ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:43.992073",
+  "name": "BRITISH VIRGIN ISLANDS",
+  "sort_order": 240
+ },
+ {
+  "code": "VE",
+  "code_description": null,
+  "code_name": "VENEZUELA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.004642",
+  "name": "VENEZUELA",
+  "sort_order": 239
+ },
+ {
+  "code": "VC",
+  "code_description": null,
+  "code_name": "SAINT VINCENT & THE GRENADINES",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.017983",
+  "name": "SAINT VINCENT & THE GRENADINES",
+  "sort_order": 238
+ },
+ {
+  "code": "VA",
+  "code_description": null,
+  "code_name": "VATICAN CITY STATE (HOLY SEE)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.030441",
+  "name": "VATICAN CITY STATE (HOLY SEE)",
+  "sort_order": 237
+ },
+ {
+  "code": "UZ",
+  "code_description": null,
+  "code_name": "UZBEKISTAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.043990",
+  "name": "UZBEKISTAN",
+  "sort_order": 236
+ },
+ {
+  "code": "UY",
+  "code_description": null,
+  "code_name": "URUGUAY",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.057103",
+  "name": "URUGUAY",
+  "sort_order": 235
+ },
+ {
+  "code": "US",
+  "code_description": null,
+  "code_name": "UNITED STATES",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.070193",
+  "name": "UNITED STATES",
+  "sort_order": 234
+ },
+ {
+  "code": "UM",
+  "code_description": null,
+  "code_name": "US MINOR OUTLYING ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.082457",
+  "name": "US MINOR OUTLYING ISLANDS",
+  "sort_order": 233
+ },
+ {
+  "code": "UK",
+  "code_description": null,
+  "code_name": "UNITED KINGDOM",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.101632",
+  "name": "UNITED KINGDOM",
+  "sort_order": 232
+ },
+ {
+  "code": "UG",
+  "code_description": null,
+  "code_name": "UGANDA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.115342",
+  "name": "UGANDA",
+  "sort_order": 231
+ },
+ {
+  "code": "UA",
+  "code_description": null,
+  "code_name": "UKRAINE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.130216",
+  "name": "UKRAINE",
+  "sort_order": 230
+ },
+ {
+  "code": "TZ",
+  "code_description": null,
+  "code_name": "TANZANIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.144561",
+  "name": "TANZANIA",
+  "sort_order": 229
+ },
+ {
+  "code": "TW",
+  "code_description": null,
+  "code_name": "TAIWAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.158772",
+  "name": "TAIWAN",
+  "sort_order": 228
+ },
+ {
+  "code": "TV",
+  "code_description": null,
+  "code_name": "TUVALU",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.175818",
+  "name": "TUVALU",
+  "sort_order": 227
+ },
+ {
+  "code": "TT",
+  "code_description": null,
+  "code_name": "TRINIDAD AND TOBAGO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.188325",
+  "name": "TRINIDAD AND TOBAGO",
+  "sort_order": 226
+ },
+ {
+  "code": "TR",
+  "code_description": null,
+  "code_name": "TURKEY",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.201432",
+  "name": "TURKEY",
+  "sort_order": 225
+ },
+ {
+  "code": "TP",
+  "code_description": null,
+  "code_name": "EAST TIMOR",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.214417",
+  "name": "EAST TIMOR",
+  "sort_order": 224
+ },
+ {
+  "code": "TO",
+  "code_description": null,
+  "code_name": "TONGA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.228295",
+  "name": "TONGA",
+  "sort_order": 223
+ },
+ {
+  "code": "TN",
+  "code_description": null,
+  "code_name": "TUNISIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.242896",
+  "name": "TUNISIA",
+  "sort_order": 222
+ },
+ {
+  "code": "TM",
+  "code_description": null,
+  "code_name": "TURKMENISTAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.259865",
+  "name": "TURKMENISTAN",
+  "sort_order": 221
+ },
+ {
+  "code": "TK",
+  "code_description": null,
+  "code_name": "TOKELAU",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.278430",
+  "name": "TOKELAU",
+  "sort_order": 220
+ },
+ {
+  "code": "TJ",
+  "code_description": null,
+  "code_name": "TAJIKISTAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.294849",
+  "name": "TAJIKISTAN",
+  "sort_order": 219
+ },
+ {
+  "code": "TH",
+  "code_description": null,
+  "code_name": "THAILAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.311740",
+  "name": "THAILAND",
+  "sort_order": 218
+ },
+ {
+  "code": "TG",
+  "code_description": null,
+  "code_name": "TOGO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.331245",
+  "name": "TOGO",
+  "sort_order": 217
+ },
+ {
+  "code": "TF",
+  "code_description": null,
+  "code_name": "FRENCH SOUTHERN TERRITORIES",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.349053",
+  "name": "FRENCH SOUTHERN TERRITORIES",
+  "sort_order": 216
+ },
+ {
+  "code": "TD",
+  "code_description": null,
+  "code_name": "CHAD",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.368218",
+  "name": "CHAD",
+  "sort_order": 215
+ },
+ {
+  "code": "TC",
+  "code_description": null,
+  "code_name": "TURKS AND CAICOS ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.384386",
+  "name": "TURKS AND CAICOS ISLANDS",
+  "sort_order": 214
+ },
+ {
+  "code": "SZ",
+  "code_description": null,
+  "code_name": "SWAZILAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.400048",
+  "name": "SWAZILAND",
+  "sort_order": 213
+ },
+ {
+  "code": "SY",
+  "code_description": null,
+  "code_name": "SYRIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.416174",
+  "name": "SYRIA",
+  "sort_order": 212
+ },
+ {
+  "code": "SV",
+  "code_description": null,
+  "code_name": "EL SALVADOR",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.438323",
+  "name": "EL SALVADOR",
+  "sort_order": 211
+ },
+ {
+  "code": "SU",
+  "code_description": null,
+  "code_name": "USSR (FORMER)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.457366",
+  "name": "USSR (FORMER)",
+  "sort_order": 210
+ },
+ {
+  "code": "ST",
+  "code_description": null,
+  "code_name": "SAO TOME AND PRINCIPE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.472511",
+  "name": "SAO TOME AND PRINCIPE",
+  "sort_order": 209
+ },
+ {
+  "code": "SR",
+  "code_description": null,
+  "code_name": "SURINAME",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.489013",
+  "name": "SURINAME",
+  "sort_order": 208
+ },
+ {
+  "code": "SO",
+  "code_description": null,
+  "code_name": "SOMALIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.508043",
+  "name": "SOMALIA",
+  "sort_order": 207
+ },
+ {
+  "code": "SN",
+  "code_description": null,
+  "code_name": "SENEGAL",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.523435",
+  "name": "SENEGAL",
+  "sort_order": 206
+ },
+ {
+  "code": "SM",
+  "code_description": null,
+  "code_name": "SAN MARINO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.541028",
+  "name": "SAN MARINO",
+  "sort_order": 205
+ },
+ {
+  "code": "SL",
+  "code_description": null,
+  "code_name": "SIERRA LEONE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.558762",
+  "name": "SIERRA LEONE",
+  "sort_order": 204
+ },
+ {
+  "code": "SK",
+  "code_description": null,
+  "code_name": "SLOVAK REPUBLIC",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.576266",
+  "name": "SLOVAK REPUBLIC",
+  "sort_order": 203
+ },
+ {
+  "code": "SJ",
+  "code_description": null,
+  "code_name": "SVALBARD & JAN MAYEN ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.593310",
+  "name": "SVALBARD & JAN MAYEN ISLANDS",
+  "sort_order": 202
+ },
+ {
+  "code": "SI",
+  "code_description": null,
+  "code_name": "SLOVENIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.612821",
+  "name": "SLOVENIA",
+  "sort_order": 201
+ },
+ {
+  "code": "SH",
+  "code_description": null,
+  "code_name": "ST. HELENA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.639738",
+  "name": "ST. HELENA",
+  "sort_order": 200
+ },
+ {
+  "code": "SG",
+  "code_description": null,
+  "code_name": "SINGAPORE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.654390",
+  "name": "SINGAPORE",
+  "sort_order": 199
+ },
+ {
+  "code": "SE",
+  "code_description": null,
+  "code_name": "SWEDEN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.674322",
+  "name": "SWEDEN",
+  "sort_order": 198
+ },
+ {
+  "code": "SD",
+  "code_description": null,
+  "code_name": "SUDAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.691140",
+  "name": "SUDAN",
+  "sort_order": 197
+ },
+ {
+  "code": "SC",
+  "code_description": null,
+  "code_name": "SEYCHELLES",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.707393",
+  "name": "SEYCHELLES",
+  "sort_order": 196
+ },
+ {
+  "code": "SB",
+  "code_description": null,
+  "code_name": "SOLOMON ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.725273",
+  "name": "SOLOMON ISLANDS",
+  "sort_order": 195
+ },
+ {
+  "code": "SA",
+  "code_description": null,
+  "code_name": "SAUDI ARABIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.740249",
+  "name": "SAUDI ARABIA",
+  "sort_order": 194
+ },
+ {
+  "code": "RW",
+  "code_description": null,
+  "code_name": "RWANDA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.757631",
+  "name": "RWANDA",
+  "sort_order": 193
+ },
+ {
+  "code": "RU",
+  "code_description": null,
+  "code_name": "RUSSIAN FEDERATION",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.772288",
+  "name": "RUSSIAN FEDERATION",
+  "sort_order": 192
+ },
+ {
+  "code": "RS",
+  "code_description": null,
+  "code_name": "SERBIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.786001",
+  "name": "SERBIA",
+  "sort_order": 191
+ },
+ {
+  "code": "RO",
+  "code_description": null,
+  "code_name": "ROMANIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.797925",
+  "name": "ROMANIA",
+  "sort_order": 190
+ },
+ {
+  "code": "RE",
+  "code_description": null,
+  "code_name": "REUNION",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.815788",
+  "name": "REUNION",
+  "sort_order": 189
+ },
+ {
+  "code": "QA",
+  "code_description": null,
+  "code_name": "QATAR",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.831520",
+  "name": "QATAR",
+  "sort_order": 188
+ },
+ {
+  "code": "PY",
+  "code_description": null,
+  "code_name": "PARAGUAY",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.856852",
+  "name": "PARAGUAY",
+  "sort_order": 187
+ },
+ {
+  "code": "PW",
+  "code_description": null,
+  "code_name": "PALAU",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.891445",
+  "name": "PALAU",
+  "sort_order": 186
+ },
+ {
+  "code": "PT",
+  "code_description": null,
+  "code_name": "PORTUGAL",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.928664",
+  "name": "PORTUGAL",
+  "sort_order": 185
+ },
+ {
+  "code": "PS",
+  "code_description": null,
+  "code_name": "PALESTINIAN TERRITORY, OCCUPIED",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.965169",
+  "name": "PALESTINIAN TERRITORY, OCCUPIED",
+  "sort_order": 184
+ },
+ {
+  "code": "PR",
+  "code_description": null,
+  "code_name": "PUERTO RICO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:44.997684",
+  "name": "PUERTO RICO",
+  "sort_order": 183
+ },
+ {
+  "code": "PN",
+  "code_description": null,
+  "code_name": "PITCAIRN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.031951",
+  "name": "PITCAIRN",
+  "sort_order": 182
+ },
+ {
+  "code": "PM",
+  "code_description": null,
+  "code_name": "ST. PIERRE AND MIQUELON",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.070638",
+  "name": "ST. PIERRE AND MIQUELON",
+  "sort_order": 181
+ },
+ {
+  "code": "PL",
+  "code_description": null,
+  "code_name": "POLAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.107073",
+  "name": "POLAND",
+  "sort_order": 180
+ },
+ {
+  "code": "PK",
+  "code_description": null,
+  "code_name": "PAKISTAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.141819",
+  "name": "PAKISTAN",
+  "sort_order": 179
+ },
+ {
+  "code": "PH",
+  "code_description": null,
+  "code_name": "PHILIPPINES",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.181495",
+  "name": "PHILIPPINES",
+  "sort_order": 178
+ },
+ {
+  "code": "PG",
+  "code_description": null,
+  "code_name": "PAPUA NEW GUINEA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.216807",
+  "name": "PAPUA NEW GUINEA",
+  "sort_order": 177
+ },
+ {
+  "code": "PF",
+  "code_description": null,
+  "code_name": "FRENCH POLYNESIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.251946",
+  "name": "FRENCH POLYNESIA",
+  "sort_order": 176
+ },
+ {
+  "code": "PE",
+  "code_description": null,
+  "code_name": "PERU",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.286592",
+  "name": "PERU",
+  "sort_order": 175
+ },
+ {
+  "code": "PA",
+  "code_description": null,
+  "code_name": "PANAMA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.320219",
+  "name": "PANAMA",
+  "sort_order": 174
+ },
+ {
+  "code": "OM",
+  "code_description": null,
+  "code_name": "OMAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.353208",
+  "name": "OMAN",
+  "sort_order": 173
+ },
+ {
+  "code": "NZ",
+  "code_description": null,
+  "code_name": "NEW ZEALAND (AOTEAROA)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.387374",
+  "name": "NEW ZEALAND (AOTEAROA)",
+  "sort_order": 172
+ },
+ {
+  "code": "NU",
+  "code_description": null,
+  "code_name": "NIUE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.419555",
+  "name": "NIUE",
+  "sort_order": 171
+ },
+ {
+  "code": "NT",
+  "code_description": null,
+  "code_name": "NEUTRAL ZONE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.458046",
+  "name": "NEUTRAL ZONE",
+  "sort_order": 170
+ },
+ {
+  "code": "NR",
+  "code_description": null,
+  "code_name": "NAURU",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.490778",
+  "name": "NAURU",
+  "sort_order": 169
+ },
+ {
+  "code": "NP",
+  "code_description": null,
+  "code_name": "NEPAL",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.525322",
+  "name": "NEPAL",
+  "sort_order": 168
+ },
+ {
+  "code": "NO",
+  "code_description": null,
+  "code_name": "NORWAY",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.561671",
+  "name": "NORWAY",
+  "sort_order": 167
+ },
+ {
+  "code": "NL",
+  "code_description": null,
+  "code_name": "NETHERLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.602035",
+  "name": "NETHERLANDS",
+  "sort_order": 166
+ },
+ {
+  "code": "NI",
+  "code_description": null,
+  "code_name": "NICARAGUA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.640669",
+  "name": "NICARAGUA",
+  "sort_order": 165
+ },
+ {
+  "code": "NG",
+  "code_description": null,
+  "code_name": "NIGERIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.674507",
+  "name": "NIGERIA",
+  "sort_order": 164
+ },
+ {
+  "code": "NF",
+  "code_description": null,
+  "code_name": "NORFOLK ISLAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.708871",
+  "name": "NORFOLK ISLAND",
+  "sort_order": 163
+ },
+ {
+  "code": "NE",
+  "code_description": null,
+  "code_name": "NIGER",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.744297",
+  "name": "NIGER",
+  "sort_order": 162
+ },
+ {
+  "code": "NC",
+  "code_description": null,
+  "code_name": "NEW CALEDONIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.785043",
+  "name": "NEW CALEDONIA",
+  "sort_order": 161
+ },
+ {
+  "code": "NA",
+  "code_description": null,
+  "code_name": "NAMIBIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.827098",
+  "name": "NAMIBIA",
+  "sort_order": 160
+ },
+ {
+  "code": "MZ",
+  "code_description": null,
+  "code_name": "MOZAMBIQUE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.874881",
+  "name": "MOZAMBIQUE",
+  "sort_order": 159
+ },
+ {
+  "code": "MY",
+  "code_description": null,
+  "code_name": "MALAYSIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.912179",
+  "name": "MALAYSIA",
+  "sort_order": 158
+ },
+ {
+  "code": "MX",
+  "code_description": null,
+  "code_name": "MEXICO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:45.967505",
+  "name": "MEXICO",
+  "sort_order": 157
+ },
+ {
+  "code": "MW",
+  "code_description": null,
+  "code_name": "MALAWI",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.010250",
+  "name": "MALAWI",
+  "sort_order": 156
+ },
+ {
+  "code": "MV",
+  "code_description": null,
+  "code_name": "MALDIVES",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.059029",
+  "name": "MALDIVES",
+  "sort_order": 155
+ },
+ {
+  "code": "MU",
+  "code_description": null,
+  "code_name": "MAURITIUS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.104458",
+  "name": "MAURITIUS",
+  "sort_order": 154
+ },
+ {
+  "code": "MT",
+  "code_description": null,
+  "code_name": "MALTA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.150376",
+  "name": "MALTA",
+  "sort_order": 153
+ },
+ {
+  "code": "MS",
+  "code_description": null,
+  "code_name": "MONTSERRAT",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.196807",
+  "name": "MONTSERRAT",
+  "sort_order": 152
+ },
+ {
+  "code": "MR",
+  "code_description": null,
+  "code_name": "MAURITANIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.241950",
+  "name": "MAURITANIA",
+  "sort_order": 151
+ },
+ {
+  "code": "MQ",
+  "code_description": null,
+  "code_name": "MARTINIQUE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.286281",
+  "name": "MARTINIQUE",
+  "sort_order": 150
+ },
+ {
+  "code": "MP",
+  "code_description": null,
+  "code_name": "NORTHERN MARIANA ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.369193",
+  "name": "NORTHERN MARIANA ISLANDS",
+  "sort_order": 149
+ },
+ {
+  "code": "MO",
+  "code_description": null,
+  "code_name": "MACAU",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.404224",
+  "name": "MACAU",
+  "sort_order": 148
+ },
+ {
+  "code": "MN",
+  "code_description": null,
+  "code_name": "MONGOLIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.429478",
+  "name": "MONGOLIA",
+  "sort_order": 147
+ },
+ {
+  "code": "MM",
+  "code_description": null,
+  "code_name": "MYANMAR",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.462513",
+  "name": "MYANMAR",
+  "sort_order": 146
+ },
+ {
+  "code": "ML",
+  "code_description": null,
+  "code_name": "MALI",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.484252",
+  "name": "MALI",
+  "sort_order": 145
+ },
+ {
+  "code": "MK",
+  "code_description": null,
+  "code_name": "F.Y.R.O.M. (MACEDONIA)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.499405",
+  "name": "F.Y.R.O.M. (MACEDONIA)",
+  "sort_order": 144
+ },
+ {
+  "code": "MH",
+  "code_description": null,
+  "code_name": "MARSHALL ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.514308",
+  "name": "MARSHALL ISLANDS",
+  "sort_order": 143
+ },
+ {
+  "code": "MG",
+  "code_description": null,
+  "code_name": "MADAGASCAR",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.527243",
+  "name": "MADAGASCAR",
+  "sort_order": 142
+ },
+ {
+  "code": "ME",
+  "code_description": null,
+  "code_name": "MONTENEGRO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.542399",
+  "name": "MONTENEGRO",
+  "sort_order": 141
+ },
+ {
+  "code": "MD",
+  "code_description": null,
+  "code_name": "MOLDOVA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.559712",
+  "name": "MOLDOVA",
+  "sort_order": 140
+ },
+ {
+  "code": "MC",
+  "code_description": null,
+  "code_name": "MONACO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.583163",
+  "name": "MONACO",
+  "sort_order": 139
+ },
+ {
+  "code": "MA",
+  "code_description": null,
+  "code_name": "MOROCCO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.601768",
+  "name": "MOROCCO",
+  "sort_order": 138
+ },
+ {
+  "code": "LY",
+  "code_description": null,
+  "code_name": "LIBYA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.616569",
+  "name": "LIBYA",
+  "sort_order": 137
+ },
+ {
+  "code": "LV",
+  "code_description": null,
+  "code_name": "LATVIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.631363",
+  "name": "LATVIA",
+  "sort_order": 136
+ },
+ {
+  "code": "LU",
+  "code_description": null,
+  "code_name": "LUXEMBOURG",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.644722",
+  "name": "LUXEMBOURG",
+  "sort_order": 135
+ },
+ {
+  "code": "LT",
+  "code_description": null,
+  "code_name": "LITHUANIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.660047",
+  "name": "LITHUANIA",
+  "sort_order": 134
+ },
+ {
+  "code": "LS",
+  "code_description": null,
+  "code_name": "LESOTHO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.676721",
+  "name": "LESOTHO",
+  "sort_order": 133
+ },
+ {
+  "code": "LR",
+  "code_description": null,
+  "code_name": "LIBERIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.690909",
+  "name": "LIBERIA",
+  "sort_order": 132
+ },
+ {
+  "code": "LK",
+  "code_description": null,
+  "code_name": "SRI LANKA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.703995",
+  "name": "SRI LANKA",
+  "sort_order": 131
+ },
+ {
+  "code": "LI",
+  "code_description": null,
+  "code_name": "LIECHTENSTEIN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.717985",
+  "name": "LIECHTENSTEIN",
+  "sort_order": 130
+ },
+ {
+  "code": "LC",
+  "code_description": null,
+  "code_name": "SAINT LUCIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.730326",
+  "name": "SAINT LUCIA",
+  "sort_order": 129
+ },
+ {
+  "code": "LB",
+  "code_description": null,
+  "code_name": "LEBANON",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.751527",
+  "name": "LEBANON",
+  "sort_order": 128
+ },
+ {
+  "code": "LA",
+  "code_description": null,
+  "code_name": "LAOS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.774401",
+  "name": "LAOS",
+  "sort_order": 127
+ },
+ {
+  "code": "KZ",
+  "code_description": null,
+  "code_name": "KAZAKHSTAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.809003",
+  "name": "KAZAKHSTAN",
+  "sort_order": 126
+ },
+ {
+  "code": "KY",
+  "code_description": null,
+  "code_name": "CAYMAN ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.843605",
+  "name": "CAYMAN ISLANDS",
+  "sort_order": 125
+ },
+ {
+  "code": "KW",
+  "code_description": null,
+  "code_name": "KUWAIT",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.876869",
+  "name": "KUWAIT",
+  "sort_order": 124
+ },
+ {
+  "code": "KR",
+  "code_description": null,
+  "code_name": "SOUTH KOREA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.911318",
+  "name": "SOUTH KOREA",
+  "sort_order": 123
+ },
+ {
+  "code": "KP",
+  "code_description": null,
+  "code_name": "NORTH KOREA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.944196",
+  "name": "NORTH KOREA",
+  "sort_order": 122
+ },
+ {
+  "code": "KN",
+  "code_description": null,
+  "code_name": "SAINT KITTS AND NEVIS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:46.976388",
+  "name": "SAINT KITTS AND NEVIS",
+  "sort_order": 121
+ },
+ {
+  "code": "KM",
+  "code_description": null,
+  "code_name": "COMOROS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.009602",
+  "name": "COMOROS",
+  "sort_order": 120
+ },
+ {
+  "code": "KI",
+  "code_description": null,
+  "code_name": "KIRIBATI",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.042683",
+  "name": "KIRIBATI",
+  "sort_order": 119
+ },
+ {
+  "code": "KH",
+  "code_description": null,
+  "code_name": "CAMBODIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.075716",
+  "name": "CAMBODIA",
+  "sort_order": 118
+ },
+ {
+  "code": "KG",
+  "code_description": null,
+  "code_name": "KYRGYZSTAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.112220",
+  "name": "KYRGYZSTAN",
+  "sort_order": 117
+ },
+ {
+  "code": "KE",
+  "code_description": null,
+  "code_name": "KENYA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.144607",
+  "name": "KENYA",
+  "sort_order": 116
+ },
+ {
+  "code": "JP",
+  "code_description": null,
+  "code_name": "JAPAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.177611",
+  "name": "JAPAN",
+  "sort_order": 115
+ },
+ {
+  "code": "JO",
+  "code_description": null,
+  "code_name": "JORDAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.209069",
+  "name": "JORDAN",
+  "sort_order": 114
+ },
+ {
+  "code": "JM",
+  "code_description": null,
+  "code_name": "JAMAICA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.243480",
+  "name": "JAMAICA",
+  "sort_order": 113
+ },
+ {
+  "code": "JE",
+  "code_description": null,
+  "code_name": "JERSEY",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.277524",
+  "name": "JERSEY",
+  "sort_order": 112
+ },
+ {
+  "code": "IT",
+  "code_description": null,
+  "code_name": "ITALY",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.311234",
+  "name": "ITALY",
+  "sort_order": 111
+ },
+ {
+  "code": "IS",
+  "code_description": null,
+  "code_name": "ICELAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.343653",
+  "name": "ICELAND",
+  "sort_order": 110
+ },
+ {
+  "code": "IR",
+  "code_description": null,
+  "code_name": "IRAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.377390",
+  "name": "IRAN",
+  "sort_order": 109
+ },
+ {
+  "code": "IQ",
+  "code_description": null,
+  "code_name": "IRAQ",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.409346",
+  "name": "IRAQ",
+  "sort_order": 108
+ },
+ {
+  "code": "IO",
+  "code_description": null,
+  "code_name": "BRITISH INDIAN OCEAN TERRITORY",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.444587",
+  "name": "BRITISH INDIAN OCEAN TERRITORY",
+  "sort_order": 107
+ },
+ {
+  "code": "IN",
+  "code_description": null,
+  "code_name": "INDIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.477286",
+  "name": "INDIA",
+  "sort_order": 106
+ },
+ {
+  "code": "IM",
+  "code_description": null,
+  "code_name": "ISLE OF MAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.507820",
+  "name": "ISLE OF MAN",
+  "sort_order": 105
+ },
+ {
+  "code": "IL",
+  "code_description": null,
+  "code_name": "ISRAEL",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.543805",
+  "name": "ISRAEL",
+  "sort_order": 104
+ },
+ {
+  "code": "IE",
+  "code_description": null,
+  "code_name": "IRELAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.585246",
+  "name": "IRELAND",
+  "sort_order": 103
+ },
+ {
+  "code": "ID",
+  "code_description": null,
+  "code_name": "INDONESIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.629106",
+  "name": "INDONESIA",
+  "sort_order": 102
+ },
+ {
+  "code": "HU",
+  "code_description": null,
+  "code_name": "HUNGARY",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.670767",
+  "name": "HUNGARY",
+  "sort_order": 101
+ },
+ {
+  "code": "HT",
+  "code_description": null,
+  "code_name": "HAITI",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.718334",
+  "name": "HAITI",
+  "sort_order": 100
+ },
+ {
+  "code": "HR",
+  "code_description": null,
+  "code_name": "CROATIA (HRVATSKA)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.765003",
+  "name": "CROATIA (HRVATSKA)",
+  "sort_order": 99
+ },
+ {
+  "code": "HN",
+  "code_description": null,
+  "code_name": "HONDURAS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.812747",
+  "name": "HONDURAS",
+  "sort_order": 98
+ },
+ {
+  "code": "HM",
+  "code_description": null,
+  "code_name": "HEARD AND MCDONALD ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.868579",
+  "name": "HEARD AND MCDONALD ISLANDS",
+  "sort_order": 97
+ },
+ {
+  "code": "HK",
+  "code_description": null,
+  "code_name": "HONG KONG",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.913710",
+  "name": "HONG KONG",
+  "sort_order": 96
+ },
+ {
+  "code": "GY",
+  "code_description": null,
+  "code_name": "GUYANA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:47.964454",
+  "name": "GUYANA",
+  "sort_order": 95
+ },
+ {
+  "code": "GW",
+  "code_description": null,
+  "code_name": "GUINEA     BISSAU",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.008240",
+  "name": "GUINEA     BISSAU",
+  "sort_order": 94
+ },
+ {
+  "code": "GU",
+  "code_description": null,
+  "code_name": "GUAM",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.062995",
+  "name": "GUAM",
+  "sort_order": 93
+ },
+ {
+  "code": "GT",
+  "code_description": null,
+  "code_name": "GUATEMALA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.117594",
+  "name": "GUATEMALA",
+  "sort_order": 92
+ },
+ {
+  "code": "GS",
+  "code_description": null,
+  "code_name": "S. GEORGIA AND S. SANDWICH ISLS.",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.174335",
+  "name": "S. GEORGIA AND S. SANDWICH ISLS.",
+  "sort_order": 91
+ },
+ {
+  "code": "GR",
+  "code_description": null,
+  "code_name": "GREECE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.208218",
+  "name": "GREECE",
+  "sort_order": 90
+ },
+ {
+  "code": "GQ",
+  "code_description": null,
+  "code_name": "EQUATORIAL GUINEA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.247888",
+  "name": "EQUATORIAL GUINEA",
+  "sort_order": 89
+ },
+ {
+  "code": "GP",
+  "code_description": null,
+  "code_name": "GUADELOUPE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.280433",
+  "name": "GUADELOUPE",
+  "sort_order": 88
+ },
+ {
+  "code": "GN",
+  "code_description": null,
+  "code_name": "GUINEA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.317790",
+  "name": "GUINEA",
+  "sort_order": 87
+ },
+ {
+  "code": "GM",
+  "code_description": null,
+  "code_name": "GAMBIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.351758",
+  "name": "GAMBIA",
+  "sort_order": 86
+ },
+ {
+  "code": "GL",
+  "code_description": null,
+  "code_name": "GREENLAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.386395",
+  "name": "GREENLAND",
+  "sort_order": 85
+ },
+ {
+  "code": "GI",
+  "code_description": null,
+  "code_name": "GIBRALTAR",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.424584",
+  "name": "GIBRALTAR",
+  "sort_order": 84
+ },
+ {
+  "code": "GH",
+  "code_description": null,
+  "code_name": "GHANA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.461358",
+  "name": "GHANA",
+  "sort_order": 83
+ },
+ {
+  "code": "GG",
+  "code_description": null,
+  "code_name": "GUERNSEY",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.497408",
+  "name": "GUERNSEY",
+  "sort_order": 82
+ },
+ {
+  "code": "GF",
+  "code_description": null,
+  "code_name": "FRENCH GUIANA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.532540",
+  "name": "FRENCH GUIANA",
+  "sort_order": 81
+ },
+ {
+  "code": "GE",
+  "code_description": null,
+  "code_name": "GEORGIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.569258",
+  "name": "GEORGIA",
+  "sort_order": 80
+ },
+ {
+  "code": "GD",
+  "code_description": null,
+  "code_name": "GRENADA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.602493",
+  "name": "GRENADA",
+  "sort_order": 79
+ },
+ {
+  "code": "GB",
+  "code_description": null,
+  "code_name": "GREAT BRITAIN (UK)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.636716",
+  "name": "GREAT BRITAIN (UK)",
+  "sort_order": 78
+ },
+ {
+  "code": "GA",
+  "code_description": null,
+  "code_name": "GABON",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.666362",
+  "name": "GABON",
+  "sort_order": 77
+ },
+ {
+  "code": "FX",
+  "code_description": null,
+  "code_name": "FRANCE, METROPOLITAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.701482",
+  "name": "FRANCE, METROPOLITAN",
+  "sort_order": 76
+ },
+ {
+  "code": "FR",
+  "code_description": null,
+  "code_name": "FRANCE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.734629",
+  "name": "FRANCE",
+  "sort_order": 75
+ },
+ {
+  "code": "FO",
+  "code_description": null,
+  "code_name": "FAROE ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.772507",
+  "name": "FAROE ISLANDS",
+  "sort_order": 74
+ },
+ {
+  "code": "FM",
+  "code_description": null,
+  "code_name": "MICRONESIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.814202",
+  "name": "MICRONESIA",
+  "sort_order": 73
+ },
+ {
+  "code": "FK",
+  "code_description": null,
+  "code_name": "FALKLAND ISLANDS (MALVINAS)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.850096",
+  "name": "FALKLAND ISLANDS (MALVINAS)",
+  "sort_order": 72
+ },
+ {
+  "code": "FJ",
+  "code_description": null,
+  "code_name": "FIJI",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.890135",
+  "name": "FIJI",
+  "sort_order": 71
+ },
+ {
+  "code": "FI",
+  "code_description": null,
+  "code_name": "FINLAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.921627",
+  "name": "FINLAND",
+  "sort_order": 70
+ },
+ {
+  "code": "EU",
+  "code_description": null,
+  "code_name": "EUROPEAN UNION",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.963160",
+  "name": "EUROPEAN UNION",
+  "sort_order": 69
+ },
+ {
+  "code": "ET",
+  "code_description": null,
+  "code_name": "ETHIOPIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:48.999365",
+  "name": "ETHIOPIA",
+  "sort_order": 68
+ },
+ {
+  "code": "ES",
+  "code_description": null,
+  "code_name": "SPAIN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.033753",
+  "name": "SPAIN",
+  "sort_order": 67
+ },
+ {
+  "code": "ER",
+  "code_description": null,
+  "code_name": "ERITREA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.060273",
+  "name": "ERITREA",
+  "sort_order": 66
+ },
+ {
+  "code": "EH",
+  "code_description": null,
+  "code_name": "WESTERN SAHARA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.091070",
+  "name": "WESTERN SAHARA",
+  "sort_order": 65
+ },
+ {
+  "code": "EG",
+  "code_description": null,
+  "code_name": "EGYPT",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.123260",
+  "name": "EGYPT",
+  "sort_order": 64
+ },
+ {
+  "code": "EE",
+  "code_description": null,
+  "code_name": "ESTONIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.161170",
+  "name": "ESTONIA",
+  "sort_order": 63
+ },
+ {
+  "code": "EC",
+  "code_description": null,
+  "code_name": "ECUADOR",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.202866",
+  "name": "ECUADOR",
+  "sort_order": 62
+ },
+ {
+  "code": "DZ",
+  "code_description": null,
+  "code_name": "ALGERIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.225546",
+  "name": "ALGERIA",
+  "sort_order": 61
+ },
+ {
+  "code": "DO",
+  "code_description": null,
+  "code_name": "DOMINICAN REPUBLIC",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.250812",
+  "name": "DOMINICAN REPUBLIC",
+  "sort_order": 60
+ },
+ {
+  "code": "DM",
+  "code_description": null,
+  "code_name": "DOMINICA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.272777",
+  "name": "DOMINICA",
+  "sort_order": 59
+ },
+ {
+  "code": "DK",
+  "code_description": null,
+  "code_name": "DENMARK",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.299714",
+  "name": "DENMARK",
+  "sort_order": 58
+ },
+ {
+  "code": "DJ",
+  "code_description": null,
+  "code_name": "DJIBOUTI",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.327980",
+  "name": "DJIBOUTI",
+  "sort_order": 57
+ },
+ {
+  "code": "DE",
+  "code_description": null,
+  "code_name": "GERMANY",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.355523",
+  "name": "GERMANY",
+  "sort_order": 56
+ },
+ {
+  "code": "CZ",
+  "code_description": null,
+  "code_name": "CZECH REPUBLIC",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.385094",
+  "name": "CZECH REPUBLIC",
+  "sort_order": 55
+ },
+ {
+  "code": "CY",
+  "code_description": null,
+  "code_name": "CYPRUS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.411034",
+  "name": "CYPRUS",
+  "sort_order": 54
+ },
+ {
+  "code": "CX",
+  "code_description": null,
+  "code_name": "CHRISTMAS ISLAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.439604",
+  "name": "CHRISTMAS ISLAND",
+  "sort_order": 53
+ },
+ {
+  "code": "CV",
+  "code_description": null,
+  "code_name": "CAPE VERDE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.471784",
+  "name": "CAPE VERDE",
+  "sort_order": 52
+ },
+ {
+  "code": "CU",
+  "code_description": null,
+  "code_name": "CUBA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.496878",
+  "name": "CUBA",
+  "sort_order": 51
+ },
+ {
+  "code": "CS",
+  "code_description": null,
+  "code_name": "CZECHOSLOVAKIA (FORMER)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.522537",
+  "name": "CZECHOSLOVAKIA (FORMER)",
+  "sort_order": 50
+ },
+ {
+  "code": "CR",
+  "code_description": null,
+  "code_name": "COSTA RICA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.547929",
+  "name": "COSTA RICA",
+  "sort_order": 49
+ },
+ {
+  "code": "CO",
+  "code_description": null,
+  "code_name": "COLOMBIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.572562",
+  "name": "COLOMBIA",
+  "sort_order": 48
+ },
+ {
+  "code": "CN",
+  "code_description": null,
+  "code_name": "CHINA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.599839",
+  "name": "CHINA",
+  "sort_order": 47
+ },
+ {
+  "code": "CM",
+  "code_description": null,
+  "code_name": "CAMEROON",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.624393",
+  "name": "CAMEROON",
+  "sort_order": 46
+ },
+ {
+  "code": "CL",
+  "code_description": null,
+  "code_name": "CHILE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.653352",
+  "name": "CHILE",
+  "sort_order": 45
+ },
+ {
+  "code": "CK",
+  "code_description": null,
+  "code_name": "COOK ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.688075",
+  "name": "COOK ISLANDS",
+  "sort_order": 44
+ },
+ {
+  "code": "CI",
+  "code_description": null,
+  "code_name": "COTE D'IVOIRE (IVORY COAST)",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.724031",
+  "name": "COTE D'IVOIRE (IVORY COAST)",
+  "sort_order": 43
+ },
+ {
+  "code": "CH",
+  "code_description": null,
+  "code_name": "SWITZERLAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.760747",
+  "name": "SWITZERLAND",
+  "sort_order": 42
+ },
+ {
+  "code": "CG",
+  "code_description": null,
+  "code_name": "CONGO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.798243",
+  "name": "CONGO",
+  "sort_order": 41
+ },
+ {
+  "code": "CF",
+  "code_description": null,
+  "code_name": "CENTRAL AFRICAN REPUBLIC",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.833936",
+  "name": "CENTRAL AFRICAN REPUBLIC",
+  "sort_order": 40
+ },
+ {
+  "code": "CD",
+  "code_description": null,
+  "code_name": "CONGO, DEMOCRATIC REPUBLIC",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.868056",
+  "name": "CONGO, DEMOCRATIC REPUBLIC",
+  "sort_order": 39
+ },
+ {
+  "code": "CC",
+  "code_description": null,
+  "code_name": "COCOS (KEELING) ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.909772",
+  "name": "COCOS (KEELING) ISLANDS",
+  "sort_order": 38
+ },
+ {
+  "code": "CA",
+  "code_description": null,
+  "code_name": "CANADA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.948041",
+  "name": "CANADA",
+  "sort_order": 37
+ },
+ {
+  "code": "BZ",
+  "code_description": null,
+  "code_name": "BELIZE",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:49.981653",
+  "name": "BELIZE",
+  "sort_order": 36
+ },
+ {
+  "code": "BY",
+  "code_description": null,
+  "code_name": "BELARUS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.012477",
+  "name": "BELARUS",
+  "sort_order": 35
+ },
+ {
+  "code": "BW",
+  "code_description": null,
+  "code_name": "BOTSWANA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.044192",
+  "name": "BOTSWANA",
+  "sort_order": 34
+ },
+ {
+  "code": "BV",
+  "code_description": null,
+  "code_name": "BOUVET ISLAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.074638",
+  "name": "BOUVET ISLAND",
+  "sort_order": 33
+ },
+ {
+  "code": "BT",
+  "code_description": null,
+  "code_name": "BHUTAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.106438",
+  "name": "BHUTAN",
+  "sort_order": 32
+ },
+ {
+  "code": "BS",
+  "code_description": null,
+  "code_name": "BAHAMAS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.138268",
+  "name": "BAHAMAS",
+  "sort_order": 31
+ },
+ {
+  "code": "BR",
+  "code_description": null,
+  "code_name": "BRAZIL",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.170748",
+  "name": "BRAZIL",
+  "sort_order": 30
+ },
+ {
+  "code": "BO",
+  "code_description": null,
+  "code_name": "BOLIVIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.202095",
+  "name": "BOLIVIA",
+  "sort_order": 29
+ },
+ {
+  "code": "BN",
+  "code_description": null,
+  "code_name": "BRUNEI DARUSSALAM",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.242462",
+  "name": "BRUNEI DARUSSALAM",
+  "sort_order": 28
+ },
+ {
+  "code": "BM",
+  "code_description": null,
+  "code_name": "BERMUDA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.286414",
+  "name": "BERMUDA",
+  "sort_order": 27
+ },
+ {
+  "code": "BJ",
+  "code_description": null,
+  "code_name": "BENIN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.326461",
+  "name": "BENIN",
+  "sort_order": 26
+ },
+ {
+  "code": "BI",
+  "code_description": null,
+  "code_name": "BURUNDI",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.359741",
+  "name": "BURUNDI",
+  "sort_order": 25
+ },
+ {
+  "code": "BH",
+  "code_description": null,
+  "code_name": "BAHRAIN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.402052",
+  "name": "BAHRAIN",
+  "sort_order": 24
+ },
+ {
+  "code": "BG",
+  "code_description": null,
+  "code_name": "BULGARIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.442937",
+  "name": "BULGARIA",
+  "sort_order": 23
+ },
+ {
+  "code": "BF",
+  "code_description": null,
+  "code_name": "BURKINA FASO",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.489377",
+  "name": "BURKINA FASO",
+  "sort_order": 22
+ },
+ {
+  "code": "BE",
+  "code_description": null,
+  "code_name": "BELGIUM",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.536535",
+  "name": "BELGIUM",
+  "sort_order": 21
+ },
+ {
+  "code": "BD",
+  "code_description": null,
+  "code_name": "BANGLADESH",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.571158",
+  "name": "BANGLADESH",
+  "sort_order": 20
+ },
+ {
+  "code": "BB",
+  "code_description": null,
+  "code_name": "BARBADOS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.611745",
+  "name": "BARBADOS",
+  "sort_order": 19
+ },
+ {
+  "code": "BA",
+  "code_description": null,
+  "code_name": "BOSNIA AND HERZEGOVINA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.663986",
+  "name": "BOSNIA AND HERZEGOVINA",
+  "sort_order": 18
+ },
+ {
+  "code": "AZ",
+  "code_description": null,
+  "code_name": "AZERBAIJAN",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.705318",
+  "name": "AZERBAIJAN",
+  "sort_order": 17
+ },
+ {
+  "code": "AX",
+  "code_description": null,
+  "code_name": "ALAND ISLANDS",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.748557",
+  "name": "ALAND ISLANDS",
+  "sort_order": 16
+ },
+ {
+  "code": "AW",
+  "code_description": null,
+  "code_name": "ARUBA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.825069",
+  "name": "ARUBA",
+  "sort_order": 15
+ },
+ {
+  "code": "AU",
+  "code_description": null,
+  "code_name": "AUSTRALIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.861956",
+  "name": "AUSTRALIA",
+  "sort_order": 14
+ },
+ {
+  "code": "AT",
+  "code_description": null,
+  "code_name": "AUSTRIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.896178",
+  "name": "AUSTRIA",
+  "sort_order": 13
+ },
+ {
+  "code": "AS",
+  "code_description": null,
+  "code_name": "AMERICAN SAMOA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:50.962678",
+  "name": "AMERICAN SAMOA",
+  "sort_order": 12
+ },
+ {
+  "code": "AR",
+  "code_description": null,
+  "code_name": "ARGENTINA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.000788",
+  "name": "ARGENTINA",
+  "sort_order": 11
+ },
+ {
+  "code": "AQ",
+  "code_description": null,
+  "code_name": "ANTARCTICA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.045014",
+  "name": "ANTARCTICA",
+  "sort_order": 10
+ },
+ {
+  "code": "AO",
+  "code_description": null,
+  "code_name": "ANGOLA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.076196",
+  "name": "ANGOLA",
+  "sort_order": 9
+ },
+ {
+  "code": "AN",
+  "code_description": null,
+  "code_name": "NETHERLANDS ANTILLES",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.106246",
+  "name": "NETHERLANDS ANTILLES",
+  "sort_order": 8
+ },
+ {
+  "code": "AM",
+  "code_description": null,
+  "code_name": "ARMENIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.135755",
+  "name": "ARMENIA",
+  "sort_order": 7
+ },
+ {
+  "code": "AL",
+  "code_description": null,
+  "code_name": "ALBANIA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.154003",
+  "name": "ALBANIA",
+  "sort_order": 6
+ },
+ {
+  "code": "AI",
+  "code_description": null,
+  "code_name": "ANGUILLA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.174039",
+  "name": "ANGUILLA",
+  "sort_order": 5
+ },
+ {
+  "code": "AG",
+  "code_description": null,
+  "code_name": "ANTIGUA AND BARBUDA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.187530",
+  "name": "ANTIGUA AND BARBUDA",
+  "sort_order": 4
+ },
+ {
+  "code": "AE",
+  "code_description": null,
+  "code_name": "UNITED ARAB EMIRATES",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.201328",
+  "name": "UNITED ARAB EMIRATES",
+  "sort_order": 3
+ },
+ {
+  "code": "AD",
+  "code_description": null,
+  "code_name": "ANDORRA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.220962",
+  "name": "ANDORRA",
+  "sort_order": 2
+ },
+ {
+  "code": "AC",
+  "code_description": null,
+  "code_name": "ASCENSION ISLAND",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.253518",
+  "name": "ASCENSION ISLAND",
+  "sort_order": 1
+ }
+]
