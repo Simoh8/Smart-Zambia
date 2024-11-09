@@ -1,24 +1,77 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
+ "autoname": "format:{item_classification_code}",
  "creation": "2024-11-09 21:42:01.577617",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_m3iy"
+  "classification_details_section",
+  "item_classification_code",
+  "item_classification_level",
+  "column_break_cwjt",
+  "item_classification_name",
+  "taxation_type_code",
+  "is_used",
+  "is_major_target"
  ],
  "fields": [
   {
-   "fieldname": "section_break_m3iy",
-   "fieldtype": "Section Break"
+   "fieldname": "classification_details_section",
+   "fieldtype": "Section Break",
+   "label": "Classification Details"
+  },
+  {
+   "fieldname": "item_classification_code",
+   "fieldtype": "Data",
+   "label": "Item Classification Code"
+  },
+  {
+   "fieldname": "item_classification_level",
+   "fieldtype": "Int",
+   "label": "Item Classification Level",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_cwjt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item_classification_name",
+   "fieldtype": "Text",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Item Classification Name"
+  },
+  {
+   "fieldname": "taxation_type_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Taxation Type Code",
+   "options": "ZRA Tax Type"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_used",
+   "fieldtype": "Check",
+   "label": "Is Used"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_major_target",
+   "fieldtype": "Check",
+   "label": "Is Major Target"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-09 21:42:01.577617",
+ "modified": "2024-11-09 21:54:06.942496",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Item Classification",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -34,7 +87,10 @@
    "write": 1
   }
  ],
+ "search_fields": "item_classification_code,item_classification_name",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "item_classification_code"
 }
