@@ -249,5 +249,6 @@ fixtures = [
     "ZRA Payment Method",
     "ZRA Unit of Quantity",
     "ZRA Packaging Unit",
-    "ZRA Item Classification"
+    "ZRA Item Classification",
+    "ZRA Import Item Status"
 ]

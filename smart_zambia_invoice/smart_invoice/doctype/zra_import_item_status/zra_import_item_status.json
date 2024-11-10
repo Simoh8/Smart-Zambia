@@ -1,24 +1,68 @@
 {
  "actions": [],
- "allow_rename": 1,
+ "allow_import": 1,
+ "autoname": "format:{code_name}",
  "creation": "2024-11-10 15:33:34.682478",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_wqy3"
+  "import_item_status_details_section",
+  "code",
+  "sort_order",
+  "column_break_roea",
+  "code_name",
+  "code_description",
+  "remark"
  ],
  "fields": [
   {
-   "fieldname": "section_break_wqy3",
-   "fieldtype": "Section Break"
+   "fieldname": "import_item_status_details_section",
+   "fieldtype": "Section Break",
+   "label": "Import Item Status Details"
+  },
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code"
+  },
+  {
+   "fieldname": "sort_order",
+   "fieldtype": "Data",
+   "label": "Sort Order"
+  },
+  {
+   "fieldname": "column_break_roea",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "code_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code Name"
+  },
+  {
+   "fieldname": "code_description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code Description"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Data",
+   "label": "Remark"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-10 15:33:34.682478",
+ "modified": "2024-11-10 16:27:57.798833",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Import Item Status",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
