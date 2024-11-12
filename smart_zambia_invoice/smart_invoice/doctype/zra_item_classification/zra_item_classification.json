@@ -24,7 +24,7 @@
   },
   {
    "fieldname": "item_classification_code",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Item Classification Code"
   },
   {
