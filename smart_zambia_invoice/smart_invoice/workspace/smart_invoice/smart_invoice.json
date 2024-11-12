@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"nIrQshQC4O\",\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px; letter-spacing: 0.18px;\\\"><b>ZRA SMART INVOICE Shortcuts</b></span>\",\"col\":12}},{\"id\":\"UTn8G-_69-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Smart Zambia Country\",\"col\":4}},{\"id\":\"zwB5CEngv7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Tax Type\",\"col\":4}},{\"id\":\"FhAqAP5Gdm\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Payment Method\",\"col\":4}},{\"id\":\"2-MYvBHBj7\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"n_bSBiUaYK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Packaging Unit\",\"col\":4}},{\"id\":\"xErklN-2p8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Transaction Type\",\"col\":4}},{\"id\":\"C0x8NnJuTQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Unit of Quantity\",\"col\":4}}]",
+ "content": "[{\"id\":\"nIrQshQC4O\",\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px; letter-spacing: 0.18px;\\\"><b>ZRA Shortcuts</b></span>\",\"col\":12}},{\"id\":\"UTn8G-_69-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Smart Zambia Country\",\"col\":3}},{\"id\":\"zYCf1hnaPD\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Debit note reason\",\"col\":3}},{\"id\":\"zwB5CEngv7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Tax Type\",\"col\":3}},{\"id\":\"FhAqAP5Gdm\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Payment Method\",\"col\":3}},{\"id\":\"uH2k2xCdVG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Product Type\",\"col\":3}},{\"id\":\"2-MYvBHBj7\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"n_bSBiUaYK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Packaging Unit\",\"col\":3}},{\"id\":\"2fMh2v2EWY\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Import Item Status\",\"col\":3}},{\"id\":\"vR0jIWA2cb\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Registered Imported Item\",\"col\":3}},{\"id\":\"019BM3O2w4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Items\",\"col\":3}},{\"id\":\"rNxjPkO1KW\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Product Type\",\"col\":3}},{\"id\":\"rc1I4bgza-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Credit Note Reason\",\"col\":3}},{\"id\":\"xErklN-2p8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Transaction Type\",\"col\":3}},{\"id\":\"ZmhwWmtPf2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Purchase Receipt Type\",\"col\":3}},{\"id\":\"C0x8NnJuTQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Unit of Quantity\",\"col\":3}},{\"id\":\"G5jHGnP4Rr\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ZRA Item Classification\",\"col\":3}}]",
  "creation": "2024-11-08 15:34:39.976162",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Smart Invoice",
  "links": [],
- "modified": "2024-11-08 15:42:52.321819",
+ "modified": "2024-11-12 16:14:48.347768",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "Smart Invoice",
@@ -25,6 +25,22 @@
  "roles": [],
  "sequence_id": 28.1,
  "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Items",
+   "link_to": "Item",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "ZRA Debit note reason",
+   "link_to": "ZRA Debit note reason",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
   {
    "color": "Green",
    "doc_view": "List",
@@ -43,10 +59,26 @@
    "type": "DocType"
   },
   {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "ZRA Import Item Status",
+   "link_to": "ZRA Import Item Status",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
    "color": "Green",
    "doc_view": "List",
    "label": "ZRA Payment Method",
    "link_to": "ZRA Payment Method",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "ZRA Registered Imported Item",
+   "link_to": "ZRA Registered Imported Item",
    "stats_filter": "[]",
    "type": "DocType"
   },
@@ -60,6 +92,14 @@
    "type": "DocType"
   },
   {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "ZRA Product Type",
+   "link_to": "ZRA Product Type",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
    "color": "Green",
    "doc_view": "List",
    "format": "{} Open",
@@ -69,10 +109,34 @@
    "type": "DocType"
   },
   {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "ZRA Credit Note Reason",
+   "link_to": "ZRA Credit Note Reason",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
    "color": "Grey",
    "doc_view": "List",
    "label": "ZRA Unit of Quantity",
    "link_to": "ZRA Unit of Quantity",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "ZRA Purchase Receipt Type",
+   "link_to": "ZRA Purchase Receipt Type",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "ZRA Item Classification",
+   "link_to": "ZRA Item Classification",
    "stats_filter": "[]",
    "type": "DocType"
   }
