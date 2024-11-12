@@ -156,7 +156,7 @@
    "name": "Item-imported_item_status-label",
    "owner": "Administrator",
    "property": "label",
-   "property_type": "Data",
+   "property_type": "Link",
    "row_name": null,
    "value": "Imported item Status"
   },
