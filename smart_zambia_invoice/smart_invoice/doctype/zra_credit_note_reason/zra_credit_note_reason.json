@@ -1,0 +1,92 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:{code_name}",
+ "creation": "2024-11-12 14:38:01.309074",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "credit_note_reason_code_deatils_section",
+  "code",
+  "code_name",
+  "column_break_mqaw",
+  "sort_order",
+  "code_description",
+  "remark"
+ ],
+ "fields": [
+  {
+   "fieldname": "credit_note_reason_code_deatils_section",
+   "fieldtype": "Section Break",
+   "label": "Credit Note Reason Code Deatils"
+  },
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code"
+  },
+  {
+   "fieldname": "code_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code Name"
+  },
+  {
+   "fieldname": "column_break_mqaw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sort_order",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Sort Order"
+  },
+  {
+   "fieldname": "code_description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code Description"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Remark"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-12 14:40:39.959336",
+ "modified_by": "Administrator",
+ "module": "Smart Invoice",
+ "name": "ZRA Credit Note Reason",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "code,code_name",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "code_name"
+}

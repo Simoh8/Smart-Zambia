@@ -1,0 +1,46 @@
+[
+ {
+  "code": "1",
+  "code_description": "Wrong product(s)",
+  "code_name": "Wrong product(s)",
+  "docstatus": 0,
+  "doctype": "ZRA Credit Note Reason",
+  "modified": "2024-11-12 14:46:44.498936",
+  "name": "Wrong product(s)",
+  "remark": null,
+  "sort_order": "1"
+ },
+ {
+  "code": "2",
+  "code_description": "Wrong price",
+  "code_name": "Wrong price",
+  "docstatus": 0,
+  "doctype": "ZRA Credit Note Reason",
+  "modified": "2024-11-12 14:46:44.581550",
+  "name": "Wrong price",
+  "remark": null,
+  "sort_order": "2"
+ },
+ {
+  "code": "3",
+  "code_description": "Damaged Goods",
+  "code_name": "Damaged Goods",
+  "docstatus": 0,
+  "doctype": "ZRA Credit Note Reason",
+  "modified": "2024-11-12 14:46:44.617199",
+  "name": "Damaged Goods",
+  "remark": null,
+  "sort_order": "3"
+ },
+ {
+  "code": "4",
+  "code_description": "Wrong Customer Invoiced",
+  "code_name": "Wrong Customer Invoiced",
+  "docstatus": 0,
+  "doctype": "ZRA Credit Note Reason",
+  "modified": "2024-11-12 14:46:44.649053",
+  "name": "Wrong Customer Invoiced",
+  "remark": null,
+  "sort_order": "4"
+ }
+]

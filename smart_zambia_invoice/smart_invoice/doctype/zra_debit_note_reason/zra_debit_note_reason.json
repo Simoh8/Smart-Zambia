@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:{code}",
+ "creation": "2024-11-12 14:21:15.466097",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "debit_note_reason_section",
+  "code",
+  "sort_number",
+  "column_break_xbet",
+  "code_name",
+  "code_description"
+ ],
+ "fields": [
+  {
+   "fieldname": "debit_note_reason_section",
+   "fieldtype": "Section Break",
+   "label": "Debit note reason"
+  },
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code"
+  },
+  {
+   "fieldname": "sort_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Sort Number"
+  },
+  {
+   "fieldname": "column_break_xbet",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "code_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code Name "
+  },
+  {
+   "fieldname": "code_description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Code Description"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-12 14:24:09.964144",
+ "modified_by": "Administrator",
+ "module": "Smart Invoice",
+ "name": "ZRA Debit note reason",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "code,code_name",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "code_name"
+}

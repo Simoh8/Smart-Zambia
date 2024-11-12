@@ -250,5 +250,11 @@ fixtures = [
     "ZRA Unit of Quantity",
     "ZRA Packaging Unit",
     "ZRA Item Classification",
-    "ZRA Import Item Status"
+    "ZRA Import Item Status",
+    "ZRA Credit Note Reason",
+    "ZRA Debit note reason",
+    "ZRA Purchase Receipt Type",
+    "ZRA Product Type",
+    "ZRA Registered Imported Item"
 ]
+

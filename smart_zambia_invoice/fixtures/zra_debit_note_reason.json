@@ -1,0 +1,42 @@
+[
+ {
+  "code": "1",
+  "code_description": null,
+  "code_name": "Wrong quantity invoiced",
+  "docstatus": 0,
+  "doctype": "ZRA Debit note reason",
+  "modified": "2024-11-12 14:32:01.930987",
+  "name": "1",
+  "sort_number": null
+ },
+ {
+  "code": "2",
+  "code_description": null,
+  "code_name": "Wrong invoice amount",
+  "docstatus": 0,
+  "doctype": "ZRA Debit note reason",
+  "modified": "2024-11-12 14:32:20.667556",
+  "name": "2",
+  "sort_number": null
+ },
+ {
+  "code": "3",
+  "code_description": null,
+  "code_name": "Omitted item",
+  "docstatus": 0,
+  "doctype": "ZRA Debit note reason",
+  "modified": "2024-11-12 14:32:59.172504",
+  "name": "3",
+  "sort_number": null
+ },
+ {
+  "code": "4",
+  "code_description": null,
+  "code_name": "Other",
+  "docstatus": 0,
+  "doctype": "ZRA Debit note reason",
+  "modified": "2024-11-12 14:33:12.468709",
+  "name": "4",
+  "sort_number": null
+ }
+]
