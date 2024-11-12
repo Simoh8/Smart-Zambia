@@ -1,24 +1,25 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:{code_name}",
- "creation": "2024-11-10 15:36:45.517302",
+ "creation": "2024-11-12 12:31:27.592330",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "product_type_details_section",
+  "zra_purchase_receipt_type_section",
   "code",
   "sort_order",
-  "column_break_muus",
+  "column_break_eftf",
   "code_name",
   "code_description",
-  "remarks"
+  "remark"
  ],
  "fields": [
   {
-   "fieldname": "product_type_details_section",
+   "fieldname": "zra_purchase_receipt_type_section",
    "fieldtype": "Section Break",
-   "label": "Product Type Details "
+   "label": "ZRA Purchase Receipt Type"
   },
   {
    "fieldname": "code",
@@ -35,7 +36,7 @@
    "label": "Sort Order"
   },
   {
-   "fieldname": "column_break_muus",
+   "fieldname": "column_break_eftf",
    "fieldtype": "Column Break"
   },
   {
@@ -53,19 +54,19 @@
    "label": "Code Description"
   },
   {
-   "fieldname": "remarks",
+   "fieldname": "remark",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Remarks"
+   "label": "Remark"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-12 12:26:22.231830",
+ "modified": "2024-11-12 12:36:04.858049",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
- "name": "ZRA Product Type",
+ "name": "ZRA Purchase Receipt Type",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
@@ -82,7 +83,7 @@
    "write": 1
   }
  ],
- "search_fields": "code",
+ "search_fields": "code,code_name",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
