@@ -10,9 +10,6 @@ app_license = "mit"
 
 require_app =["frappe/erpnext"]
 
-
-
-
 fixtures = [
     "ZRA Tax Type",
     "Smart Zambia Country",
@@ -36,26 +33,8 @@ fixtures = [
     },
 ]
 
-before_uninstall ="smart_zambia_invoice.delete_custom_feilds_in_items"
 
-def delete_custom_feilds_in_items():
-    import json
-    import os
-    from frappe.custom.doctype.custom_field import delete_custom_field
-    from frappe import get_app_path
-
-    file_path= os.path.join(get_app_path("smart_zambia_invoice"), "fixtures", "custom_field.json")
-
-    if os.path.exists(file_path):
-        with open(file_path) as f:
-            fields =json.load(f)
-            for field in fields:
-
-                if field.get("dt") == "Item":
-                    field_name=field.get("name")
-                    if field_name:
-                        delete_custom_field(field_name)
-    
+before_uninstall = "smart_zambia_invoice.uninstall.cleanup_custom_fields"
 
 # Apps
 # ------------------
