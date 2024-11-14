@@ -2028,7 +2028,7 @@
   "docstatus": 0,
   "doctype": "Custom Field",
   "dt": "Item",
-  "fetch_from": "custom_product_type.code_name",
+  "fetch_from": "custom_zra_product_type_code.code_name",
   "fetch_if_empty": 0,
   "fieldname": "custom_zra_product_type_name",
   "fieldtype": "Data",

@@ -11956,18 +11956,6 @@
   "doctype": "ZRA Item Classification",
   "is_major_target": 0,
   "is_used": 1,
-  "item_classification_code": "99011001",
-  "item_classification_level": 4,
-  "item_classification_name": "Bovine Semen of tariff number 05111000",
-  "modified": "2024-11-09 21:55:06.975645",
-  "name": "99011001",
-  "taxation_type_code": null
- },
- {
-  "docstatus": 0,
-  "doctype": "ZRA Item Classification",
-  "is_major_target": 0,
-  "is_used": 1,
   "item_classification_code": "99011000",
   "item_classification_level": 3,
   "item_classification_name": "Exempt Goods (Paragraph 1 - 99)",
@@ -11997,6 +11985,18 @@
   "item_classification_name": "VAT Act",
   "modified": "2024-11-09 21:55:07.140676",
   "name": "99000000",
+  "taxation_type_code": null
+ },
+ {
+  "docstatus": 0,
+  "doctype": "ZRA Item Classification",
+  "is_major_target": 0,
+  "is_used": 1,
+  "item_classification_code": "99011001",
+  "item_classification_level": 4,
+  "item_classification_name": "Bovine Semen of tariff number 05111000",
+  "modified": "2024-11-09 21:55:06.975645",
+  "name": "99011001",
   "taxation_type_code": null
  }
 ]

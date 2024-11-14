@@ -11,17 +11,6 @@
   "sort_order": "1"
  },
  {
-  "code": "3",
-  "code_description": "Service without stock",
-  "code_name": "Service",
-  "docstatus": 0,
-  "doctype": "ZRA Product Type",
-  "modified": "2024-11-12 12:26:06.378350",
-  "name": "Service",
-  "remarks": null,
-  "sort_order": "3"
- },
- {
   "code": "2",
   "code_description": "Finished Product",
   "code_name": "Finished Product",
@@ -31,5 +20,16 @@
   "name": "Finished Product",
   "remarks": null,
   "sort_order": "2"
+ },
+ {
+  "code": "3",
+  "code_description": "Service without stock",
+  "code_name": "Service",
+  "docstatus": 0,
+  "doctype": "ZRA Product Type",
+  "modified": "2024-11-12 12:26:06.378350",
+  "name": "Service",
+  "remarks": null,
+  "sort_order": "3"
  }
 ]

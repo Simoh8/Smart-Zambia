@@ -2430,16 +2430,6 @@
   "sort_order": 10
  },
  {
-  "code": "AO",
-  "code_description": null,
-  "code_name": "ANGOLA",
-  "docstatus": 0,
-  "doctype": "Smart Zambia Country",
-  "modified": "2024-10-31 15:32:51.076196",
-  "name": "ANGOLA",
-  "sort_order": 9
- },
- {
   "code": "AN",
   "code_description": null,
   "code_name": "NETHERLANDS ANTILLES",
@@ -2518,5 +2508,15 @@
   "modified": "2024-10-31 15:32:51.253518",
   "name": "ASCENSION ISLAND",
   "sort_order": 1
+ },
+ {
+  "code": "AO",
+  "code_description": null,
+  "code_name": "ANGOLA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.076196",
+  "name": "ANGOLA",
+  "sort_order": 9
  }
 ]

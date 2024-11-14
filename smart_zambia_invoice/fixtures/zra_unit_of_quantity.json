@@ -400,16 +400,6 @@
   "sort_order": 4
  },
  {
-  "code": "BA",
-  "code_description": "Barrel",
-  "code_name": "Barrel",
-  "docstatus": 0,
-  "doctype": "ZRA Unit of Quantity",
-  "modified": "2024-11-05 12:28:30.467607",
-  "name": "BA",
-  "sort_order": 3
- },
- {
   "code": "AV",
   "code_description": "Cap",
   "code_name": "Cap",
@@ -428,5 +418,15 @@
   "modified": "2024-11-05 12:28:30.533607",
   "name": "4B",
   "sort_order": 1
+ },
+ {
+  "code": "BA",
+  "code_description": "Barrel",
+  "code_name": "Barrel",
+  "docstatus": 0,
+  "doctype": "ZRA Unit of Quantity",
+  "modified": "2024-11-05 12:28:30.467607",
+  "name": "BA",
+  "sort_order": 3
  }
 ]

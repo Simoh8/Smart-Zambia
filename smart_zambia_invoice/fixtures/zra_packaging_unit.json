@@ -90,16 +90,6 @@
   "sort_order": 44
  },
  {
-  "code": "TY",
-  "code_description": "Tank, cylindrical",
-  "code_name": "Tank, cylindrical",
-  "docstatus": 0,
-  "doctype": "ZRA Packaging Unit",
-  "modified": "2024-11-05 15:10:43.020909",
-  "name": "TY",
-  "sort_order": 43
- },
- {
   "code": "SK",
   "code_description": "Skeletoncase",
   "code_name": "Skeletoncase",
@@ -518,5 +508,15 @@
   "modified": "2024-11-05 15:10:44.156022",
   "name": "AM",
   "sort_order": 1
+ },
+ {
+  "code": "TY",
+  "code_description": "Tank, cylindrical",
+  "code_name": "Tank, cylindrical",
+  "docstatus": 0,
+  "doctype": "ZRA Packaging Unit",
+  "modified": "2024-11-05 15:10:43.020909",
+  "name": "TY",
+  "sort_order": 43
  }
 ]
