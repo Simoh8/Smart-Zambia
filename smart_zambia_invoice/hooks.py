@@ -9,6 +9,53 @@ app_email = "simomutu8@gmail.com"
 app_license = "mit"
 
 require_app =[frappe/erpnext]
+
+
+
+
+fixtures = [
+    "ZRA Tax Type",
+    "Smart Zambia Country",
+    "ZRA Transaction Type",
+    "ZRA Payment Method",
+    "ZRA Unit of Quantity",
+    "ZRA Packaging Unit",
+    "ZRA Item Classification",
+    "ZRA Import Item Status",
+    "ZRA Credit Note Reason",
+    "ZRA Purchase Receipt Type",
+    "ZRA Product Type",
+    "ZRA Registered Imported Item",
+    {
+        "doctype": "Custom Field",
+        "filters": [
+                                            # Filter for custom fields only in the "Item" doctype
+            ["dt", "=", "Item"],  
+            ["is_system_generated", "=", 0]
+        ],
+    },
+]
+before_uninstall ="smart_zambia_invoice.delete_custom_feilds_in_items"
+
+def delete_custom_feilds_in_items():
+    import json
+    import os
+    from frappe.custom.doctype.custom_field import delete_custom_field
+    from frappe import get_app_path
+
+    file_path= os.path.join(get_app_path("smart_zambia_invoice"), "fixtures", "custom_field.json")
+
+    if os.path.exists(file_path):
+        with open(file_path) as f:
+            fields =json.load(f)
+            for field in fields:
+
+                if field.get("dt") == "Item":
+                    field_name=field.get("name")
+                    if field_name:
+                        delete_custom_field(field_name)
+    
+
 # Apps
 # ------------------
 
@@ -246,25 +293,3 @@ require_app =[frappe/erpnext]
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
-fixtures = [
-    "ZRA Tax Type",
-    "Smart Zambia Country",
-    "ZRA Transaction Type",
-    "ZRA Payment Method",
-    "ZRA Unit of Quantity",
-    "ZRA Packaging Unit",
-    "ZRA Item Classification",
-    "ZRA Import Item Status",
-    "ZRA Credit Note Reason",
-    "ZRA Purchase Receipt Type",
-    "ZRA Product Type",
-    "ZRA Registered Imported Item",
-    {
-        "doctype": "Custom Field",
-        "filters": [
-                                            # Filter for custom fields only in the "Item" doctype
-            ["dt", "=", "Item"],  
-            ["is_system_generated", "=", 0]
-        ],
-    },
-]
