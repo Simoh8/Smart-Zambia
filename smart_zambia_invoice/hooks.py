@@ -8,7 +8,7 @@ app_description = "smart invoice"
 app_email = "simomutu8@gmail.com"
 app_license = "mit"
 
-require_app =[frappe/erpnext]
+require_app =["frappe/erpnext"]
 
 
 
@@ -35,6 +35,7 @@ fixtures = [
         ],
     },
 ]
+
 before_uninstall ="smart_zambia_invoice.delete_custom_feilds_in_items"
 
 def delete_custom_feilds_in_items():
