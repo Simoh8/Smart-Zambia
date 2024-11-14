@@ -1,3 +1,6 @@
+import frappe
+import erpnext
+
 app_name = "smart_zambia_invoice"
 app_title = "Smart Invoice"
 app_publisher = "simon muturi"
@@ -5,6 +8,7 @@ app_description = "smart invoice"
 app_email = "simomutu8@gmail.com"
 app_license = "mit"
 
+require_app =[frappe/erpnext]
 # Apps
 # ------------------
 
@@ -258,7 +262,9 @@ fixtures = [
     {
         "doctype": "Custom Field",
         "filters": [
-            ["dt", "=", "Item"],  # Filter for custom fields only in the "Item" doctype
+                                            # Filter for custom fields only in the "Item" doctype
+            ["dt", "=", "Item"],  
+            ["is_system_generated", "=", 0]
         ],
     },
 ]
