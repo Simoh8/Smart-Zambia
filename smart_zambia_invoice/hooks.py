@@ -252,9 +252,13 @@ fixtures = [
     "ZRA Item Classification",
     "ZRA Import Item Status",
     "ZRA Credit Note Reason",
-    "ZRA Debit note reason",
     "ZRA Purchase Receipt Type",
     "ZRA Product Type",
-    "ZRA Registered Imported Item"
+    "ZRA Registered Imported Item",
+    {
+        "doctype": "Custom Field",
+        "filters": [
+            ["dt", "=", "Item"],  # Filter for custom fields only in the "Item" doctype
+        ],
+    },
 ]
-
