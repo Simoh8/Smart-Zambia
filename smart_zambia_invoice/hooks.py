@@ -26,7 +26,7 @@ fixtures = [
     {
         "doctype": "Custom Field",
         "filters": [
-                                            # Filter for custom fields only in the "Item" doctype
+                                            # Filter for custom fields from allthe doctypes 
             ["dt", "=", "Item"],  
             ["is_system_generated", "=", 0]
         ],
