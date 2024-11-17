@@ -17,6 +17,7 @@ fixtures = [
     "ZRA Payment Method",
     "ZRA Unit of Quantity",
     "ZRA Packaging Unit",
+    "ZRA Transaction Progress",
     "ZRA Item Classification",
     "ZRA Import Item Status",
     "ZRA Credit Note Reason",
@@ -28,7 +29,7 @@ fixtures = [
         "filters": [
                                             # Filter for custom fields from allthe doctypes 
             ["dt", "=", "Item"],
-            ["dt", "=", "Sales Invoice"]
+            # ["dt", "=", "Sales Invoice"],
             ["is_system_generated", "=", 0]
         ],
     },
