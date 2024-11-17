@@ -44,9 +44,10 @@
    "label": "Remarks "
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-17 23:27:05.072929",
+ "modified": "2024-11-17 23:38:15.073877",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Transaction Progress",
@@ -66,6 +67,7 @@
    "write": 1
   }
  ],
+ "search_fields": "code,code_name",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
