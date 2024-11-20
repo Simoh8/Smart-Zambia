@@ -27,7 +27,24 @@ fixtures = [
     {
         "doctype": "Custom Field",
         "filters": [
-            ["dt", "in", ["Item", "Sales Invoice", "Sales Invoice Item", "BOM", "Branch", "Supplier", "Warehouse"]],  # Include specific doctypes
+            ["dt", "in", ["Item",
+                          "Sales Invoice",
+                          "Sales Invoice Item",
+                          "BOM", 
+                          "Branch",
+                          "Supplier",
+                          "Warehouse",
+                          "Customer Group",
+                          "Customer",
+                          "Item Tax Template",
+                          "Purchase Invoice",
+                          "Purchase Invoice Item",
+                          "Stock Ledger Entry"
+
+
+
+                          ]
+                        ],  # Include specific doctypes
             ["is_system_generated", "=", 0]           # Exclude system-generated fields
         ],
     }
