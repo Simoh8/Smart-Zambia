@@ -41,8 +41,6 @@ fixtures = [
                           "Purchase Invoice Item",
                           "Stock Ledger Entry"
 
-
-
                           ]
                         ],  # Include specific doctypes
             ["is_system_generated", "=", 0]           # Exclude system-generated fields
