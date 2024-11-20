@@ -1,24 +1,21 @@
 import frappe
 
 def cleanup_custom_fields():
-
-    custom_fields = frappe.get_all("Custom Field", filters={"dt":"Item",
-                                                            "dt":"Sales Invoice",
-                                                            "dt":"Sales Invoice Item",
-                                                            "dt":"Purchase Invoice",
-                                                            "dt":"Stock Ledger Entry",
-                                                            "dt":"Customer",
-                                                            "dt":"Purchase Invoice",
-                                                            "dt":"Iten Tax Template",
-                                                            "dt":"Warehouse",
-                                                            "dt":"Branch",
-                                                            "dt":"Purchase Invoice Item",
-                                                            "dt":"Customer Group",
-                                                            "dt":"Supplier"
-
-
-
-                                                            }, fields=["name"])
+    doctypes = [
+        "Item",
+        "Sales Invoice",
+        "Sales Invoice Item",
+        "Purchase Invoice",
+        "Stock Ledger Entry",
+        "Customer",
+        "Item Tax Template",
+        "Warehouse",
+        "Branch",
+        "Purchase Invoice Item",
+        "Customer Group",
+        "Supplier",
+    ]
+    custom_fields = frappe.get_all("Custom Field", filters= {"dt":["in",doctypes]}, fields=["name"])
 
     for field in custom_fields:
         frappe.delete_doc("Custom Field", field["name"], ignore_missing=True)
