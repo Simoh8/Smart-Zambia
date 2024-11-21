@@ -2490,16 +2490,6 @@
   "sort_order": 3
  },
  {
-  "code": "AD",
-  "code_description": null,
-  "code_name": "ANDORRA",
-  "docstatus": 0,
-  "doctype": "Smart Zambia Country",
-  "modified": "2024-10-31 15:32:51.220962",
-  "name": "ANDORRA",
-  "sort_order": 2
- },
- {
   "code": "AC",
   "code_description": null,
   "code_name": "ASCENSION ISLAND",
@@ -2518,5 +2508,15 @@
   "modified": "2024-10-31 15:32:51.076196",
   "name": "ANGOLA",
   "sort_order": 9
+ },
+ {
+  "code": "AD",
+  "code_description": null,
+  "code_name": "ANDORRA",
+  "docstatus": 0,
+  "doctype": "Smart Zambia Country",
+  "modified": "2024-10-31 15:32:51.220962",
+  "name": "ANDORRA",
+  "sort_order": 2
  }
 ]

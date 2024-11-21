@@ -1,20 +1,5 @@
 [
  {
-  "code": "A",
-  "code_class": null,
-  "code_description": "Category applies to products and services which attract VAT at 16% by nature",
-  "code_name": "Standard Rated 16%",
-  "docstatus": 0,
-  "doctype": "ZRA Tax Type",
-  "is_used": 1,
-  "modified": "2024-11-12 14:56:34.868066",
-  "name": "A",
-  "sort_order": 1,
-  "user_defined_code_1": null,
-  "user_defined_code_2": null,
-  "user_defined_code_3": null
- },
- {
   "code": "B",
   "code_class": null,
   "code_description": "16% is charged on the Retail Price recommended bymanufacturer of MTV goods.",
@@ -220,6 +205,21 @@
   "modified": "2024-11-12 15:07:22.953040",
   "name": "EXEEG",
   "sort_order": 0,
+  "user_defined_code_1": null,
+  "user_defined_code_2": null,
+  "user_defined_code_3": null
+ },
+ {
+  "code": "A",
+  "code_class": null,
+  "code_description": "Category applies to products and services which attract VAT at 16% by nature",
+  "code_name": "Standard Rated 16%",
+  "docstatus": 0,
+  "doctype": "ZRA Tax Type",
+  "is_used": 1,
+  "modified": "2024-11-12 14:56:34.868066",
+  "name": "A",
+  "sort_order": 1,
   "user_defined_code_1": null,
   "user_defined_code_2": null,
   "user_defined_code_3": null
