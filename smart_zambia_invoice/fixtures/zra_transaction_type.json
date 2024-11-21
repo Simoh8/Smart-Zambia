@@ -34,11 +34,11 @@
  },
  {
   "code": "C",
-  "code_description": "Sales and purchase type : Copy",
+  "code_description": "Sales and purchase type : Copy Transaction",
   "code_name": "Copy",
   "docstatus": 0,
   "doctype": "ZRA Transaction Type",
-  "modified": "2024-11-05 15:27:35.557838",
+  "modified": "2024-11-21 10:04:57.941516",
   "name": "C",
   "remark": null,
   "sort_order": 1
