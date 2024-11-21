@@ -1,25 +1,5 @@
 [
  {
-  "code": "04",
-  "code_description": "BANK CHECK",
-  "code_name": "BANK CHECK",
-  "docstatus": 0,
-  "doctype": "ZRA Payment Method",
-  "modified": "2024-11-05 12:36:26.314327",
-  "name": "BANK CHECK",
-  "sort_order": 4
- },
- {
-  "code": "01",
-  "code_description": "CASH",
-  "code_name": "CASH",
-  "docstatus": 0,
-  "doctype": "ZRA Payment Method",
-  "modified": "2024-11-05 12:36:26.333990",
-  "name": "CASH",
-  "sort_order": 1
- },
- {
   "code": "02",
   "code_description": "CREDIT",
   "code_name": "CREDIT",
@@ -68,5 +48,25 @@
   "modified": "2024-11-05 12:36:26.382596",
   "name": "CASH/CREDIT",
   "sort_order": 3
+ },
+ {
+  "code": "04",
+  "code_description": "BANK CHECK",
+  "code_name": "BANK CHECK",
+  "docstatus": 0,
+  "doctype": "ZRA Payment Method",
+  "modified": "2024-11-05 12:36:26.314327",
+  "name": "BANK CHECK",
+  "sort_order": 4
+ },
+ {
+  "code": "01",
+  "code_description": "CASH",
+  "code_name": "CASH",
+  "docstatus": 0,
+  "doctype": "ZRA Payment Method",
+  "modified": "2024-11-05 12:36:26.333990",
+  "name": "CASH",
+  "sort_order": 1
  }
 ]

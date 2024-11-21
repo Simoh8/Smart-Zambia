@@ -1,15 +1,5 @@
 [
  {
-  "code": "02",
-  "code_description": "Approved",
-  "code_name": "Approved",
-  "docstatus": 0,
-  "doctype": "ZRA Transaction Progress",
-  "modified": "2024-11-17 23:33:10.404631",
-  "name": "Approved",
-  "remarks": null
- },
- {
   "code": "06",
   "code_description": "Transferred",
   "code_name": "Transferred",
@@ -37,6 +27,16 @@
   "doctype": "ZRA Transaction Progress",
   "modified": "2024-11-17 23:33:11.028105",
   "name": "Rejected",
+  "remarks": null
+ },
+ {
+  "code": "02",
+  "code_description": "Approved",
+  "code_name": "Approved",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Progress",
+  "modified": "2024-11-17 23:33:10.404631",
+  "name": "Approved",
   "remarks": null
  }
 ]

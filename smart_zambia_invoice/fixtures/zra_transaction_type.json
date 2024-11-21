@@ -1,16 +1,5 @@
 [
  {
-  "code": "C",
-  "code_description": "Sales and purchase type : Copy Transaction",
-  "code_name": "Copy",
-  "docstatus": 0,
-  "doctype": "ZRA Transaction Type",
-  "modified": "2024-11-21 10:51:54.820294",
-  "name": "Copy",
-  "remark": null,
-  "sort_order": 1
- },
- {
   "code": "N",
   "code_description": "Sales and purchase type : Normal",
   "code_name": "Normal",
@@ -42,5 +31,16 @@
   "name": "Training",
   "remark": null,
   "sort_order": 4
+ },
+ {
+  "code": "C",
+  "code_description": "Sales and purchase type : Copy Transaction",
+  "code_name": "Copy",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Type",
+  "modified": "2024-11-21 10:51:54.820294",
+  "name": "Copy",
+  "remark": null,
+  "sort_order": 1
  }
 ]

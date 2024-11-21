@@ -1,16 +1,5 @@
 [
  {
-  "code": "R",
-  "code_description": "Credit Note after Purchase",
-  "code_name": "Credit Note after Purchase",
-  "docstatus": 0,
-  "doctype": "ZRA Purchase Receipt Type",
-  "modified": "2024-11-12 12:37:15.504166",
-  "name": "Credit Note after Purchase",
-  "remark": null,
-  "sort_order": "2"
- },
- {
   "code": "P",
   "code_description": "Purchase",
   "code_name": "Purchase",
@@ -20,5 +9,16 @@
   "name": "Purchase",
   "remark": null,
   "sort_order": "1"
+ },
+ {
+  "code": "R",
+  "code_description": "Credit Note after Purchase",
+  "code_name": "Credit Note after Purchase",
+  "docstatus": 0,
+  "doctype": "ZRA Purchase Receipt Type",
+  "modified": "2024-11-12 12:37:15.504166",
+  "name": "Credit Note after Purchase",
+  "remark": null,
+  "sort_order": "2"
  }
 ]
