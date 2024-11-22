@@ -39,7 +39,8 @@ fixtures = [
                           "Item Tax Template",
                           "Purchase Invoice",
                           "Purchase Invoice Item",
-                          "Stock Ledger Entry"
+                          "Stock Ledger Entry",
+                          "POS Invoice Item",
 
                           ]
                         ], 

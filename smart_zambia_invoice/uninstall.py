@@ -14,6 +14,7 @@ def cleanup_custom_fields():
         "Purchase Invoice Item",
         "Customer Group",
         "Supplier",
+        "POS Invoice Item"
     ]
     custom_fields = frappe.get_all("Custom Field", filters= {"dt":["in",doctypes]}, fields=["name"])
 
