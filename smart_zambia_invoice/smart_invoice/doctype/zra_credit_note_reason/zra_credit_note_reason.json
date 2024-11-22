@@ -61,9 +61,10 @@
    "label": "Remark"
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-12 14:40:39.959336",
+ "modified": "2024-11-22 08:40:53.927735",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Credit Note Reason",

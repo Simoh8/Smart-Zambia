@@ -52,9 +52,10 @@
    "label": "Code Description"
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-05 15:07:15.058699",
+ "modified": "2024-11-22 08:41:01.803498",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Unit of Quantity",

@@ -15,10 +15,11 @@
    "fieldtype": "Section Break"
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-21 15:20:34.329813",
+ "modified": "2024-11-22 08:40:50.712527",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Registered Purchases Items",

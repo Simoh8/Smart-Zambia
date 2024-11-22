@@ -59,9 +59,10 @@
    "label": "Remark"
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-21 09:57:35.199956",
+ "modified": "2024-11-22 08:40:51.217356",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Transaction Type",

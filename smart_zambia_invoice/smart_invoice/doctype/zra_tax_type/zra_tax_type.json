@@ -84,9 +84,10 @@
    "label": "User Defined Code 3"
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-06 15:19:03.487072",
+ "modified": "2024-11-22 08:40:59.414311",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Tax Type",

@@ -60,9 +60,10 @@
    "label": "Remarks"
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-12 12:26:22.231830",
+ "modified": "2024-11-22 08:40:56.803778",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Product Type",
