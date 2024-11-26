@@ -17,6 +17,7 @@ fixtures = [
     "ZRA Payment Method",
     "ZRA Unit of Quantity",
     "ZRA Packaging Unit",
+    "ZRA Smart Invoice Settings",
     "ZRA Transaction Progress",
     "ZRA Item Classification",
     "ZRA Import Item Status",
@@ -41,7 +42,6 @@ fixtures = [
                           "Purchase Invoice Item",
                           "Stock Ledger Entry",
                           "POS Invoice Item",
-                          "ZRA Smart Invoice Settings",
 
                           ]
                         ], 
