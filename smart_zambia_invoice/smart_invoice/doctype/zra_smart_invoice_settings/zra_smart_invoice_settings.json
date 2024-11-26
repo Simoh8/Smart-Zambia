@@ -1,0 +1,111 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-26 13:14:13.420460",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "configuration_settings_section",
+  "sandboxtest_environment_",
+  "column_break_rxeh",
+  "production_environment_",
+  "server_url_according_to_environment_section",
+  "server_url",
+  "other_details_section",
+  "company_name",
+  "company_tpin",
+  "column_break_puna",
+  "branch_id",
+  "vsdc_device_serial_number"
+ ],
+ "fields": [
+  {
+   "fieldname": "configuration_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Configuration Settings "
+  },
+  {
+   "default": "0",
+   "description": "On Testing Phase?. The Sandbox/Test Environment is a secure platform provided by ZRA for developers to test and validate API integrations, simulating production functionalities without affecting live data.",
+   "fieldname": "sandboxtest_environment_",
+   "fieldtype": "Check",
+   "label": "SandBox/Test Environment ?"
+  },
+  {
+   "fieldname": "column_break_rxeh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "Done withe testing ?. The Production Environment is the live system used for real transactions and operations, where API integrations interact with actual taxpayer data to ensure compliance and functionality.",
+   "fieldname": "production_environment_",
+   "fieldtype": "Check",
+   "label": "Production Environment ?"
+  },
+  {
+   "fieldname": "server_url_according_to_environment_section",
+   "fieldtype": "Section Break",
+   "label": "Server URL According to Environment"
+  },
+  {
+   "default": "https://sandboxportal.zra.org.zm/basic/login/indexLogin",
+   "fieldname": "server_url",
+   "fieldtype": "Data",
+   "label": "Server URL",
+   "read_only": 1
+  },
+  {
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details "
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company Name"
+  },
+  {
+   "fieldname": "company_tpin",
+   "fieldtype": "Data",
+   "label": "Company TPIN"
+  },
+  {
+   "fieldname": "column_break_puna",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch_id",
+   "fieldtype": "Data",
+   "label": "Branch ID"
+  },
+  {
+   "fieldname": "vsdc_device_serial_number",
+   "fieldtype": "Data",
+   "label": "VSDC Device Serial Number"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-26 13:29:25.266636",
+ "modified_by": "Administrator",
+ "module": "Smart Invoice",
+ "name": "ZRA Smart Invoice Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

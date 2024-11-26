@@ -15,7 +15,8 @@ def cleanup_custom_fields():
         "Customer Group",
         "Supplier",
         "POS Invoice",
-        "POS Invoice Item"
+        "POS Invoice Item",
+        "ZRA Smart Invoice Settings",
     ]
     custom_fields = frappe.get_all("Custom Field", filters= {"dt":["in",doctypes]}, fields=["name"])
 

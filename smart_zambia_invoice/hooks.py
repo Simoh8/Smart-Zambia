@@ -41,6 +41,7 @@ fixtures = [
                           "Purchase Invoice Item",
                           "Stock Ledger Entry",
                           "POS Invoice Item",
+                          "ZRA Smart Invoice Settings",
 
                           ]
                         ], 
@@ -49,7 +50,6 @@ fixtures = [
     }
 
 ]
-
 
 before_uninstall = "smart_zambia_invoice.uninstall.cleanup_custom_fields"
 
