@@ -1,0 +1,95 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{notice_number}",
+ "creation": "2024-11-27 09:22:09.911459",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "notification_details_section",
+  "notice_title",
+  "registration_name",
+  "notice_url",
+  "column_break_hdmi",
+  "notice_number",
+  "notice_registration_datetime",
+  "section_break_nwft",
+  "notice_contents"
+ ],
+ "fields": [
+  {
+   "fieldname": "notification_details_section",
+   "fieldtype": "Section Break",
+   "label": "Notification Details"
+  },
+  {
+   "fieldname": "notice_title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Notice Title"
+  },
+  {
+   "fieldname": "registration_name",
+   "fieldtype": "Data",
+   "label": "Registration Name"
+  },
+  {
+   "fieldname": "notice_url",
+   "fieldtype": "Data",
+   "label": "Notice URL"
+  },
+  {
+   "fieldname": "column_break_hdmi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "notice_number",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Notice Number",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "notice_registration_datetime",
+   "fieldtype": "Datetime",
+   "label": "Notice Registration Datetime"
+  },
+  {
+   "fieldname": "section_break_nwft",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "notice_contents",
+   "fieldtype": "Text Editor",
+   "label": "Notice Contents"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-27 09:38:41.603226",
+ "modified_by": "Administrator",
+ "module": "Smart Invoice",
+ "name": "ZRA Notice",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "notice_title",
+ "track_changes": 1
+}

@@ -11,9 +11,12 @@
   "production_environment_",
   "server_url_according_to_environment_section",
   "server_url",
+  "column_break_mzbs",
+  "environment",
   "other_details_section",
   "company_name",
   "company_tpin",
+  "country",
   "column_break_puna",
   "branch_id",
   "vsdc_device_serial_number"
@@ -37,7 +40,7 @@
   },
   {
    "default": "0",
-   "description": "Done withe testing ?. The Production Environment is the live system used for real transactions and operations, where API integrations interact with actual taxpayer data to ensure compliance and functionality.",
+   "description": "Done with testing? The Production Environment is the live system used for real transactions and operations, where API integrations interact with actual taxpayer data to ensure compliance and functionality.",
    "fieldname": "production_environment_",
    "fieldtype": "Check",
    "label": "Production Environment ?"
@@ -61,10 +64,13 @@
   },
   {
    "fieldname": "company_name",
-   "fieldtype": "Data",
-   "label": "Company Name"
+   "fieldtype": "Link",
+   "label": "Company Name",
+   "options": "Company"
   },
   {
+   "bold": 1,
+   "fetch_from": "company_name.tax_id",
    "fieldname": "company_tpin",
    "fieldtype": "Data",
    "label": "Company TPIN"
@@ -75,18 +81,38 @@
   },
   {
    "fieldname": "branch_id",
-   "fieldtype": "Data",
-   "label": "Branch ID"
+   "fieldtype": "Link",
+   "label": "Branch ID",
+   "options": "Branch"
   },
   {
    "fieldname": "vsdc_device_serial_number",
    "fieldtype": "Data",
    "label": "VSDC Device Serial Number"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "company_name.country",
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "fieldname": "column_break_mzbs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Sandbox",
+   "fieldname": "environment",
+   "fieldtype": "Select",
+   "label": "Environment",
+   "options": "Sandbox\nProduction",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-26 13:29:25.266636",
+ "modified": "2024-11-27 10:29:56.688184",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",
