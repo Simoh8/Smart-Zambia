@@ -1,6 +1,6 @@
 {
  "actions": [],
- "allow_rename": 1,
+ "autoname": "format:{full_name}",
  "creation": "2024-11-28 15:11:54.295503",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -64,10 +64,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-28 15:17:08.461506",
+ "modified": "2024-11-28 15:18:58.541750",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice User",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -83,7 +84,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "full_name"
 }

@@ -14,12 +14,15 @@
   "column_break_mzbs",
   "environment",
   "other_details_section",
+  "column_break_brag",
   "company_name",
   "company_tpin",
   "country",
+  "mrc_number",
   "column_break_puna",
   "branch_id",
-  "vsdc_device_serial_number"
+  "vsdc_device_serial_number",
+  "zra_sales_control_unit_id"
  ],
  "fields": [
   {
@@ -108,11 +111,30 @@
    "label": "Environment",
    "options": "Sandbox\nProduction",
    "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "column_break_brag",
+   "fieldtype": "Column Break",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mrc_number",
+   "fieldtype": "Data",
+   "label": "MRC Number",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "zra_sales_control_unit_id",
+   "fieldtype": "Data",
+   "label": "ZRA Sales Control Unit Id",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-27 10:29:56.688184",
+ "modified": "2024-11-29 08:35:01.496643",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",
