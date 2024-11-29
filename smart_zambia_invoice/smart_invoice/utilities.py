@@ -64,3 +64,13 @@ def make_datetime_from_string(date_string:str, format:str= "%Y-%m-%d %H:%M:%S")-
     datetime_object =datetime.strptime(date_string,format)
 
     return datetime_object
+
+
+def get_docment_series_number(document: Document)-> int |None:
+    split_invoice_name =document.name.split("-")
+
+    if len(split_invoice_name == 4):
+        return int(split_invoice_name[-1])
+    if len(split_invoice_name == 5):
+        return int(split_invoice_name[-2])
+    
