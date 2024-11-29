@@ -22,6 +22,21 @@ def is_valid_tpin(tpin: str) -> bool:
     Returns:
         bool: True if input is a valid TPIN, False otherwise
     """
-    # Define a pattern for a valid TPIN (e.g., exactly 10 digits)
     pattern = r"^\d{10}$"
     return bool(re.match(pattern, tpin))
+
+async def make_get_request(url: str) -> dict[str,str] |str:
+    """this is liable for makinng the get request t the spcific url given by zra
+    
+    Args:
+        url which is the url to be used
+
+    Return:
+        a dictionary which has the response
+    """
+    async with aiohttp.ClientTimeout() as session:
+        async with session.get(url) as response:
+            if response.content_type.startswith("text"):
+                return await response.text()
+            
+            return await response.json()
