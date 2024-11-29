@@ -74,3 +74,6 @@ def get_docment_series_number(document: Document)-> int |None:
     if len(split_invoice_name == 5):
         return int(split_invoice_name[-2])
     
+
+
+def update_last_req_date( response_datetme:str, route: str, )
