@@ -10,7 +10,7 @@ frappe.ui.form.on("ZRA Smart Invoice Settings", {
     sandboxtest_environment_: function (frm) {
         if (frm.doc.sandboxtest_environment_) {
             frm.set_value('server_url', 'http://localhost:8080/zrasandboxvsdc');
-            frm.set_value('environment', 'sandbox');
+            frm.set_value('environment', 'Sandbox');
             frm.set_value('production_environment_', 0);
 
         }
@@ -30,8 +30,28 @@ frappe.ui.form.on("ZRA Smart Invoice Settings", {
         }
         else if (!frm.doc.production_environment_) {
             frm.set_value('server_url', 'http://localhost:8080/zrasandboxvsdc');
-            frm.set_value('environment', 'SandBox');
+            frm.set_value('environment', 'Sandbox');
         }
+    },
+    after_save: async function (frm) {
+        frappe.call({
+            method: "smart_zambia_invoice.smart_invoice.utilities.initialize_device",
+            args: {
+                settings_doc_name: frm.doc.name,
+            },
+            callback: function (response) {
+                if (response.message) {
+                    frappe.msgprint(__('Device initialization successful.'));
+                }
+            },
+            error: function (err) {
+                frappe.msgprint({
+                    title: __('Error'),
+                    message: __('Failed to initialize device. Check server logs for more details.'),
+                    indicator: 'red'
+                });
+            }
+        });
     }
 
 });

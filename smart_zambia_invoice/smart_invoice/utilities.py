@@ -1,4 +1,3 @@
-# Imports
 import re
 import frappe
 import aiohttp
@@ -9,6 +8,8 @@ from io import BytesIO
 from typing import Literal
 from aiohttp import ClientTimeout
 from frappe.model.document import Document
+from frappe.utils import cint
+
 from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
 
 
@@ -64,41 +65,43 @@ async def make_post_request(
     async with aiohttp.ClientSession(timeout=ClientTimeout(1800)) as session:
         async with session.post(url, json=data, headers=headers) as response:
             return await response.json()
-        
+  
 
+@frappe.whitelist()
+async def initialize_device(settings_doc_name):
+    """
+    Makes an API call to ZRA's initialization endpoint.
+    """
+    # Fetch the ZRA Settings document
+    settings = frappe.get_doc("ZRA Smart Invoice Settings", settings_doc_name)
 
-async def send_initialization_request(tpin: str, bhf_id: str, dvc_srl_no: str):
-    # Get environment settings from the ZRA Smart Invoice Settings DocType
-    settings = frappe.get_single("ZRA Smart Invoice Settings")
-    
-    if settings.sandbox_test_environment_:  # Sandbox or test environment
-        url = 'https://sandbox.zra.org/initializer/selectInitInfo'
-    elif settings.production_environment_:  # Production environment
-        url = 'https://production.zra.org/initializer/selectInitInfo'
-    else:
-        frappe.throw("Please select either Sandbox or Production environment in the ZRA settings.")
-    
-    """ Sends the initialization request to ZRA's API """
-
-    headers = {
-        "Content-Type": "application/json",
-    }
+    # Prepare the data for the request
     data = {
-        "tpin": tpin,
-        "bhfId": bhf_id,
-        "dvcSrlNo": dvc_srl_no
+        "tpin": settings.company_tpin,
+        "bhfId": settings.branch_id,
+        "dvcSrlNo": settings.vsdc_device_serial_number
     }
 
+    # Determine the server URL
+    url = settings.server_url
+
+    # Make the POST request to the API
     async with aiohttp.ClientSession() as session:
-        async with session.post(url, json=data, headers=headers) as response:
-            if response.status != 200:
-                frappe.throw(_("Error communicating with ZRA API"))
-            result = await response.json()
-            if result['resultCd'] != '000':
-                frappe.throw(_("Error: {0}").format(result['resultMsg']))
-            return result
-
-
+        async with session.post(url, json=data) as response:
+            if response.status == 200:
+                result = await response.json()
+                # Process the response (e.g., save additional info to the settings document)
+                if result.get("resultCd") == "000":  # Successful response
+                    settings.update({
+                        "zra_sales_control_unit_id": result["data"]["info"].get("sdcId"),
+                        "mrc_number": result["data"]["info"].get("mrcNo")
+                    })
+                    settings.save()
+                return result
+            else:
+                frappe.throw(
+                    f"Failed to initialize device. HTTP Status: {response.status}. Response: {await response.text()}"
+                )
 
 # -------------------------------
 # QR Code Generation
