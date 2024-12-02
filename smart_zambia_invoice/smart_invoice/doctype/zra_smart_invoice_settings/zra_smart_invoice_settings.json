@@ -20,6 +20,7 @@
   "country",
   "mrc_number",
   "column_break_puna",
+  "branch_name",
   "branch_id",
   "vsdc_device_serial_number",
   "zra_sales_control_unit_id"
@@ -32,7 +33,7 @@
   },
   {
    "default": "0",
-   "description": "On Testing Phase?. The Sandbox/Test Environment is a secure platform provided by ZRA for developers to test and validate API integrations, simulating production functionalities without affecting live data.",
+   "description": "On Testing Phase?, the Sandbox/Test Environment is a secure platform provided by ZRA for user to test and validate API integrations, simulating production functionalities without affecting live data.",
    "fieldname": "sandboxtest_environment_",
    "fieldtype": "Check",
    "label": "SandBox/Test Environment ?"
@@ -43,7 +44,7 @@
   },
   {
    "default": "0",
-   "description": "Done with testing? The Production Environment is the live system used for real transactions and operations, where API integrations interact with actual taxpayer data to ensure compliance and functionality.",
+   "description": "Done with testing?, the Production Environment is the live system used for real transactions and operations, where API integrations interact with actual taxpayer data to ensure compliance and functionality.",
    "fieldname": "production_environment_",
    "fieldtype": "Check",
    "label": "Production Environment ?"
@@ -76,17 +77,20 @@
    "fetch_from": "company_name.tax_id",
    "fieldname": "company_tpin",
    "fieldtype": "Data",
-   "label": "Company TPIN"
+   "in_list_view": 1,
+   "label": "Company TPIN",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_puna",
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "branch_name.custom_branch_code",
    "fieldname": "branch_id",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Branch ID",
-   "options": "Branch"
+   "read_only": 1
   },
   {
    "fieldname": "vsdc_device_serial_number",
@@ -130,11 +134,19 @@
    "fieldtype": "Data",
    "label": "ZRA Sales Control Unit Id",
    "read_only": 1
+  },
+  {
+   "fieldname": "branch_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch Name",
+   "options": "Branch",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-29 08:35:01.496643",
+ "modified": "2024-12-02 14:00:11.900542",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",
