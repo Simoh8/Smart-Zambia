@@ -81,27 +81,42 @@ async def initialize_device(settings_doc_name):
         "bhfId": settings.branch_id,
         "dvcSrlNo": settings.vsdc_device_serial_number
     }
+    print("Data being sent to the API:", data)
 
-    # Determine the server URL
-    url = settings.server_url
+    # Determine the server URL (ensure the endpoint is correctly appended)
+    url = settings.server_url + "/initializer/selectInitInfo"
 
-    # Make the POST request to the API
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, json=data) as response:
-            if response.status == 200:
-                result = await response.json()
-                # Process the response (e.g., save additional info to the settings document)
-                if result.get("resultCd") == "000":  # Successful response
-                    settings.update({
-                        "zra_sales_control_unit_id": result["data"]["info"].get("sdcId"),
-                        "mrc_number": result["data"]["info"].get("mrcNo")
-                    })
-                    settings.save()
-                return result
-            else:
-                frappe.throw(
-                    f"Failed to initialize device. HTTP Status: {response.status}. Response: {await response.text()}"
-                )
+    # Make the POST request to the API with a timeout
+    async with aiohttp.ClientSession(timeout=ClientTimeout(total=30)) as session:
+        try:
+            async with session.post(url, json=data) as response:
+                # Check if the status code is 200 (success)
+                if response.status == 200:
+                    result = await response.json()
+                    print("API Response:", result)
+
+                    # Handle successful response
+                    if result.get("resultCd") == "902":  # Assuming 902 is success
+                        settings.update({
+                            "zra_sales_control_unit_id": result["data"]["info"].get("sdcId"),
+                            "mrc_number": result["data"]["info"].get("mrcNo")
+                        })
+                        settings.save()
+
+                        # Return success message
+                        return {"message": "Initialization Successful", "data": result}
+                    else:
+                        # If the response code is not the expected success code, raise an error
+                        error_message = result.get("errorMessage", "Unknown error occurred.")
+                        frappe.throw(f"Initialization failed: {error_message}")
+                else:
+                    # Handle the error if the HTTP response status is not 200
+                    error_text = await response.text()
+                    frappe.throw(f"Failed to initialize device. HTTP Status: {response.status}. Response: {error_text}")
+        except Exception as e:
+            # If there's an exception during the request, log and raise an error
+            frappe.log_error(f"Error in device initialization: {str(e)}", "Device Initialization Error")
+            frappe.throw(f"An error occurred during device initialization: {str(e)}")
 
 # -------------------------------
 # QR Code Generation
@@ -130,3 +145,6 @@ def get_zra_settings():
     except Exception as e:
         frappe.log_error(f"Error fetching ZRA settings: {str(e)}", "ZRA Settings Error")
         raise
+
+
+
