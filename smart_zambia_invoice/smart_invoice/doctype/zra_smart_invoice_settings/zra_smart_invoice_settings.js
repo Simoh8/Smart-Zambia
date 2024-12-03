@@ -35,7 +35,7 @@ frappe.ui.form.on("ZRA Smart Invoice Settings", {
     },
     after_save: async function (frm) {
         frappe.call({
-            method: "smart_zambia_invoice.smart_invoice.utilities.initialize_device",
+            method: "smart_zambia_invoice.smart_invoice.utilities.initialize_device_sync",
             args: {
                 settings_doc_name: frm.doc.name,
             },
@@ -74,7 +74,3 @@ frappe.ui.form.on("ZRA Smart Invoice Settings", {
 
 
 
-
-frappe.ui.form.on("ZRA Smart Invoice Settings", {
-
-});

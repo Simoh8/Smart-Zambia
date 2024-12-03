@@ -2,6 +2,8 @@ import re
 import frappe
 import aiohttp
 import qrcode
+import asyncio
+
 from base64 import b64decode
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -67,7 +69,14 @@ async def make_post_request(
             return await response.json()
   
 
+
 @frappe.whitelist()
+def initialize_device_sync(settings_doc_name):
+    """
+    Wrapper to call async initialize_device synchronously.
+    """
+    return asyncio.run(initialize_device(settings_doc_name))
+
 async def initialize_device(settings_doc_name):
     """
     Makes an API call to ZRA's initialization endpoint.
@@ -81,43 +90,45 @@ async def initialize_device(settings_doc_name):
         "bhfId": settings.branch_id,
         "dvcSrlNo": settings.vsdc_device_serial_number
     }
-    print("Data being sent to the API:", data)
 
-    # Determine the server URL (ensure the endpoint is correctly appended)
+    # Log debugging information
+    frappe.log_error(f"Data being sent to the API: {data}", "Device Initialization Debug")
+
+    # Determine the server URL
     url = settings.server_url + "/initializer/selectInitInfo"
+    frappe.log_error(f"The URL is here: {url}", "Device Initialization Debug")
 
     # Make the POST request to the API with a timeout
     async with aiohttp.ClientSession(timeout=ClientTimeout(total=30)) as session:
-        try:
-            async with session.post(url, json=data) as response:
-                # Check if the status code is 200 (success)
-                if response.status == 200:
-                    result = await response.json()
-                    print("API Response:", result)
+        async with session.post(url, json=data) as response:
+            if response.status == 200:
+                result = await response.json()
+                frappe.log_error(f"API Response: {result}", "Device Initialization Debug")
 
-                    # Handle successful response
-                    if result.get("resultCd") == "902":  # Assuming 902 is success
-                        settings.update({
-                            "zra_sales_control_unit_id": result["data"]["info"].get("sdcId"),
-                            "mrc_number": result["data"]["info"].get("mrcNo")
-                        })
-                        settings.save()
+                if result.get("resultCd") == "902":  # Device Installed (Success)
+                    settings.update({
+                        "zra_sales_control_unit_id": result["data"].get("sdcId", ""),
+                        "mrc_number": result["data"].get("mrcNo", "")
+                    })
+                    settings.save()
 
-                        # Return success message
-                        return {"message": "Initialization Successful", "data": result}
-                    else:
-                        # If the response code is not the expected success code, raise an error
-                        error_message = result.get("errorMessage", "Unknown error occurred.")
-                        frappe.throw(f"Initialization failed: {error_message}")
+                    # Ensure the success message is properly returned
+                    return {"message": "Initialization Successful", "data": result}
+
+                elif result.get("resultCd") == "901":  # Invalid Device (Failure)
+                    error_message = result.get("resultMsg", "Unknown error occurred.")
+                    frappe.throw(f"Initialization failed: {error_message}")
                 else:
-                    # Handle the error if the HTTP response status is not 200
-                    error_text = await response.text()
-                    frappe.throw(f"Failed to initialize device. HTTP Status: {response.status}. Response: {error_text}")
-        except Exception as e:
-            # If there's an exception during the request, log and raise an error
-            frappe.log_error(f"Error in device initialization: {str(e)}", "Device Initialization Error")
-            frappe.throw(f"An error occurred during device initialization: {str(e)}")
+                    frappe.throw(f"Initialization failed: {result.get('resultMsg', 'Unknown result code.')}")
+            else:
+                error_text = await response.text()
+                frappe.throw(f"Failed to initialize device. HTTP Status: {response.status}. Response: {error_text}")
 
+
+
+
+
+            
 # -------------------------------
 # QR Code Generation
 # -------------------------------
