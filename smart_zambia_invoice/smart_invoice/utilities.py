@@ -75,13 +75,13 @@ def initialize_device_sync(settings_doc_name):
     Wrapper to call the asynchronous initialize_device function synchronously.
     """
     try:
-        return asyncio.run(initialize_device(settings_doc_name))
-    except frappe.ValidationError as e:
-        frappe.log_error(f"Validation Error: {str(e)}", "Device Initialization Error")
-        raise
+        result = asyncio.run(initialize_device(settings_doc_name))
+        if not result.get("valid", False):  # Assuming result has a "valid" flag
+            return {"success": False, "message": result.get("resultMsg", "Invalid device.")}
+        return {"success": True, "message": "Device initialized successfully."}
     except Exception as e:
-        frappe.log_error(f"Unexpected Error: {str(e)}", "Device Initialization Error")
-        frappe.throw("An unexpected error occurred during device initialization. Please check the logs.")
+        frappe.log_error(frappe.get_traceback(), "Device Initialization Error")
+        return {"success": False, "message": f"An unexpected error occurred: {str(e)}"}
 
 
 async def initialize_device(settings_doc_name):
@@ -128,7 +128,7 @@ async def initialize_device(settings_doc_name):
                         return {"message": result.get("resultMsg", "Missing result message.")}
 
                 elif result.get("resultCd") == "901":  # Invalid Device (Failure)
-                    frappe.throw(result.get("resultMsg", "Unknown error occurred."))
+                    frappe.throw(result.get("resultMsg", "The device is invalid."))
 
                 else:
                     frappe.throw(result.get("resultMsg", "Unknown result code."))
