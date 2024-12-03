@@ -69,18 +69,29 @@ async def make_post_request(
             return await response.json()
   
 
-
 @frappe.whitelist()
 def initialize_device_sync(settings_doc_name):
     """
-    Wrapper to call async initialize_device synchronously.
+    Wrapper to call the asynchronous initialize_device function synchronously.
     """
-    return asyncio.run(initialize_device(settings_doc_name))
+    try:
+        return asyncio.run(initialize_device(settings_doc_name))
+    except frappe.ValidationError as e:
+        frappe.log_error(f"Validation Error: {str(e)}", "Device Initialization Error")
+        raise
+    except Exception as e:
+        frappe.log_error(f"Unexpected Error: {str(e)}", "Device Initialization Error")
+        frappe.throw("An unexpected error occurred during device initialization. Please check the logs.")
+
 
 async def initialize_device(settings_doc_name):
     """
     Makes an API call to ZRA's initialization endpoint.
     """
+    # Ensure _realtime_log is initialized
+    if not hasattr(frappe.local, "_realtime_log"):
+        frappe.local._realtime_log = []
+
     # Fetch the ZRA Settings document
     settings = frappe.get_doc("ZRA Smart Invoice Settings", settings_doc_name)
 
@@ -95,37 +106,36 @@ async def initialize_device(settings_doc_name):
     frappe.log_error(f"Data being sent to the API: {data}", "Device Initialization Debug")
 
     # Determine the server URL
-    url = settings.server_url + "/initializer/selectInitInfo"
-    frappe.log_error(f"The URL is here: {url}", "Device Initialization Debug")
+    url = f"{settings.server_url}/initializer/selectInitInfo"
+    frappe.log_error(f"API Endpoint URL: {url}", "Device Initialization Debug")
 
-    # Make the POST request to the API with a timeout
     async with aiohttp.ClientSession(timeout=ClientTimeout(total=30)) as session:
         async with session.post(url, json=data) as response:
             if response.status == 200:
                 result = await response.json()
                 frappe.log_error(f"API Response: {result}", "Device Initialization Debug")
 
+                # Handle response codes
                 if result.get("resultCd") == "902":  # Device Installed (Success)
-                    settings.update({
-                        "zra_sales_control_unit_id": result["data"].get("sdcId", ""),
-                        "mrc_number": result["data"].get("mrcNo", "")
-                    })
-                    settings.save()
-
-                    # Ensure the success message is properly returned
-                    return {"message": "Initialization Successful", "data": result}
+                    if result.get("data"):
+                        settings.update({
+                            "zra_sales_control_unit_id": result["data"].get("sdcId", ""),
+                            "mrc_number": result["data"].get("mrcNo", "")
+                        })
+                        settings.save()
+                        return {"message": "Initialization Successful", "data": result}
+                    else:
+                        return {"message": result.get("resultMsg", "Missing result message.")}
 
                 elif result.get("resultCd") == "901":  # Invalid Device (Failure)
-                    error_message = result.get("resultMsg", "Unknown error occurred.")
-                    frappe.throw(f"Initialization failed: {error_message}")
+                    frappe.throw(result.get("resultMsg", "Unknown error occurred."))
+
                 else:
-                    frappe.throw(f"Initialization failed: {result.get('resultMsg', 'Unknown result code.')}")
+                    frappe.throw(result.get("resultMsg", "Unknown result code."))
+
             else:
                 error_text = await response.text()
                 frappe.throw(f"Failed to initialize device. HTTP Status: {response.status}. Response: {error_text}")
-
-
-
 
 
             
