@@ -56,7 +56,7 @@
    "label": "Server URL According to Environment"
   },
   {
-   "default": "https://sandboxportal.zra.org.zm/basic/login/indexLogin",
+   "default": "http://localhost:8080/zrasandboxvsdc",
    "fieldname": "server_url",
    "fieldtype": "Data",
    "label": "Server URL",
@@ -147,7 +147,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-03 10:34:11.470721",
+ "modified": "2024-12-03 10:43:21.221006",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",
