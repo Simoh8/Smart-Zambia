@@ -46,33 +46,29 @@ frappe.ui.form.on("ZRA Smart Invoice Settings", {
                 settings_doc_name: frm.doc.name,
             },
             callback: function (response) {
-                if (response.message) {
-                    // Success response
+                if (response.message && response.message.success) {
+                    // Success case
                     frappe.msgprint(__('Device initialization has been successful.'));
+                } else {
+                    // Error case
+                    frappe.msgprint({
+                        title: __('Error'),
+                        message: response.message.message || __('Device initialization failed.'),
+                        indicator: 'red'
+                    });
                 }
             },
             error: function (err) {
-                // Error response handling
-                console.error('Device initialization failed:', err); // Log the error for debugging
-
-                if (err.responseJSON && err.responseJSON._server_messages) {
-                    // If the server returned a specific error message
-                    const errorMessage = JSON.parse(err.responseJSON._server_messages).join('\n');
-                    frappe.msgprint({
-                        title: __('Error'),
-                        message: __('Failed to initialize device. ') + errorMessage,
-                        indicator: 'red'
-                    });
-                } else {
-                    // If the error does not contain specific details, show a generic error
-                    frappe.msgprint({
-                        title: __('Error'),
-                        message: __('Failed to initialize device. Check server logs for more details.'),
-                        indicator: 'red'
-                    });
-                }
+                // Network or server error
+                console.error('Device initialization failed:', err);
+                frappe.msgprint({
+                    title: __('Error'),
+                    message: __('An unexpected error occurred during device initialization. Check the server logs for details.'),
+                    indicator: 'red'
+                });
             }
         });
+        
     }
 });
 

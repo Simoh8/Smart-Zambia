@@ -75,10 +75,19 @@ def initialize_device_sync(settings_doc_name):
     Wrapper to call the asynchronous initialize_device function synchronously.
     """
     try:
+        # Run the asynchronous device initialization function synchronously
         result = asyncio.run(initialize_device(settings_doc_name))
-        if not result.get("valid", False):  # Assuming result has a "valid" flag
-            return {"success": False, "message": result.get("resultMsg", "Invalid device.")}
-        return {"success": True, "message": "Device initialized successfully."}
+        
+        # Assuming the result has a "resultCd" or something similar for success/failure indication
+        if result.get("resultCd") == "902":  # Check if the device initialization was successful (902 indicates success)
+            return {"success": False, "message": result.get("resultMsg", "This device is installed.")}
+
+        return {"success": True, "message": "Device initialization Failed."}
+
+    except frappe.exceptions.ValidationError as ve:
+        frappe.log_error(frappe.get_traceback(), "Device Initialization Error - Validation Error")
+        return {"success": False, "message": f"Validation error occurred: {str(ve)}"}
+
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Device Initialization Error")
         return {"success": False, "message": f"An unexpected error occurred: {str(e)}"}
@@ -111,6 +120,7 @@ async def initialize_device(settings_doc_name):
 
     async with aiohttp.ClientSession(timeout=ClientTimeout(total=30)) as session:
         async with session.post(url, json=data) as response:
+            print("The response is ", response)
             if response.status == 200:
                 result = await response.json()
                 frappe.log_error(f"API Response: {result}", "Device Initialization Debug")
@@ -136,7 +146,6 @@ async def initialize_device(settings_doc_name):
             else:
                 error_text = await response.text()
                 frappe.throw(f"Failed to initialize device. HTTP Status: {response.status}. Response: {error_text}")
-
 
             
 # -------------------------------

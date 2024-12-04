@@ -33,7 +33,7 @@
    "label": "Configuration Settings "
   },
   {
-   "default": "0",
+   "default": "1",
    "description": "On Testing Phase?, the Sandbox/Test Environment is a secure platform provided by ZRA for user to test and validate API integrations, simulating production functionalities without affecting live data.",
    "fieldname": "sandboxtest_environment_",
    "fieldtype": "Check",
@@ -147,7 +147,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-03 10:43:21.221006",
+ "modified": "2024-12-03 14:00:32.169093",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",
