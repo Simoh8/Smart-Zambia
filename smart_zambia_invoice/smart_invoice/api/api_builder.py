@@ -109,7 +109,6 @@ def headers(self) -> dict |None:
 
 
 @headers.setter
-
 def headers(self, new_headers:dict)-> None:
 
         self._headers =new_headers
@@ -121,6 +120,26 @@ def success_callback(self) -> Callable |None:
 
 @success_callback.setter
 def success_callback(self,callback: Callable) -> None:
-        self._succesfull_calback_handler -callback
+        self._succesfull_callback_handler -callback
 
 
+@property
+def error_callback(self) -> Callable |None:
+
+     return self._error_callback_handler
+
+@error_callback.setter
+def error_callback(self, callback: Callable[[dict[str, str | int |None] | str, str, str, str ], None],) -> None:
+    self._error_calback_handler =callback
+
+def perform_remote_calls(self, doctype: Document |str |None =None, document_name: str |None =None) -> None:
+
+
+    if(self.url is None or self._headers is None or self._success_calback_handler is None or self._error_callback_handler is None
+    ):
+     frappe.throw(
+        frappe.MandatoryError,
+
+        title= "Critical Setup Error",
+        is_minimizable=True
+     )
