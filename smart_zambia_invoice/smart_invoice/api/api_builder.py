@@ -8,4 +8,119 @@ import _asyncio
 import aiohttp
 
 import frappe
- 
+from frappe.model.document import Document
+
+
+class BaseEndpointConstructor:
+
+
+    def __init__(self) -> None:
+        self.integration_requets:str | Document | None= None
+        self.error: str |Exception | None=None
+        self._observers: list[ErrorObserver] =[]
+        self.doctype:str | Document | None=None
+        self.document_name:str | None= None
+
+
+
+    def attach_observer(self, observer:ErrorObserver) -> None:
+
+        self._observers.append(observer)
+
+
+    def notifty_observer(self) -> None:
+
+        for observer in self._observers:
+            observer.update(self)
+
+
+
+class ErrorsObserver:
+
+     def update(self, notifier: BaseEndpointConstructor) -> None:
+         
+
+         if notifier.error:
+             update_intergration_request(
+                notifier.integration_requets.name,
+                status= "Failed",
+                error=notifier.error
+                output= None,
+             )
+             zra_vsdc_logger.exception(notifier.error, exc_info=True)
+
+             frappe.log_error(
+                title="Critical Error",
+                message= notifier.error,
+                reference_doctype=notifier.doctype,
+                reference_name=notifier.document_name
+             )
+             frappe.throw(
+                notifier.error,
+                title="Critical Error"
+             )
+
+         
+
+class EndpointConstructor(BaseEndpointConstructor):
+
+
+    def __init__(self) -> None:
+        super().__init__()
+
+
+
+        self._url:str |None =None
+        self._payoad:dict |None =None
+        self._headers: dict |None=None
+        self._success_callback_handler: Callable | None= None
+        self._error_callback_handler: Callable | None= None
+
+
+        self.attach_observer(ErrorsObserver())
+
+@ property
+def url(self) -> str | None:
+
+
+        return self._url
+
+@url.setter
+def url(self, new_url:str )-> None:
+
+        self._url =new_url
+
+
+@property
+def payload(self)-> dict |None:
+
+        return self._payload
+
+
+@payload.setter
+def payload(self, new_payload:dict )-> None:
+
+        self._payload=new_payload
+
+@property
+def headers(self) -> dict |None:
+
+        return self._headers
+
+
+@headers.setter
+
+def headers(self, new_headers:dict)-> None:
+
+        self._headers =new_headers
+
+@property
+def success_callback(self) -> Callable |None:
+        return self._success_callback_handler
+
+
+@success_callback.setter
+def success_callback(self,callback: Callable) -> None:
+        self._succesfull_calback_handler -callback
+
+

@@ -90,8 +90,7 @@ before_uninstall = "smart_zambia_invoice.uninstall.cleanup_custom_fields"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-doctype_js = { "Branch" : "smart_zambia_invoice/smart_invoice/overrides/frontend/branch.js"
-}
+doctype_js = { "Branch" : "smart_zambia_invoice/smart_invoice/overrides/frontend/branch.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
