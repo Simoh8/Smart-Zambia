@@ -1,10 +1,11 @@
 from __future__ import annotations
 from typing import Literal,Callable
 from urllib import parse
+import aiohttp.client_exceptions
 from  frappe.integrations.utils import create_request_log
 from frappe.model.document import Document
 
-import _asyncio
+import asyncio
 import aiohttp
 
 import frappe
@@ -18,13 +19,13 @@ class BaseEndpointConstructor:
     def __init__(self) -> None:
         self.integration_requets:str | Document | None= None
         self.error: str |Exception | None=None
-        self._observers: list[ErrorObserver] =[]
+        self._observers: list[ErrorsObserver] =[]
         self.doctype:str | Document | None=None
         self.document_name:str | None= None
 
 
 
-    def attach_observer(self, observer:ErrorObserver) -> None:
+    def attach_observer(self, observer:ErrorsObserver) -> None:
 
         self._observers.append(observer)
 
@@ -42,7 +43,7 @@ class ErrorsObserver:
          
 
          if notifier.error:
-             update_intergration_request(
+             update_integration_request(
                 notifier.integration_requets.name,
                 status= "Failed",
                 error=notifier.error
@@ -160,7 +161,7 @@ def perform_remote_calls(self, doctype: Document |str |None =None, document_name
     )
 
     try:
-        response =_asyncio.run( make_post_request(self._url, self._payload, self._headers))
+        response =asyncio.run( make_post_request(self._url, self._payload, self._headers))
 
         if response["resultCd"]== "000":
             
@@ -168,13 +169,38 @@ def perform_remote_calls(self, doctype: Document |str |None =None, document_name
 
             update_last_request_dates(response["resultDt"], route_path)
 
-            update_intergration_request(self.intergration_request_name.name, status= "Completed" ,output=response["resultMsg"], error=None,)
+            update_integration_request(self.intergration_request_name.name, status= "Completed" ,output=response["resultMsg"], error=None,)
 
         else:
-            update_intergration_request(
+            update_integration_request(
                 self.intergration_request.name,
-                
+                status="Failed",
+                output=response["resultMsg"],
+                error=None,
             )
 
+            self._enotifyrror_callback_handler(
+                response,
+                url=route_path,
+                doctype=doctype,
+                document_name=document_name
+            )
+    except (
+
+            aiohttp.client_exceptions.ClientConnectionError,
+            aiohttp.client_exceptions.ClientOSError,
+            asyncio.exceptions.TimeoutError,   
+    ) as error:
+            self.error=error,
+            self.notify_observer()
+
+def update_integration_request(integration_request: str,status:Literal["Completed", "Failed"],output:str |None =None,error:str |None=None,) -> None:
+
+    doc = frappe.get_doc("Integration Request", integration_request, for_update=True)
+    doc.status = status
+    doc.error = error
+    doc.output = output
+
+    doc.save(ignore_permissions=True)
 
 
