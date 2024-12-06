@@ -1,1 +1,38 @@
-[]
+[
+ {
+  "branch_id": "002",
+  "branch_name": "Sub Branch",
+  "company_name": "Simon Muturi",
+  "company_tpin": "1017138037",
+  "country": "Zambia",
+  "docstatus": 0,
+  "doctype": "ZRA Smart Invoice Settings",
+  "environment": "Sandbox",
+  "modified": "2024-12-04 08:30:45.996284",
+  "mrc_number": null,
+  "name": "002",
+  "production_environment_": 0,
+  "sandboxtest_environment_": 1,
+  "server_url": "http://localhost:8080/zrasandboxvsdc",
+  "vsdc_device_serial_number": "1234567890plkjhgt5",
+  "zra_sales_control_unit_id": null
+ },
+ {
+  "branch_id": "001",
+  "branch_name": "Main Branch",
+  "company_name": "Simon Muturi",
+  "company_tpin": "1017138037",
+  "country": "Zambia",
+  "docstatus": 0,
+  "doctype": "ZRA Smart Invoice Settings",
+  "environment": "Production",
+  "modified": "2024-12-04 14:17:07.331344",
+  "mrc_number": null,
+  "name": "001",
+  "production_environment_": 1,
+  "sandboxtest_environment_": 0,
+  "server_url": "http://kindatech.group:8080/zrasandboxvsdcs",
+  "vsdc_device_serial_number": "1017138037_VSDC",
+  "zra_sales_control_unit_id": null
+ }
+]
