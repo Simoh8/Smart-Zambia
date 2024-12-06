@@ -1,7 +1,7 @@
 import frappe
 
 
-
+from ..error_handlers import handle_errors
 
 def notices_search_on_success(response: dict) -> None:
     notices_list = response["data"]["noticeList"]

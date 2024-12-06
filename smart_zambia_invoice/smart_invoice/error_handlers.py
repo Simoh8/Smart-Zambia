@@ -1,7 +1,7 @@
 import frappe
 from frappe.model.document import Document
 from.zra_logger import zra_vsdc_logger
-from .utilities import upate_last_request_date
+from .utilities import update_last_request_date
 
 
 def handle_errors(
