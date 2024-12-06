@@ -48,6 +48,3 @@ def on_error(
     )
 
 
-"""
-These functions are required as serialising lambda expressions is a bit involving.
-"""

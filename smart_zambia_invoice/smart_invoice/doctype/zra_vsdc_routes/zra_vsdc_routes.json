@@ -1,0 +1,48 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-06 14:24:24.843138",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "zra_routes_mapping_section",
+  "zra_vsdc_routes"
+ ],
+ "fields": [
+  {
+   "fieldname": "zra_routes_mapping_section",
+   "fieldtype": "Section Break",
+   "label": "ZRA Routes Mapping"
+  },
+  {
+   "fieldname": "zra_vsdc_routes",
+   "fieldtype": "Table",
+   "label": "ZRA VSDC Routes",
+   "options": "ZRA VSDC Route Table Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-06 14:32:15.413330",
+ "modified_by": "Administrator",
+ "module": "Smart Invoice",
+ "name": "ZRA VSDC Routes",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

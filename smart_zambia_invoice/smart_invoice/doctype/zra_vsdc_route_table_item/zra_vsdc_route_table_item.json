@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2024-12-06 14:26:48.079117",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "path_function",
+  "column_break_cjny",
+  "path",
+  "column_break_ttnv",
+  "path_description",
+  "column_break_vodv",
+  "last_req_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "path_function",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Path Function"
+  },
+  {
+   "fieldname": "column_break_cjny",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "path",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Path"
+  },
+  {
+   "fieldname": "column_break_ttnv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "path_description",
+   "fieldtype": "Data",
+   "label": "Path Description"
+  },
+  {
+   "fieldname": "column_break_vodv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_req_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Last Req Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-12-06 14:30:37.206528",
+ "modified_by": "Administrator",
+ "module": "Smart Invoice",
+ "name": "ZRA VSDC Route Table Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
