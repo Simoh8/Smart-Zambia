@@ -12,6 +12,8 @@ from aiohttp import ClientTimeout
 from frappe.model.document import Document
 from frappe.utils import cint
 
+
+
 from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
 
 
@@ -92,6 +94,23 @@ def get_document_series(document: Document) -> int | None:
 
 
 
+def update_last_request_date(
+    response_datetime: str,
+    route: str,
+    routes_table: str ,
+) -> None:
+    doc = frappe.get_doc(
+        routes_table,
+        {"url_path": route},
+        ["*"],
+    )
+
+    doc.last_request_date = make_datetime_from_string(
+        response_datetime, "%Y%m%d%H%M%S"
+    )
+
+    doc.save()
+    frappe.db.commit()
 
 
     
@@ -295,7 +314,18 @@ def get_invoice_number(invoice_name):
 '''For cancelled and amended invoices'''
 
 
+def build_request_headers(company_name: str, branch_id: str = "00") -> dict[str, str] | None:
+    settings = get_curr_env_etims_settings(company_name, branch_id=branch_id)
 
+    if settings:
+        headers = {
+            "tin": settings.get("tin"),
+            "bhfId": settings.get("bhfid"),
+            "cmcKey": settings.get("communication_key"),
+            "Content-Type": "application/json"
+        }
+
+        return headers
 
 
 def clean_invc_no(invoice_name):
