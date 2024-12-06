@@ -4,7 +4,7 @@ import aiohttp
 import qrcode
 import asyncio
 
-from base64 import b64decode
+from base64 import b64encode
 from datetime import datetime, timedelta
 from io import BytesIO
 from typing import Literal
@@ -67,7 +67,62 @@ async def make_post_request(
     async with aiohttp.ClientSession(timeout=ClientTimeout(1800)) as session:
         async with session.post(url, json=data, headers=headers) as response:
             return await response.json()
+        
+
+
   
+def fetch_server_url( company_name:str, branch_id: str ="00") -> dict[str,str] | None:
+    settings = get_zra_settings(company_name,branch_id=branch_id)
+
+    if settings:
+        headers ={
+            "tpin":settings.get("tpin"),
+            "bhfid":settings.get("bhfid"),
+            "cmckey":settings.get("communication_key"),
+            "Content-Type": "applications/json"
+        }
+
+def get_document_series(document: Document) -> int | None:
+    split_invoive_name= document.name.split("-")
+
+    if len(split_invoive_name) ==4:
+        return int(split_invoive_name[-1])
+    if len(split_invoive_name) ==5:
+        return int(split_invoive_name[-2])
+
+
+
+
+
+    
+def get_current_environment_state(
+    environment_identifier_doctype: str = "ZRA Smart Invoice Settings",
+) -> str:
+    """Fetches the Environment Identifier from the relevant doctype.
+
+    Args:
+        environment_identifier_doctype (str, optional): The doctype containing environment information.
+        Defaults to "Environment Specification".
+
+    Returns:
+        str: The environment identifier. Either "Sandbox" or "Production".
+    """
+    environment = frappe.db.get_single_value(
+        environment_identifier_doctype, "environment"
+    )
+
+    return environment
+   
+def add_file_info(data: str) -> str:
+    """Add info about the file type and encoding.
+
+    This is required so the browser can make sense of the data."""
+    return f"data:image/png;base64, {data}"
+
+def bytes_to_base64_string(data: bytes) -> str:
+    """Convert bytes to a base64 encoded string."""
+    return b64encode(data).decode("utf-8")
+
 
 @frappe.whitelist()
 def initialize_device_sync(settings_doc_name):
@@ -178,3 +233,98 @@ def get_zra_settings():
 
 
 
+
+def calculate_tax(doc: "Document") -> None:
+    """Calculate tax for each item in the document based on item-level or document-level tax template."""
+    for item in doc.items:
+        tax: float = 0
+        tax_rate: float | None = None
+        
+        # Check if the item has its own Item Tax Template
+        if item.item_tax_template:
+            tax_rate = get_item_tax_rate(item.item_tax_template)
+        else:
+            continue
+        
+        # Calculate tax if we have a valid tax rate
+        if tax_rate is not None:
+            tax = item.net_amount * tax_rate / 100
+        
+        # Set the custom tax fields in the item
+        item.custom_tax_amount = tax
+        item.custom_tax_rate = tax_rate if tax_rate else 0
+
+def get_item_tax_rate(item_tax_template: str) -> float | None:
+    """Fetch the tax rate from the Item Tax Template."""
+    tax_template = frappe.get_doc("Item Tax Template", item_tax_template)
+    if tax_template.taxes:
+        return tax_template.taxes[0].tax_rate
+    return None
+
+'''Uncomment this function if you need document-level tax rate calculation in the future
+A classic example usecase is Apex tevin typecase where the tax rate is fetched from the document's Sales Taxes and Charges Template
+'''
+# def get_doc_tax_rate(doc_tax_template: str) -> float | None:
+#     """Fetch the tax rate from the document's Sales Taxes and Charges Template."""
+#     tax_template = frappe.get_doc("Sales Taxes and Charges Template", doc_tax_template)
+#     if tax_template.taxes:
+#         return tax_template.taxes[0].rate
+#     return None
+
+
+
+def before_save_(doc: "Document", method: str | None = None) -> None:
+    calculate_tax(doc)
+
+def get_invoice_number(invoice_name):
+    """
+    Extracts the numeric portion from the invoice naming series.
+    
+    Args:
+        invoice_name (str): The name of the Sales Invoice document (e.g., 'eTIMS-INV-00-00001').
+
+    Returns:
+        int: The extracted invoice number.
+    """
+    parts = invoice_name.split('-')
+    if len(parts) >= 3:
+        return int(parts[-1])
+    else:
+        raise ValueError("Invoice name format is incorrect")
+
+'''For cancelled and amended invoices'''
+
+
+
+
+
+def clean_invc_no(invoice_name):
+    if "-" in invoice_name:
+        invoice_name = "-".join(invoice_name.split("-")[:-1])
+    return invoice_name
+
+def get_taxation_types(doc):
+    taxation_totals = {}
+
+    # Loop through each item in the Sales Invoice
+    for item in doc.items:
+        taxation_type = item.custom_taxation_type
+        taxable_amount = item.net_amount  
+        tax_amount = item.custom_tax_amount  
+
+        # Fetch the tax rate for the current taxation type from the specified doctype
+        tax_rate = frappe.db.get_value("Navari KRA eTims Taxation Type", taxation_type, "userdfncd1")
+        # If the taxation type already exists in the dictionary, update the totals
+        if taxation_type in taxation_totals:
+            taxation_totals[taxation_type]["taxable_amount"] += taxable_amount
+            taxation_totals[taxation_type]["tax_amount"] += tax_amount
+
+        else:
+            taxation_totals[taxation_type] = {
+                "tax_rate": tax_rate,
+                "tax_amount": tax_amount,
+                "taxable_amount": taxable_amount
+            }
+
+
+    return taxation_totals

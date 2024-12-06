@@ -11,6 +11,7 @@ import aiohttp
 import frappe
 from frappe.model.document import Document
 from ..utilities import make_post_request
+from ..zra_logger import zra_vsdc_logger
 
 
 class BaseEndpointConstructor:
@@ -46,7 +47,7 @@ class ErrorsObserver:
              update_integration_request(
                 notifier.integration_requets.name,
                 status= "Failed",
-                error=notifier.error
+                error=notifier.error,
                 output= None,
              )
              zra_vsdc_logger.exception(notifier.error, exc_info=True)
@@ -153,7 +154,7 @@ def perform_remote_calls(self, doctype: Document |str |None =None, document_name
     self.interation_request = create_request_log(
      data=self._payload,
      is_remote_request= True,
-     service_name="vscd"
+     service_name="vscd",
      request_headers=self._headers,
      url= self._url,
      reference_docname=document_name,
@@ -167,7 +168,7 @@ def perform_remote_calls(self, doctype: Document |str |None =None, document_name
             
             self._success_callback_handler(response)
 
-            update_last_request_dates(response["resultDt"], route_path)
+            # update_last_request_dates(response["resultDt"], route_path)
 
             update_integration_request(self.intergration_request_name.name, status= "Completed" ,output=response["resultMsg"], error=None,)
 
