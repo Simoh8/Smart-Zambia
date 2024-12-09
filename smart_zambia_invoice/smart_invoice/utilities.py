@@ -47,6 +47,19 @@ def get_docment_series_number(document: Document) -> int | None:
         return int(split_invoice_name[-2])
     return None
 
+def build_request_headers(company_name: str, branch_id: str = "00") -> dict[str, str] | None:
+    settings = get_current_env_settings(company_name, branch_id=branch_id)
+
+    if settings:
+        headers = {
+            "tpin": settings.get("tpin"),
+            "bhfId": settings.get("bhfid"),
+            "cmcKey": settings.get("communication_key"),
+            "Content-Type": "application/json"
+        }
+
+        return headers
+
 
 def get_route_path(
     search_field:str,

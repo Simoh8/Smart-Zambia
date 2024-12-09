@@ -4,7 +4,7 @@ import json
 import datetime
 from frappe.utils.dateutils import add_to_date
 
-from .remote_response_handler import notices_search_on_success,on_error
+from .remote_response_handler import notices_search_on_success,on_error,fetch_branch_request_on_success
 from .. utilities import (build_request_headers,
                         fetch_server_url,
                         get_route_path,
@@ -26,8 +26,8 @@ def search_branch_request(request_data: str) -> None:
 
     company_name = data["company_name"]
 
-    headers = build_headers(company_name)
-    server_url = get_server_url(company_name)
+    headers = build_request_headers(company_name)
+    server_url = fetch_server_url(company_name)
     route_path, last_request_date = get_route_path("BhfSearchReq")
 
     if headers and server_url and route_path:
@@ -37,13 +37,13 @@ def search_branch_request(request_data: str) -> None:
 
         payload = {"lastReqDt": "20240101000000"}
 
-        endpoints_builder.headers = headers
-        endpoints_builder.url = url
-        endpoints_builder.payload = payload
-        endpoints_builder.success_callback = search_branch_request_on_success
-        endpoints_builder.error_callback = on_error
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = fetch_branch_request_on_success
+        endpoint_builder.error_callback = on_error
 
-        endpoints_builder.make_remote_call(
+        endpoint_builder.make_remote_call(
             doctype="Branch",
         )
 
