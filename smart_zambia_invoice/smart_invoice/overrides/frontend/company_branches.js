@@ -7,7 +7,7 @@ frappe.listview_settings[doctypeName] = {
     listview.page.add_inner_button(__("Get Branches"), function (listview) {
       frappe.call({
         method:
-          "kenya_compliance.kenya_compliance.apis.apis.search_branch_request",
+          "smart_zambia_invoice.smart_invoice.api.zra_api.search_branch_request",
         args: {
           request_data: {
             company_name: companyName,

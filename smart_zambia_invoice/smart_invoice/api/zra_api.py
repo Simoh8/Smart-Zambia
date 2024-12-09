@@ -3,17 +3,10 @@ import frappe
 import json
 import datetime
 from frappe.utils.dateutils import add_to_date
+from .api_builder import EndpointConstructor
 
 from .remote_response_handler import notices_search_on_success,on_error,fetch_branch_request_on_success
-from .. utilities import (build_request_headers,
-                        fetch_server_url,
-                        get_route_path,
-                        make_get_request,
-                        make_post_request,
-                        )
-
-
-
+from .. utilities import (build_request_headers,fetch_server_url,get_route_path,make_get_request,make_post_request,)
 
 
 
@@ -71,6 +64,6 @@ def perform_notice_search(request_data: str) -> None:
         endpoint_builder.error_callback = on_error
 
         endpoint_builder.make_remote_call(
-            doctype=SETTINGS_DOCTYPE_NAME, document_name=data.get("name", None)
+            doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None)
         )
 
