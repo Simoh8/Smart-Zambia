@@ -7,7 +7,7 @@ import asyncio
 from base64 import b64encode
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Literal
+from typing import Literal, Optional
 from aiohttp import ClientTimeout
 from frappe.model.document import Document
 from frappe.utils import cint
@@ -333,10 +333,47 @@ def get_invoice_number(invoice_name):
         raise ValueError("Invoice name format is incorrect")
 
 '''For cancelled and amended invoices'''
+def get_current_env_settings(
+    company_name: str, branch_id: str = "00"
+) -> Optional[Document]:
+    """
+    Retrieves the ZRA Smart Invoice Settings for a specific company and branch.
+
+    Args:
+        company_name (str): The name of the company.
+        branch_id (str): The branch ID. Defaults to "00".
+
+    Returns:
+        Optional[Document]: The ZRA Smart Invoice Settings document if found, otherwise None.
+    """
+    try:
+        # Define the DocType
+        doc_type = "ZRA Smart Invoice Settings"
+
+        # Search for a matching document
+        filters = {"company_name": company_name, "branch_id": branch_id}
+        matching_docs = frappe.get_all(doc_type, filters=filters, limit_page_length=1)
+
+        if matching_docs:
+            # Retrieve and return the full document
+            return frappe.get_doc(doc_type, matching_docs[0]["name"])
+
+    except frappe.DoesNotExistError:
+        frappe.log_error(
+            f"No settings found for Company: {company_name}, Branch ID: {branch_id}",
+            title="ZRA Smart Invoice Settings Not Found",
+        )
+    except Exception as e:
+        frappe.log_error(
+            f"Error retrieving settings for Company: {company_name}, Branch ID: {branch_id}: {str(e)}",
+            title="ZRA Smart Invoice Settings Retrieval Error",
+        )
+
+    return None
 
 
 def build_request_headers(company_name: str, branch_id: str = "00") -> dict[str, str] | None:
-    settings = get_curr_env_etims_settings(company_name, branch_id=branch_id)
+    settings = get_current_env_settings(company_name, branch_id=branch_id)
 
     if settings:
         headers = {
@@ -376,6 +413,4 @@ def get_taxation_types(doc):
                 "tax_amount": tax_amount,
                 "taxable_amount": taxable_amount
             }
-
-
     return taxation_totals
