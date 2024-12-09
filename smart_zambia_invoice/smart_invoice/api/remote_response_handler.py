@@ -7,7 +7,7 @@ def notices_search_on_success(response: dict) -> None:
     notices_list = response["data"]["noticeList"]
 
     for notice in notices_list:
-        doc = frappe.new_doc(NOTICES_DOCTYPE_NAME)
+        doc = frappe.new_doc("ZRA Notice ")
 
         doc.notice_number = notice["noticeNo"]
         doc.title = notice["title"]

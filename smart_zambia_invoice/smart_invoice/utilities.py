@@ -48,6 +48,27 @@ def get_docment_series_number(document: Document) -> int | None:
     return None
 
 
+def get_route_path(
+    search_field:str,
+    routes_table_doctype: str
+      ="ZRA VSDC Routes", 
+ ) ->tuple[str,str] | None:
+    
+    query =f"""
+    SELECT
+        path,
+        last_request_date
+    FROM `tab{routes_table_doctype}`
+    WHERE url_path_function LIKE %s
+    AND parent LIKE %s
+    LIMIT 1
+    """
+    results = frappe.db.sql(query, as_dict=True)
+
+    if results:
+        return results[0]["path"], results[0]["last_request_date"]
+
+    return None
 # -------------------------------
 # Async HTTP Requests
 # -------------------------------
