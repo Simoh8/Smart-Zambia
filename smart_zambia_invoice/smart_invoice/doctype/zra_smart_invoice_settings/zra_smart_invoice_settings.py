@@ -194,7 +194,7 @@ class ZRASmartInvoiceSettings(Document):
                         output=None,
                         error=self.error_title,
                     )
-                    frappe.throw("Unexpected response from the server. Check logs.")
+                    frappe.throw("Server Error. Check logs.")
 
                 # Process the response
                 if response["resultCd"] == "000":
