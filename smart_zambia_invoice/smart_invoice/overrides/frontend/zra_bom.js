@@ -20,7 +20,7 @@ frappe.ui.form.on(doctype, {
         function () {
           frappe.call({
             method:
-              "kenya_compliance.kenya_compliance.apis.apis.submit_item_composition",
+              "smart_zambia_invoice.smart_invoice.api.zra_api.submit_item_composition",
             args: {
               request_data: {
                 name: frm.doc.name,

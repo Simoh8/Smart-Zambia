@@ -62,26 +62,34 @@ def build_request_headers(company_name: str, branch_id: str = "00") -> dict[str,
 
 
 def get_route_path(
-    search_field:str,
-    routes_table_doctype: str
-      ="ZRA VSDC Routes", 
- ) ->tuple[str,str] | None:
-    
-    query =f"""
-    SELECT
-        path,
-        last_request_date
-    FROM `tab{routes_table_doctype}`
-    WHERE url_path_function LIKE %s
-    AND parent LIKE %s
-    LIMIT 1
+    search_field: str,
+    child_doctype: str = "ZRA VSDC Route Table Item"
+) -> tuple[str, str] | None:
     """
-    results = frappe.db.sql(query, as_dict=True)
+    Fetch the route path and last request date from the child table based on the search field.
+
+    Args:
+        search_field (str): The path function to search for.
+        child_doctype (str): The child DocType containing the route data.
+
+    Returns:
+        tuple[str, str] | None: The route path and last request date, or None if not found.
+    """
+    query = f"""
+        SELECT
+            path AS route_path, 
+            last_req_date AS last_request_date
+        FROM `tab{child_doctype}`
+        WHERE path_function LIKE %s
+        LIMIT 1
+    """
+
+    results = frappe.db.sql(query, (search_field,), as_dict=True)
 
     if results:
-        return results[0]["path"], results[0]["last_request_date"]
-
+        return results[0]["route_path"], results[0]["last_request_date"]
     return None
+
 # -------------------------------
 # Async HTTP Requests
 # -------------------------------
@@ -105,18 +113,27 @@ async def make_post_request(
             return await response.json()
         
 
-
-  
-def fetch_server_url( company_name:str, branch_id: str ="00") -> dict[str,str] | None:
-    settings = get_zra_settings(company_name,branch_id=branch_id)
+def get_server_url(company_name: str, branch_id: str = "00") -> str | None:
+    settings = get_current_env_settings(company_name, branch_id)
 
     if settings:
-        headers ={
-            "tpin":settings.get("tpin"),
-            "bhfid":settings.get("bhfid"),
-            "cmckey":settings.get("communication_key"),
-            "Content-Type": "applications/json"
-        }
+        server_url = settings.get("server_url")
+
+        return server_url
+
+    return
+  
+# # def fetch_server_url( company_name:str, branch_id: str ="00") -> dict[str,str] | None:
+# #     settings = get_zra_settings(company_name,branch_id=branch_id)
+    
+# #     if settings:
+# #         server_url = settings.get("server_url")
+
+# #         return server_url
+
+# #     return
+
+
 
 def get_document_series(document: Document) -> int | None:
     split_invoive_name= document.name.split("-")
@@ -126,7 +143,9 @@ def get_document_series(document: Document) -> int | None:
     if len(split_invoive_name) ==5:
         return int(split_invoive_name[-2])
 
-
+def split_user_mail(email_string: str) -> str:
+    """Retrieve portion before @ from an email string"""
+    return email_string.split("@")[0]
 
 def update_last_request_date(
     response_datetime: str,
@@ -177,8 +196,8 @@ def bytes_to_base64_string(data: bytes) -> str:
     return b64encode(data).decode("utf-8")
 
 
-@frappe.whitelist()
-def initialize_device_sync(settings_doc_name):
+# @frappe.whitelist()
+# def initialize_device_sync(settings_doc_name):
     """
     Wrapper to call the asynchronous initialize_device function synchronously.
     """
@@ -273,16 +292,16 @@ def generate_qr_code(data: str) -> BytesIO:
 # ZRA Settings
 # -------------------------------
 
-def get_zra_settings():
-    """Fetches the ZRA Smart Invoice settings from the settings DocType."""
-    try:
-        zra_settings = frappe.get_single("ZRA Smart Invoice Settings")
-        return zra_settings
-    except frappe.DoesNotExistError:
-        frappe.throw("ZRA Smart Invoice Settings not found. Please configure it.")
-    except Exception as e:
-        frappe.log_error(f"Error fetching ZRA settings: {str(e)}", "ZRA Settings Error")
-        raise
+# def get_zra_settings():
+#     """Fetches the ZRA Smart Invoice settings from the settings DocType."""
+#     try:
+#         zra_settings = frappe.get_single("ZRA Smart Invoice Settings")
+#         return zra_settings
+#     except frappe.DoesNotExistError:
+#         frappe.throw("ZRA Smart Invoice Settings not found. Please configure it.")
+#     except Exception as e:
+#         frappe.log_error(f"Error fetching ZRA settings: {str(e)}", "ZRA Settings Error")
+#         raise
 
 
 
@@ -346,6 +365,11 @@ def get_invoice_number(invoice_name):
         raise ValueError("Invoice name format is incorrect")
 
 '''For cancelled and amended invoices'''
+
+
+
+
+
 def get_current_env_settings(
     company_name: str, branch_id: str = "00"
 ) -> Optional[Document]:

@@ -23,6 +23,12 @@ def notices_search_on_success(response: dict) -> None:
             frappe.log_error(title="Duplicate entries")
 
 
+def item_composition_submission_succes(response: dict, document_name: str) -> None:
+    frappe.db.set_value(
+        "BOM", document_name, {"custom_item_composition_submitted_successfully": 1}
+    )
+
+
 
 
 def on_error(
