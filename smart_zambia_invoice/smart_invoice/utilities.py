@@ -7,7 +7,7 @@ import asyncio
 from base64 import b64encode
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 from aiohttp import ClientTimeout
 from frappe.model.document import Document
 from frappe.utils import cint
@@ -94,13 +94,24 @@ def get_route_path(
 # Async HTTP Requests
 # -------------------------------
 
-async def make_get_request(url: str) -> dict[str, str] | str:
-    """Makes a GET request to the specified URL."""
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            if response.content_type.startswith("text"):
-                return await response.text()
-            return await response.json()
+async def make_get_request(url: str) -> aiohttp.ClientResponse:
+    """Make an Asynchronous GET Request to the specified URL.
+
+    Args:
+        url (str): The URL to request.
+
+    Returns:
+        aiohttp.ClientResponse: The response object containing status and content.
+    """
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                return response
+
+    except aiohttp.ClientConnectorError:
+        return None  # Return None if connection error occurs
+    except Exception as e:
+        return f"Unexpected error: {str(e)}"
 
 
 async def make_post_request(

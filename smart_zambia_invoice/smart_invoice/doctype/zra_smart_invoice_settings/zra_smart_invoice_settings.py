@@ -22,15 +22,15 @@ class ZRASmartInvoiceSettings(Document):
 
 def before_insert(self) -> None:
         """Before Insertion Hook"""
-        route_path, last_request_date = get_route_path("device initialization")
+        route_path, last_request_date = get_route_path("evice initialization")
 		
         if route_path:
             print(route_path,"hello world ")
             url = f"{self.server_url}{route_path}"
             payload = {
-                "tpin": self.tpin,
-                "bhfId": self.bhfid,
-                "dvcSrlNo": self.dvcsrlno,
+                "tpin": self.company_tpin,
+                "bhfId": self.branch_id,
+                "dvcSrlNo": self.vsdc_device_serial_number,
             }
 
             integration_request = create_request_log(

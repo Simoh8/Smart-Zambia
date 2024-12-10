@@ -79,22 +79,27 @@ def perform_zra_notice_search(request_data: str) -> None:
         )
 @frappe.whitelist()
 def ping_zra_server(request_data: str) -> None:
-    url = json.loads(request_data)["server_url"]
-    print("the url is ", url)
+    data = json.loads(request_data)
+    url = data.get("server_url")
+    print("The URL is", url)
 
     try:
         response = asyncio.run(make_get_request(url))
+        print("The response data is here:", response)
 
-        if len(response) == 13:
-            frappe.msgprint("The Server is Online")
+        # Check if response is None, indicating a connection issue
+        if response is None:
+            frappe.msgprint("The Server is Offline due to connection issue")
             return
 
-        frappe.msgprint("The Server is Offline")
-        return
+        # Check if the status code is 200 (OK)
+        if response.status == 200:
+            frappe.msgprint("The Server is Online")
+        else:
+            frappe.msgprint(f"The Server returned an error: {response.status}")
 
-    except aiohttp.client_exceptions.ClientConnectorError:
-        frappe.msgprint("The Server is Offline")
-        return
+    except Exception as e:
+        frappe.msgprint(f"Unexpected error: {str(e)}")
 
 
 
