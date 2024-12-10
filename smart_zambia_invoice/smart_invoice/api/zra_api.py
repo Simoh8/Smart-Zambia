@@ -89,7 +89,7 @@ def ping_zra_server(request_data: str) -> None:
 
         # Check if response is None, indicating a connection issue
         if response is None:
-            frappe.msgprint("The Server is Offline due to connection issue")
+            frappe.msgprint("The ZRA Server is Offline Please Again Try  Later")
             return
 
         # Check if the status code is 200 (OK)
