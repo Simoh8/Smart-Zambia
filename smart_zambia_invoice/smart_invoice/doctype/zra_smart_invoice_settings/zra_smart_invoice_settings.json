@@ -12,6 +12,7 @@
   "production_environment_",
   "server_url_according_to_environment_section",
   "server_url",
+  "is_active_",
   "column_break_mzbs",
   "environment",
   "other_details_section",
@@ -143,11 +144,17 @@
    "label": "Branch Name",
    "options": "Branch",
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_active_",
+   "fieldtype": "Check",
+   "label": "Is Active ?"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-03 14:00:32.169093",
+ "modified": "2024-12-10 13:54:19.627447",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",

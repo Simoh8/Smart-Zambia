@@ -27,6 +27,10 @@ def is_valid_tpin(tpin: str) -> bool:
     return bool(re.match(pattern, tpin))
 
 
+def before_doc_save_(doc: "Document", method: str | None = None) -> None:
+    calculate_tax(doc)
+
+
 def is_url_valid(url: str) -> bool:
     """Checks if the entered URL is valid."""
     pattern = r"^(https?|ftp):\/\/[^\s/$.?#].[^\s]*"
@@ -114,15 +118,37 @@ async def make_get_request(url: str) -> aiohttp.ClientResponse:
         return f"Unexpected error: {str(e)}"
 
 
-async def make_post_request(
-        url: str,
-        data: dict[str, str] | None = None,
-        headers: dict[str, str | int] | None = None) -> dict[str, str | dict]:
-    """Makes a POST request with optional data and headers."""
-    async with aiohttp.ClientSession(timeout=ClientTimeout(1800)) as session:
-        async with session.post(url, json=data, headers=headers) as response:
-            return await response.json()
-        
+import aiohttp
+
+async def make_post_request(url, payload):
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url, json=payload) as response:
+                if response.status != 200:
+                    # Log error details for debugging
+                    frappe.log_error(
+                        title="HTTP Error",
+                        message=f"Error {response.status} while accessing {url}"
+                    )
+                    return {"error": f"HTTP {response.status}"}
+                
+                # Validate content type
+                if "application/json" not in response.headers.get("Content-Type", ""):
+                    frappe.log_error(
+                        title="Unexpected Content-Type",
+                        message=f"Expected JSON but got {response.headers.get('Content-Type')} at {url}"
+                    )
+                    return {"error": "Unexpected Content-Type"}
+
+                # Parse JSON safely
+                return await response.json()
+        except Exception as e:
+            # Handle exceptions like network errors
+            frappe.log_error(
+                title="Request Error",
+                message=f"Error during request to {url}: {str(e)}"
+            )
+            return {"error": str(e)}
 
 def get_server_url(company_name: str, branch_id: str = "00") -> str | None:
     settings = get_current_env_settings(company_name, branch_id)
@@ -161,7 +187,7 @@ def split_user_mail(email_string: str) -> str:
 def update_last_request_date(
     response_datetime: str,
     route: str,
-    routes_table: str ,
+    routes_table: str = "ZRA VSDC Routes",
 ) -> None:
     doc = frappe.get_doc(
         routes_table,
