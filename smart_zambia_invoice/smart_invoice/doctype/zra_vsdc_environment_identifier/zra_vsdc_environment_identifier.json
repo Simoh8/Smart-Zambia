@@ -1,0 +1,48 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-11 08:23:26.526215",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "current_environment_specification_details_section",
+  "current_environment"
+ ],
+ "fields": [
+  {
+   "description": "Please select the ZRA environment for this session",
+   "fieldname": "current_environment_specification_details_section",
+   "fieldtype": "Section Break",
+   "label": "Current Environment Specification Details"
+  },
+  {
+   "fieldname": "current_environment",
+   "fieldtype": "Select",
+   "label": "Current Environment",
+   "options": "Sandbox\nProduction"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-12-11 08:28:09.641485",
+ "modified_by": "Administrator",
+ "module": "Smart Invoice",
+ "name": "ZRA VSDC Environment Identifier",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -407,9 +407,7 @@ def get_invoice_number(invoice_name):
 
 
 
-def get_current_env_settings(
-    company_name: str, branch_id: str = "00"
-) -> Optional[Document]:
+def get_current_env_settings(company_name: str, branch_id: str = "00") -> Optional[Document]:
     """
     Retrieves the ZRA Smart Invoice Settings for a specific company and branch.
 
@@ -421,7 +419,6 @@ def get_current_env_settings(
         Optional[Document]: The ZRA Smart Invoice Settings document if found, otherwise None.
     """
     try:
-        # Define the DocType
         doc_type = "ZRA Smart Invoice Settings"
 
         # Search for a matching document
@@ -446,18 +443,18 @@ def get_current_env_settings(
     return None
 
 
-def build_request_headers(company_name: str, branch_id: str = "00") -> dict[str, str] | None:
-    settings = get_current_env_settings(company_name, branch_id=branch_id)
+# def build_request_headers(company_name: str, branch_id: str = "00") -> dict[str, str] | None:
+#     settings = get_current_env_settings(company_name, branch_id=branch_id)
+#     print("The settings are ", settings)
+#     if settings:
+#         headers = {
+#             "tpin": settings.get("tpin"),
+#             "bhfId": settings.get("bhfid"),
+#             "cmcKey": settings.get("communication_key"),
+#             "Content-Type": "application/json"
+#         }
 
-    if settings:
-        headers = {
-            "tin": settings.get("tin"),
-            "bhfId": settings.get("bhfid"),
-            "cmcKey": settings.get("communication_key"),
-            "Content-Type": "application/json"
-        }
-
-        return headers
+#         return headers
 
 
 def clean_invc_no(invoice_name):
