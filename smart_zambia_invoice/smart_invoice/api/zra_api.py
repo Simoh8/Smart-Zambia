@@ -50,7 +50,9 @@ def perform_zra_notice_search(request_data: str) -> None:
     data: dict = json.loads(request_data)
 
     company_name = data["company_name"]
+    
 
+    print("the company name is ",company_name,data)
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
 
@@ -74,32 +76,6 @@ def perform_zra_notice_search(request_data: str) -> None:
             doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None)
         )
 
-    # route_result = get_route_path("Notices")
-    # if not route_result:
-    #     frappe.throw(("No route found for the specified path function."))
-
-    # route_path, last_request_date = route_result
-
-    # request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
-
-    # if headers and server_url and route_path:
-    #     url = f"{server_url}{route_path}"
-    #     payload = {"lastReqDt": request_date}
-    #     print("The url is ",url ,"and the paylod has ",payload)
-
-    #     endpoint_builder.headers = headers
-    #     endpoint_builder.url = url
-    #     endpoint_builder.payload = payload
-    #     endpoint_builder.success_callback = notices_search_on_success
-    #     endpoint_builder.error_callback = on_error
-
-    #     endpoint_builder.perform_remote_calls(
-    #         doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None)
-    #     )
-
-
-
-
 
 
 
@@ -107,11 +83,9 @@ def perform_zra_notice_search(request_data: str) -> None:
 def ping_zra_server(request_data: str) -> None:
     data = json.loads(request_data)
     url = data.get("server_url")
-    print("The URL is", url)
 
     try:
         response = asyncio.run(make_get_request(url))
-        print("The response data is here:", response)
 
         # Check if response is None, indicating a connection issue
         if response is None:

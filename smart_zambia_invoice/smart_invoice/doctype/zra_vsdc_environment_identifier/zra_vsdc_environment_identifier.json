@@ -6,7 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "current_environment_specification_details_section",
-  "current_environment"
+  "environment"
  ],
  "fields": [
   {
@@ -16,7 +16,8 @@
    "label": "Current Environment Specification Details"
   },
   {
-   "fieldname": "current_environment",
+   "default": "Sandbox",
+   "fieldname": "environment",
    "fieldtype": "Select",
    "label": "Current Environment",
    "options": "Sandbox\nProduction"
@@ -25,7 +26,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-12-11 08:28:09.641485",
+ "modified": "2024-12-11 08:55:05.151190",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA VSDC Environment Identifier",
