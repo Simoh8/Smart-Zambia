@@ -153,97 +153,76 @@ class ZRASmartInvoiceSettings(Document):
     #             dimension.save()
 
 
-    def before_insert(self) -> None:
-        """Before Insertion Hook"""
-        route_path, last_request_date = get_route_path("device initialization")
-        
-        if route_path:
-            url = f"{self.server_url}{route_path}"
-            payload = {
-                "tpin": self.company_tpin,
-                "bhfId": self.branch_id,
-                "dvcSrlNo": self.vsdc_device_serial_number,
-            }
-            print("The Payload is ", payload)
+def before_insert(self) -> None:
+    """Before Insertion Hook"""
+    # Skip during migration
+    if frappe.flags.in_migrate:
+        frappe.log_error(f"before_insert triggered during migration for doc: {self.name}")
+        return
 
-            integration_request = create_request_log(
-                data=payload,
-                service_name="zra vsdc",
-                url=url,
-                request_headers=None,
-                is_remote_request=True,
-            )
+    # Ensure required fields are available
+    if not all([self.server_url, self.company_tpin, self.branch_id, self.vsdc_device_serial_number]):
+        frappe.throw("Missing required fields for initialization.")
 
-            try:
-                response = asyncio.run(make_post_request(url, payload))
-                print("The response is ", response)
+    route_path, last_request_date = get_route_path("device initialization")
 
-                # Validate response structure
-                if not response or "resultCd" not in response:
-                    self.error_title = "Unexpected API Response"
-                    error_message = f"Response from {url}: {response}"
-                    zra_vsdc_logger.error(error_message, exc_info=True)
-                    frappe.log_error(
-                        title=self.error_title,
-                        message=error_message,
-                        reference_doctype="ZRA Smart Invoice Settings",
-                    )
-                    update_integration_request(
-                        integration_request.name,
-                        "Failed",
-                        output=None,
-                        error=self.error_title,
-                    )
-                    frappe.throw("Server Error. Check logs.")
+    if route_path:
+        url = f"{self.server_url}{route_path}"
+        payload = {
+            "tpin": self.company_tpin,
+            "bhfId": self.branch_id,
+            "dvcSrlNo": self.vsdc_device_serial_number,
+        }
+        print("The Payload is ", payload)
 
-                # Process the response
-                if response["resultCd"] == "000":
-                    info = response.get("data", {}).get("info", {})
-                    self.communication_key = info.get("cmcKey")
-                    self.sales_control_unit_id = info.get("sdcId")
+        integration_request = create_request_log(
+            data=payload,
+            service_name="zra vsdc",
+            url=url,
+            request_headers=None,
+            is_remote_request=True,
+        )
 
-                    update_last_request_date(response.get("resultDt"), route_path)
-                    update_integration_request(
-                        integration_request.name,
-                        "Completed",
-                        output=f'{response.get("resultMsg", "Success")}, {response["resultCd"]}',
-                        error=None,
-                    )
-                else:
-                    error_message = f'{response.get("resultMsg", "Error")}, {response["resultCd"]}'
-                    update_integration_request(
-                        integration_request.name,
-                        "Failed",
-                        output=None,
-                        error=error_message,
-                    )
-                    handle_errors(response, route_path, self.name, "ZRA Smart Invoice Settings")
+        try:
+            response = asyncio.run(make_post_request(url, payload))
+            print("The response is ", response)
 
-            except aiohttp.client_exceptions.ClientConnectorError as error:
+            # Validate response structure
+            if not response or "resultCd" not in response:
                 self.log_and_throw_error(
                     integration_request,
-                    "Connection failed during initialisation",
-                    error,
+                    "Unexpected API Response",
+                    f"Response from {url}: {response}",
                 )
 
-            except aiohttp.client_exceptions.ClientOSError as error:
-                self.log_and_throw_error(
-                    integration_request,
-                    "Connection reset by peer",
-                    error,
+            # Process the response
+            if response["resultCd"] == "000":
+                info = response.get("data", {}).get("info", {})
+                self.communication_key = info.get("cmcKey")
+                self.sales_control_unit_id = info.get("sdcId")
+
+                update_last_request_date(response.get("resultDt"), route_path)
+                update_integration_request(
+                    integration_request.name,
+                    "Completed",
+                    output=f'{response.get("resultMsg", "Success")}, {response["resultCd"]}',
+                    error=None,
                 )
+            else:
+                handle_errors(response, route_path, self.name, "ZRA Smart Invoice Settings")
 
-            except asyncio.exceptions.TimeoutError as error:
-                self.log_and_throw_error(
-                    integration_request,
-                    "Timeout Error",
-                    error,
-                )
+        except aiohttp.client_exceptions.ClientConnectorError as error:
+            self.log_and_throw_error(integration_request, "Connection failed during initialization", error)
+        except aiohttp.client_exceptions.ClientOSError as error:
+            self.log_and_throw_error(integration_request, "Connection reset by peer", error)
+        except asyncio.exceptions.TimeoutError as error:
+            self.log_and_throw_error(integration_request, "Timeout Error", error)
 
-        if self.autocreate_branch_dimension and self.is_active:
-            if frappe.db.exists("Accounting Dimension", "Branch", cache=False):
-                return
+    if self.autocreate_branch_dimension and self.is_active:
+        if frappe.db.exists("Accounting Dimension", "Branch", cache=False):
+            return
 
+        try:
             company = frappe.defaults.get_user_default("Company")
             dimension = frappe.new_doc("Accounting Dimension")
             dimension.document_type = "Branch"
@@ -256,21 +235,5 @@ class ZRASmartInvoiceSettings(Document):
                 },
             )
             dimension.save()
-
-
-    def log_and_throw_error(self, integration_request, error_title, error):
-        """Log and throw errors"""
-        self.error_title = error_title
-        zra_vsdc_logger.exception(error, exc_info=True)
-        frappe.log_error(
-            title=self.error_title,
-            message=str(error),
-            reference_doctype="ZRA Smart Invoice Settings",
-        )
-        update_integration_request(
-            integration_request.name,
-            "Failed",
-            output=None,
-            error=self.error_title,
-        )
-        frappe.throw(self.error_title, str(error))
+        except Exception as e:
+            frappe.log_error(f"Failed to create accounting dimension: {str(e)}")
