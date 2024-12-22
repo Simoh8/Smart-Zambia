@@ -2,7 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "ZRA VSDC Routes",
-  "modified": "2024-12-06 15:38:44.637877",
+  "modified": "2024-12-22 17:38:25.370531",
   "name": "ZRA VSDC Routes",
   "zra_vscd_routes": [
    {
@@ -10,7 +10,7 @@
     "parent": "ZRA VSDC Routes",
     "parentfield": "zra_vscd_routes",
     "parenttype": "ZRA VSDC Routes",
-    "path": " /initializer/selectInitInfo",
+    "path": "/initializer/selectInitInfo",
     "path_description": "Request method: POST. • Requirement: MANDATORY",
     "path_function": "device initialization"
    },
