@@ -40,7 +40,7 @@ def search_branch_request(request_data: str) -> None:
         endpoint_builder.success_callback = fetch_branch_request_on_success
         endpoint_builder.error_callback = on_error
 
-        endpoint_builder.make_remote_call(
+        endpoint_builder.perform_remote_calls(
             doctype="Branch",
         )
 
@@ -74,7 +74,7 @@ def perform_zra_notice_search(request_data: str) -> None:
         endpoint_builder.success_callback = notices_search_on_success
         endpoint_builder.error_callback = on_error
 
-        endpoint_builder.make_remote_call(
+        endpoint_builder.perform_remote_calls(
             doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None)
         )
 
@@ -155,7 +155,7 @@ def submit_item_composition(request_data: str) -> None:
                         endpoint_builder.error_callback = on_error
 
                         frappe.enqueue(
-                            endpoint_builder.make_remote_call,
+                            endpoint_builder.perform_remote_calls,
                             is_async=True,
                             queue="default",
                             timeout=300,

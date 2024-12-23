@@ -66,8 +66,6 @@ def get_server_url(company_name: str, branch_id: str = "001") -> str | None:
 
 
 
-
-
 def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str, str] | None:
     settings = get_current_env_settings(company_name, branch_id=branch_id)
     # print("on the build headers ", settings)
@@ -140,35 +138,28 @@ async def make_get_request(url: str) -> aiohttp.ClientResponse:
 
 
 
-async def make_post_request(url, payload):
-    async with aiohttp.ClientSession() as session:
-        try:
-            async with session.post(url, json=payload) as response:
-                if response.status != 200:
-                    # Log error details for debugging
-                    frappe.log_error(
-                        title="HTTP Error",
-                        message=f"Error {response.status} while accessing {url}"
-                    )
-                    return {"error": f"HTTP {response.status}"}
-                
-                # Validate content type
-                if "application/json" not in response.headers.get("Content-Type", ""):
-                    frappe.log_error(
-                        title="Unexpected Content-Type",
-                        message=f"Expected JSON but got {response.headers.get('Content-Type')} at {url}"
-                    )
-                    return {"error": "Unexpected Content-Type"}
+async def make_post_request(
+    url: str,
+    data: dict[str, str] | None = None,
+    headers: dict[str, str | int] | None = None,
+) -> dict[str, str | dict]:
+    """Make an Asynchronous POST Request to specified URL
 
-                # Parse JSON safely
-                return await response.json()
-        except Exception as e:
-            # Handle exceptions like network errors
-            frappe.log_error(
-                title="Request Error",
-                message=f"Error during request to {url}: {str(e)}"
-            )
-            return {"error": str(e)}
+    Args:
+        url (str): The URL
+        data (dict[str, str] | None, optional): Data to send to server. Defaults to None.
+        headers (dict[str, str | int] | None, optional): Headers to set. Defaults to None.
+
+    Returns:
+        dict: The Server Response
+    """
+    # TODO: Refactor to a more efficient handling of creation of the session object
+    # as described in documentation
+    async with aiohttp.ClientSession(timeout=ClientTimeout(1800)) as session:
+        # Timeout of 1800 or 30 mins, especially for fetching Item classification
+        async with session.post(url, json=data, headers=headers) as response:
+            return await response.json()
+
 
 
 
