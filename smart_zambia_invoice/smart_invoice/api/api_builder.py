@@ -122,7 +122,7 @@ class EndpointConstructor(BaseEndpointConstructor):
 
     @success_callback.setter
     def success_callback(self,callback: Callable) -> None:
-            self._succesfull_callback_handler -callback
+            self._succesfull_callback_handler =callback
 
 
     @property

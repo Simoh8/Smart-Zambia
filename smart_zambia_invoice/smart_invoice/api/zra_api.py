@@ -44,7 +44,7 @@ def search_branch_request(request_data: str) -> None:
             doctype="Branch",
         )
 
-
+# searching for the new notices available from zra
 @frappe.whitelist()
 def perform_zra_notice_search(request_data: str) -> None:
     data: dict = json.loads(request_data)
@@ -52,9 +52,11 @@ def perform_zra_notice_search(request_data: str) -> None:
     company_name = data["company_name"]
     
 
-    print("the company name is ",company_name,data)
     headers = build_request_headers(company_name)
+    
     server_url = get_server_url(company_name)
+    print("The headers look like this ",headers )
+    print(" The server url is ", server_url)
 
     # Get route path and last request date
     route_path, last_request_date = get_route_path("Notices")
@@ -75,7 +77,6 @@ def perform_zra_notice_search(request_data: str) -> None:
         endpoint_builder.make_remote_call(
             doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None)
         )
-
 
 
 

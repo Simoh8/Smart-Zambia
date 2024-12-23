@@ -52,18 +52,38 @@ def get_docment_series_number(document: Document) -> int | None:
         return int(split_invoice_name[-2])
     return None
 
+
+def get_server_url(company_name: str, branch_id: str = "001") -> str | None:
+    settings = get_current_env_settings(company_name, branch_id)
+
+    if settings:
+        server_url = settings.get("server_url")
+
+        return server_url
+
+    return
+
+
+
+
+
+
 def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str, str] | None:
     settings = get_current_env_settings(company_name, branch_id=branch_id)
+    # print("on the build headers ", settings)
 
     if settings:
         headers = {
-            "tpin": settings.get("tpin"),
-            "bhfId": settings.get("bhfid"),
-            "cmcKey": settings.get("communication_key"),
+            "tpin": settings.get("company_tpin"),  # Adjusted to match the key in `settings`
+            "bhfId": settings.get("vsdc_device_serial_number"),  # Adjusted to match the key in `settings`
+            "cmcKey": settings.get("zra_sales_control_unit_id"),  # Adjusted to match the key in `settings`
             "Content-Type": "application/json"
         }
 
         return headers
+
+    return None
+
 
 
 def get_route_path(
@@ -153,15 +173,7 @@ async def make_post_request(url, payload):
 
 
 
-def get_server_url(company_name: str, branch_id: str = "00") -> str | None:
-    settings = get_current_env_settings(company_name, branch_id)
 
-    if settings:
-        server_url = settings.get("server_url")
-
-        return server_url
-
-    return
   
 
 
@@ -218,6 +230,7 @@ def get_current_environment_state(
     )
 
     return environment
+
    
 
 
@@ -319,72 +332,47 @@ def get_invoice_number(invoice_name):
 def get_environment_settings(
     company_name: str,
     doctype: str = "ZRA Smart Invoice Settings",
-    environment: str = "Sandbox",
+    cur_environment: str = "Sandbox",
     branch_id: str = "001",
-) -> dict | None:
-    """
-    Fetch the environment settings for a given company and branch.
-    """
+) -> Document | None:
     error_message = None
-
-    # Ensure environment is not empty, default to "Sandbox" if empty
-    if not environment:
-        environment = "Sandbox"
-
-    # Prepare the query using query parameters to avoid SQL injection
     query = f"""
-        SELECT 
-            server_url,
-            company_tpin,
-            vsdc_device_serial_number,
-            branch_id,
-            company_name,
-            zra_sales_control_unit_id AS scu_id
-        FROM `tab{doctype}`
-        WHERE 
-            company_name = '{company_name}'
-            AND environment = '{environment}'
-            AND is_active_ = 1
+    SELECT server_url,
+        company_tpin,
+        vsdc_device_serial_number,
+        branch_id,
+        company_name,
+        zra_sales_control_unit_id
+    FROM `tab{doctype}`
+    WHERE company_name = '{company_name}'
+        AND environment = '{cur_environment}'
+        AND name IN (
+            SELECT name
+            FROM `tab{doctype}`
+            WHERE is_active_ = 1
+        )
     """
-
-
-    # Add branch ID condition if provided
     if branch_id:
-        query += " AND branch_id = %(branch_id)s"
+        query += f"AND branch_id = '{branch_id}';"
 
-    query += ";"
+    setting_doctype = frappe.db.sql(query, as_dict=True)
 
-    # Execute the query
-    settings = frappe.db.sql(
-        query,
-        values={
-            "company_name": company_name,
-            "environment": environment,
-            "branch_id": branch_id,
-        },
-        as_dict=True,
-    )
+    if setting_doctype:
+        return setting_doctype[0]
 
-
-    if settings:
-        return settings[0]
-
-    # Prepare an error message if no settings are found
-    error_message = (f"""
+    error_message = f"""
         There is no valid environment setting for these credentials:
-        <ul>
-            <li>Company: <b>{company_name}</b></li>
-            <li>Branch ID: <b>{branch_id}</b></li>
-            <li>Environment: <b>{environment}</b></li>
+            <ul>
+                <li>Company: <b>{company_name}</b></li>
+                <li>Branch ID: <b>{branch_id}</b></li>
+                <li>Environment: <b>{cur_environment}</b></li>
+            </ul>
         <p>Please ensure a valid <a href="/app/zra-smart-invoice-settings">ZRA Smart Invoice Settings</a> record exists.</p>
-        </ul>
-    """)
+    """
 
     zra_vsdc_logger.error(error_message)
     frappe.log_error(
-        title="Incorrect Setup",
-        message=error_message,
-        reference_doctype=doctype,
+        title="Incorrect Setup", message=error_message, reference_doctype=doctype
     )
     frappe.throw(error_message, title="Incorrect Setup")
 
@@ -398,16 +386,14 @@ def get_current_env_settings(company_name: str, branch_id: str = "001") -> Docum
     
     # Fetch the environment settings based on the current environment and branch_id
     settings = get_environment_settings(
-        company_name, environment=current_env, branch_id=branch_id
+        company_name, cur_environment=current_env, branch_id=branch_id
     )
+    # print("The document settings are: ", settings)
 
     # Check if settings were retrieved successfully
     if settings:
         return settings
-    else:
-        # Log an appropriate message when no settings are returned
-        print(f"No settings found for company: {company_name}, branch_id: {branch_id}, environment: {current_env}")
-        return None
+
 
 
 
