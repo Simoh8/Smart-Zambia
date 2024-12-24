@@ -38,10 +38,21 @@ def is_url_valid(url: str) -> bool:
     return bool(re.match(pattern, url))
 
 
-def make_datetime_from_string(date_string: str, format: str = "%Y-%m-%d %H:%M:%S") -> datetime:
-    """Converts a datetime string to a datetime object."""
-    return datetime.strptime(date_string, format)
+def make_datetime_from_string(
+    date_string: str, format: str = "%Y-%m-%d %H:%M:%S"
+) -> datetime:
+    """Builds a Datetime object from string, and format provided
 
+    Args:
+        date_string (str): The string to build object from
+        format (str, optional): The format of the date_string string. Defaults to "%Y-%m-%d".
+
+    Returns:
+        datetime: The datetime object
+    """
+    date_object = datetime.strptime(date_string, format)
+
+    return date_object
 
 def get_docment_series_number(document: Document) -> int | None:
     """Extracts the series number from the document name."""
@@ -66,15 +77,34 @@ def get_server_url(company_name: str, branch_id: str = "001") -> str | None:
 
 
 
-def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str, str] | None:
+def build_request_body(company_name: str, branch_id: str = "001") -> dict[str, str] | None:
     settings = get_current_env_settings(company_name, branch_id=branch_id)
-    # print("on the build headers ", settings)
+    print("on the build headers ", settings)
 
     if settings:
-        headers = {
+        current_time = datetime.now().strftime("%Y%m%d%H%M%S")
+
+        body = {
             "tpin": settings.get("company_tpin"),  # Adjusted to match the key in `settings`
             "bhfId": settings.get("vsdc_device_serial_number"),  # Adjusted to match the key in `settings`
-            "cmcKey": settings.get("zra_sales_control_unit_id"),  # Adjusted to match the key in `settings`
+            "lastReqDt": current_time,  # Adjusted to match the key in `settings`
+
+        }
+
+        return body
+
+    return None
+
+
+def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str, str] | None:
+    settings = get_current_env_settings(company_name, branch_id=branch_id)
+    print("on the build headers ", settings)
+
+    if settings:
+        current_time = datetime.now().strftime("%Y%m%d%H%M%S")
+
+        headers = {
+ # Adjusted to match the key in `settings`
             "Content-Type": "application/json"
         }
 
@@ -153,19 +183,18 @@ async def make_post_request(
     Returns:
         dict: The Server Response
     """
-    # TODO: Refactor to a more efficient handling of creation of the session object
-    # as described in documentation
+    # Prepare the new body to include headers as part of it
+    body = {
+        "headers": headers,  # Include the headers in the body
+        "data": data,        # Keep the original data in the body
+    }
+
+    # Make the asynchronous POST request with the body containing headers and data
     async with aiohttp.ClientSession(timeout=ClientTimeout(1800)) as session:
-        # Timeout of 1800 or 30 mins, especially for fetching Item classification
-        async with session.post(url, json=data, headers=headers) as response:
+        async with session.post(url, json=body) as response:
             return await response.json()
 
 
-
-
-
-
-  
 
 
 def get_document_series(document: Document) -> int | None:
@@ -189,18 +218,47 @@ def update_last_request_date(
     route: str,
     routes_table: str = "ZRA VSDC Routes",
 ) -> None:
-    doc = frappe.get_doc(
-        routes_table,
-        {"url_path": route},
-        ["*"],
-    )
+    try:
+        # Fetch the document
+        doc = frappe.get_doc(
+            routes_table,
+            {"url_path": route},
+            ["*"],
+        )
+        
+        # Validate and parse the response datetime
+        if response_datetime:
+            try:
+                doc.last_req_date = make_datetime_from_string(
+                    response_datetime, "%Y%m%d%H%M%S"
+                )
+            except ValueError:
+                frappe.log_error(
+                    f"Invalid date format: {response_datetime}. Expected format: %Y%m%d%H%M%S",
+                    "Date Parsing Error",
+                )
+                return
+        else:
+            frappe.log_error(
+                f"Response datetime is None for route: {route}",
+                "Missing Response Datetime",
+            )
+            return
 
-    doc.last_request_date = make_datetime_from_string(
-        response_datetime, "%Y%m%d%H%M%S"
-    )
+        # Save and commit changes
+        doc.save()
+        frappe.db.commit()
+        frappe.log("Last request date updated successfully", title="Update Success")
 
-    doc.save()
-    frappe.db.commit()
+    except frappe.DoesNotExistError:
+        frappe.log_error(
+            f"Document not found for route: {route} in table: {routes_table}",
+            "Document Not Found",
+        )
+    except Exception as e:
+        frappe.log_error(
+            frappe.get_traceback(), f"Unexpected error: {str(e)}"
+        )
 
 
     
@@ -330,6 +388,7 @@ def get_environment_settings(
     query = f"""
     SELECT server_url,
         company_tpin,
+        name,
         vsdc_device_serial_number,
         branch_id,
         company_name,

@@ -10,7 +10,7 @@ from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
 from .remote_response_handler import notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success
-from .. utilities import (build_request_headers,get_route_path,make_get_request,make_post_request,split_user_mail,get_server_url)
+from .. utilities import (build_request_headers,get_route_path,make_get_request,make_post_request,build_request_body,split_user_mail,get_server_url)
 
 
 
@@ -24,6 +24,7 @@ def search_branch_request(request_data: str) -> None:
     company_name = data["company_name"]
 
     headers = build_request_headers(company_name)
+    
     server_url = get_server_url(company_name)
     route_path, last_request_date = get_route_path("BhfSearchReq")
 
@@ -51,25 +52,24 @@ def perform_zra_notice_search(request_data: str) -> None:
 
     company_name = data["company_name"]
     
-
     headers = build_request_headers(company_name)
+    body = build_request_body(company_name)
     
     server_url = get_server_url(company_name)
-    print("The headers look like this ",headers )
-    print(" The server url is ", server_url)
 
     # Get route path and last request date
-    route_path, last_request_date = get_route_path("Notices")
+    route_path, last_req_date = get_route_path("Notices Fetching")
     request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
-    print("The headers are ",headers)
+    
 
-    if headers and server_url and route_path:
+    if headers and server_url and route_path and body:
         url = f"{server_url}{route_path}"
-        print("The url is ", url)
         payload = {"lastReqDt": request_date}
+        
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
+        endpoint_builder.body=body
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = notices_search_on_success
         endpoint_builder.error_callback = on_error
