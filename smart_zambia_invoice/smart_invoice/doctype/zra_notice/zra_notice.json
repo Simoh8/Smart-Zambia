@@ -64,9 +64,10 @@
    "label": "Notice Contents"
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-27 09:38:41.603226",
+ "modified": "2024-12-29 15:30:44.447656",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Notice",

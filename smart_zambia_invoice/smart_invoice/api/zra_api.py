@@ -44,7 +44,6 @@ def search_branch_request(request_data: str) -> None:
         endpoint_builder.perform_remote_calls(
             doctype="Branch",
         )
-
 # searching for the new notices available from zra
 @frappe.whitelist()
 def perform_zra_notice_search(request_data: str) -> None:
@@ -71,7 +70,6 @@ def perform_zra_notice_search(request_data: str) -> None:
             "lastReqDt": last_req_date_str,
             "bhfId": bhfId
         }
-
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
