@@ -134,15 +134,8 @@ class EndpointConstructor(BaseEndpointConstructor):
             reference_docname=document_name,
             reference_doctype=doctype,
         )
-        print("The payload shared is ",self._payload)
-
-        # Validate that required fields are present
-        if not self._payload.get("tpin") or not self._payload.get("lastReqDt") or not self._payload.get("bhfId"):
-            frappe.throw("Missing required parameters: tpin, lastReqDt, or bhfId.", title="Parameter Error")
-
         try:
             response = asyncio.run(make_post_request(self._url, self._payload, self._headers))
-            print("The response is", response)
 
             if response["resultCd"] == "000":
                 self._success_callback_handler(response)

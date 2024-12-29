@@ -49,25 +49,17 @@ def search_branch_request(request_data: str) -> None:
 @frappe.whitelist()
 def perform_zra_notice_search(request_data: str) -> None:
     data: dict = json.loads(request_data)
-    print("The data is ", data)
-
     company_name = data["company_name"]
-    
     headers = build_request_headers(company_name)
-    
-    # Extract tpin and bhfId from headers
     tpin = headers.get("tpin")
     bhfId = headers.get("bhfId")
-    print(f"TPIN: {tpin}, BHF ID: {bhfId}, Request Date: ")  # Log the critical values
 
-
-    if not tpin or not bhfId:
-        frappe.throw("Missing required headers: tpin or bhfId.", title="Header Error")
-    
     server_url = get_server_url(company_name)
 
     # Get route path and last request date
     route_path, last_req_date = get_route_path("Notices Fetching")
+    last_req_date_str = last_req_date.strftime("%Y%m%d%H%M%S")
+
     request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
 
     if headers and server_url and route_path:
@@ -76,11 +68,10 @@ def perform_zra_notice_search(request_data: str) -> None:
         # Include tpin and bhfId in the payload
         payload = {
             "tpin": tpin,
-            "lastReqDt": request_date,
+            "lastReqDt": last_req_date_str,
             "bhfId": bhfId
         }
 
-        print("Payload to be sent:", payload)  # Verify payload content
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
