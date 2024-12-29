@@ -10,11 +10,11 @@ def notices_search_on_success(response: dict) -> None:
         doc = frappe.new_doc("ZRA Notice ")
 
         doc.notice_number = notice["noticeNo"]
-        doc.title = notice["title"]
+        doc.notice_title = notice["title"]
         doc.registration_name = notice["regrNm"]
-        doc.details_url = notice["dtlUrl"]
-        doc.registration_datetime = notice["regDt"]
-        doc.contents = notice["cont"]
+        doc.notice_url = notice["dtlUrl"]
+        doc.notice_registration_datetime = notice["regDt"]
+        doc.notice_contents = notice["cont"]
 
         try:
             doc.submit()
