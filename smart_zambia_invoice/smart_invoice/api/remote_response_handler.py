@@ -85,3 +85,21 @@ def fetch_branch_request_on_success(response: dict) -> None:
             doc.custom_is_etims_branch = 1
 
             doc.save()
+            
+def on_succesful_customer_search(
+    response: dict,
+    document_name: str,
+) -> None:
+    frappe.db.set_value(
+        "Customer",
+        document_name,
+        {
+            "custom_tax_payers_name": response["taxprNm"],
+            "custom_tax_payers_status": response["taxprSttsCd"],
+            "custom_county_name": response["prvncNm"],
+            "custom_subcounty_name": response["dstrtNm"],
+            "custom_tax_locality_name": response["sctrNm"],
+            "custom_location_name": response["locDesc"],
+            "custom_is_validated": 1,
+        },
+    )

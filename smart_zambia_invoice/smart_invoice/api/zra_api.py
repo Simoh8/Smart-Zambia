@@ -9,7 +9,7 @@ from datetime import datetime
 from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
-from .remote_response_handler import notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success
+from .remote_response_handler import notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success,on_succesful_customer_search
 from .. utilities import (build_request_headers,get_route_path,make_get_request,make_post_request,split_user_mail,get_server_url)
 
 
@@ -172,3 +172,42 @@ def submit_item_composition(request_data: str) -> None:
                             <b>Ensure ALL Items are registered first to submit this composition</b>""",
                             title="Integration Error",
                         )
+                        
+                        
+                        
+@frappe.whitelist()
+def perform_customer_search(request_data: str) -> None:
+    """Search customer details in the ZRA Server
+
+    Args:
+        request_data (str): Data received from the client
+    """
+    data: dict = json.loads(request_data)
+
+    company_name = data["company_name"]
+
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_request_date = get_route_path("CustSearchReq")
+
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+        payload = {"custmTin": data["tax_id"]}
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = partial(
+            on_succesful_customer_search, document_name=data["name"]
+        )
+        endpoint_builder.error_callback = on_error
+
+        frappe.enqueue(
+            endpoint_builder.perform_remote_calls,
+            is_async=True,
+            queue="default",
+            timeout=300,
+            doctype="Customer",
+            document_name=data["name"],
+            job_name=f"{data['name']}_customer_search",
+        )
