@@ -24,18 +24,15 @@ class BaseEndpointConstructor:
         self.doctype:str | Document | None=None
         self.document_name:str | None= None
 
-
-
     def attach_observer(self, observer:ErrorsObserver) -> None:
 
         self._observers.append(observer)
 
 
-    def notifty_observer(self) -> None:
+    def notify_observer(self) -> None:
 
         for observer in self._observers:
             observer.update(self)
-
 
 
 class ErrorsObserver:
@@ -44,6 +41,7 @@ class ErrorsObserver:
          
 
          if notifier.error:
+            #  TODO
              update_integration_request(
                 notifier.integration_requets.name,
                 status= "Failed",
@@ -64,7 +62,6 @@ class ErrorsObserver:
              )
 
 # TODO: Does this class need to be singleton?
-
 class EndpointConstructor(BaseEndpointConstructor):
     def __init__(self) -> None:
         super().__init__()
@@ -125,7 +122,8 @@ class EndpointConstructor(BaseEndpointConstructor):
 
         self.doctype, self.document_name = doctype, document_name
         parsed_url = parse.urlparse(self._url)
-        route_path = f"/{parsed_url.path.split('/')[-1]}"
+        route_path = parsed_url.path.replace("/zrasandboxvsdc", "", 1)  # Remove the base path
+        
 
         self.integration_request = create_request_log(
             data=self._payload,
@@ -136,10 +134,15 @@ class EndpointConstructor(BaseEndpointConstructor):
             reference_docname=document_name,
             reference_doctype=doctype,
         )
+        print("The payload shared is ",self._payload)
+
+        # Validate that required fields are present
+        if not self._payload.get("tpin") or not self._payload.get("lastReqDt") or not self._payload.get("bhfId"):
+            frappe.throw("Missing required parameters: tpin, lastReqDt, or bhfId.", title="Parameter Error")
 
         try:
             response = asyncio.run(make_post_request(self._url, self._payload, self._headers))
-            print("the response is", response)
+            print("The response is", response)
 
             if response["resultCd"] == "000":
                 self._success_callback_handler(response)
@@ -151,7 +154,12 @@ class EndpointConstructor(BaseEndpointConstructor):
                 aiohttp.client_exceptions.ClientOSError,
                 asyncio.exceptions.TimeoutError) as error:
             self.error = error
+            max_length = 140
+            error_message = f"Error occurred during remote call: {str(error)}"
+            truncated_message = error_message[:max_length] if len(error_message) > max_length else error_message
+            frappe.log_error(truncated_message)
             self.notify_observer()
+
 
 def update_integration_request(integration_request: str,status:Literal["Completed", "Failed"],output:str |None =None,error:str |None=None,) -> None:
 

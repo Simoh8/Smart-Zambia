@@ -76,35 +76,17 @@ def get_server_url(company_name: str, branch_id: str = "001") -> str | None:
 
 
 
-
-def build_request_body(company_name: str, branch_id: str = "001") -> dict[str, str] | None:
-    settings = get_current_env_settings(company_name, branch_id=branch_id)
-    print("on the build headers ", settings)
-
-    if settings:
-        current_time = datetime.now().strftime("%Y%m%d%H%M%S")
-
-        body = {
-            "tpin": settings.get("company_tpin"),  # Adjusted to match the key in `settings`
-            "bhfId": settings.get("vsdc_device_serial_number"),  # Adjusted to match the key in `settings`
-            "lastReqDt": current_time,  # Adjusted to match the key in `settings`
-
-        }
-
-        return body
-
-    return None
-
-
 def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str, str] | None:
     settings = get_current_env_settings(company_name, branch_id=branch_id)
     print("on the build headers ", settings)
 
     if settings:
-        current_time = datetime.now().strftime("%Y%m%d%H%M%S")
+        # current_time = datetime.now().strftime("%Y%m%d%H%M%S")
 
         headers = {
- # Adjusted to match the key in `settings`
+            "tpin": settings.get("company_tpin"),  # Adjusted to match the key in `settings`
+            "bhfId": settings.get("branch_id"), 
+            # "companyName": settings.get("company_name"),
             "Content-Type": "application/json"
         }
 
@@ -183,19 +165,14 @@ async def make_post_request(
     Returns:
         dict: The Server Response
     """
-    # Prepare the new body to include headers as part of it
-    body = {
-        "headers": headers,  # Include the headers in the body
-        "data": data,        # Keep the original data in the body
-    }
-
-    # Make the asynchronous POST request with the body containing headers and data
+    # TODO: Refactor to a more efficient handling of creation of the session object
+    # as described in documentation
     async with aiohttp.ClientSession(timeout=ClientTimeout(1800)) as session:
-        async with session.post(url, json=body) as response:
+        # Timeout of 1800 or 30 mins, especially for fetching Item classification
+        async with session.post(url, json=data, headers=headers) as response:
             return await response.json()
-
-
-
+        
+        
 
 def get_document_series(document: Document) -> int | None:
     split_invoive_name= document.name.split("-")
@@ -427,8 +404,6 @@ def get_environment_settings(
     frappe.throw(error_message, title="Incorrect Setup")
 
 
-
-
     
 def get_current_env_settings(company_name: str, branch_id: str = "001") -> Document | None:
 
@@ -438,13 +413,11 @@ def get_current_env_settings(company_name: str, branch_id: str = "001") -> Docum
     settings = get_environment_settings(
         company_name, cur_environment=current_env, branch_id=branch_id
     )
-    # print("The document settings are: ", settings)
+    print("The document settings are: ", settings)
 
     # Check if settings were retrieved successfully
     if settings:
         return settings
-
-
 
 
 def clean_invc_no(invoice_name):
