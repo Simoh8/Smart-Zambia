@@ -2,7 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "ZRA VSDC Routes",
-  "modified": "2024-12-22 17:38:25.370531",
+  "modified": "2024-12-24 23:08:59.979338",
   "name": "ZRA VSDC Routes",
   "zra_vscd_routes": [
    {
@@ -39,7 +39,7 @@
     "parenttype": "ZRA VSDC Routes",
     "path": "/notices/selectNotices",
     "path_description": "Retrieves details of all notices published by ZRA on Smart Invoice",
-    "path_function": "Notices"
+    "path_function": "Notices Fetching"
    },
    {
     "last_req_date": "2024-12-06 15:26:57",
