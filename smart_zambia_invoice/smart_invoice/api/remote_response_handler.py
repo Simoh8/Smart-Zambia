@@ -96,10 +96,9 @@ def on_succesful_customer_search(
         {
             "custom_tax_payers_name": response["taxprNm"],
             "custom_tax_payers_status": response["taxprSttsCd"],
-            "custom_county_name": response["prvncNm"],
-            "custom_subcounty_name": response["dstrtNm"],
-            "custom_tax_locality_name": response["sctrNm"],
-            "custom_location_name": response["locDesc"],
+            "custom__province_name": response["prvncNm"],
+            "custom_tax_locality_name": response["dstrtNm"],
+            "custom_customer_sector_name": response["sctrNm"],
             "custom_is_validated": 1,
         },
     )
