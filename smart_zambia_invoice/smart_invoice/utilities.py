@@ -96,7 +96,6 @@ def build_common_payload(headers: dict, last_req_date: datetime) -> dict:
 
 def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str, str] | None:
     settings = get_current_env_settings(company_name, branch_id=branch_id)
-    print("on the build headers ", settings)
 
     if settings:
         # current_time = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -104,7 +103,6 @@ def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str
         headers = {
             "tpin": settings.get("company_tpin"),  # Adjusted to match the key in `settings`
             "bhfId": settings.get("branch_id"), 
-            # "companyName": settings.get("company_name"),
             "Content-Type": "application/json"
         }
 
@@ -338,12 +336,6 @@ def get_item_tax_rate(item_tax_template: str) -> float | None:
 '''Uncomment this function if you need document-level tax rate calculation in the future
 A classic example usecase is Apex tevin typecase where the tax rate is fetched from the document's Sales Taxes and Charges Template
 '''
-# def get_doc_tax_rate(doc_tax_template: str) -> float | None:
-#     """Fetch the tax rate from the document's Sales Taxes and Charges Template."""
-#     tax_template = frappe.get_doc("Sales Taxes and Charges Template", doc_tax_template)
-#     if tax_template.taxes:
-#         return tax_template.taxes[0].rate
-#     return None
 
 
 
@@ -431,7 +423,6 @@ def get_current_env_settings(company_name: str, branch_id: str = "001") -> Docum
     settings = get_environment_settings(
         company_name, cur_environment=current_env, branch_id=branch_id
     )
-    print("The document settings are: ", settings)
 
     # Check if settings were retrieved successfully
     if settings:

@@ -83,6 +83,7 @@ def perform_zra_notice_search(request_data: str) -> None:
 def ping_zra_server(request_data: str) -> None:
     data = json.loads(request_data)
     url = data.get("server_url")
+    
 
     try:
         response = asyncio.run(make_get_request(url))
@@ -226,15 +227,12 @@ def perform_import_item_search(request_data: str) -> None:
 
     else:
         headers = build_request_headers(company_name)
-        print("The headers are: ", headers)
         server_url = get_server_url(company_name)
 
-        # last_req_date_str = last_req_date.strftime("%Y%m%d%H%M%S")
     route_path, last_req_date = get_route_path("GET IMPORTS")
 
 
     if headers and server_url and route_path:
-        # request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
         url = f"{server_url}{route_path}"
         common_payload = build_common_payload(headers, last_req_date)
 
