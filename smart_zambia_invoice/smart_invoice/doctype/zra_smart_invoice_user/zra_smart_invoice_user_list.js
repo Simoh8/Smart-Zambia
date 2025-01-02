@@ -1,19 +1,18 @@
-const doctype = "Branch";
+const doctypeName = "Navari eTims User";
 
-frappe.ui.form.on(doctype, {
-  refresh: function (frm) {
+frappe.listview_settings[doctypeName] = {
+  onload: function (listview) {
     const companyName = frappe.boot.sysdefaults.company;
 
-    frm.add_custom_button(
-      __("Fetch Imported Items"),
-      function () {
+    listview.page.add_inner_button(
+      __("Create from Current System Users"),
+      function (listview) {
         frappe.call({
           method:
-            "smart_zambia_invoice.smart_invoice.api.zra_api.perform_import_item_search",
+            "kenya_compliance.kenya_compliance.apis.apis.create_branch_user",
           args: {
             request_data: {
               company_name: companyName,
-              branch_code: frm.doc.custom_branch_code,
             },
           },
           callback: (response) => {},
@@ -21,8 +20,7 @@ frappe.ui.form.on(doctype, {
             // Error Handling is Defered to the Server
           },
         });
-      },
-      __("ZRA Actions")
+      }
     );
   },
-});
+};

@@ -172,3 +172,34 @@ def on_imported_items_search_success(response: dict) -> None:
     frappe.msgprint(
         "Imported Items Fetched. Go to <b>ZRA Registered Imported Item</b> Doctype for more information"
     )
+def on_success_search_branch_request(response: dict) -> None:
+    for branch in response["data"]["bhfList"]:
+        doc = None
+
+        try:
+            doc = frappe.get_doc(
+                "Branch",
+                {"branch": branch["bhfId"]},
+                for_update=True,
+            )
+
+        except frappe.exceptions.DoesNotExistError:
+            doc = frappe.new_doc("Branch")
+
+        finally:
+            doc.branch = branch["bhfId"]
+            doc.custom_branch_code = branch["bhfId"]
+            doc.custom_pin = branch["tin"]
+            doc.custom_branch_name = branch["bhfNm"]
+            doc.custom_branch_status_code = branch["bhfSttsCd"]
+            doc.custom_county_name = branch["prvncNm"]
+            doc.custom_sub_county_name = branch["dstrtNm"]
+            doc.custom_tax_locality_name = branch["sctrNm"]
+            doc.custom_location_description = branch["locDesc"]
+            doc.custom_manager_name = branch["mgrNm"]
+            doc.custom_manager_contact = branch["mgrTelNo"]
+            doc.custom_manager_email = branch["mgrEmail"]
+            doc.custom_is_head_office = branch["hqYn"]
+            doc.custom_is_etims_branch = 1
+
+            doc.save()

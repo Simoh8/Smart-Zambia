@@ -18,7 +18,7 @@ endpoint_builder = EndpointConstructor()
 
 
 @frappe.whitelist()
-def search_branch_request(request_data: str) -> None:
+def make_branch_request(request_data: str) -> None:
     data: dict = json.loads(request_data)
 
     company_name = data["company_name"]
@@ -26,14 +26,14 @@ def search_branch_request(request_data: str) -> None:
     headers = build_request_headers(company_name)
     
     server_url = get_server_url(company_name)
-    route_path, last_request_date = get_route_path("BhfSearchReq")
+    route_path, last_req_date = get_route_path("GET BRANCHES")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
-        request_date = last_request_date.strftime("%Y%m%d%H%M%S")
+        request_date = last_req_date.strftime("%Y%m%d%H%M%S")
 
-        payload = {"lastReqDt": "20240101000000"}
+        payload = build_common_payload(headers, last_req_date)
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -44,6 +44,8 @@ def search_branch_request(request_data: str) -> None:
         endpoint_builder.perform_remote_calls(
             doctype="Branch",
         )
+        
+        
 # searching for the new notices available from zra
 @frappe.whitelist()
 def perform_zra_notice_search(request_data: str) -> None:
@@ -227,12 +229,12 @@ def perform_import_item_search(request_data: str) -> None:
         print("The headers are: ", headers)
         server_url = get_server_url(company_name)
 
-        route_path, last_req_date = get_route_path("GET IMPORTS")
-        last_req_date_str = last_req_date.strftime("%Y%m%d%H%M%S")
+        # last_req_date_str = last_req_date.strftime("%Y%m%d%H%M%S")
+    route_path, last_req_date = get_route_path("GET IMPORTS")
 
 
     if headers and server_url and route_path:
-        request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
+        # request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
         url = f"{server_url}{route_path}"
         common_payload = build_common_payload(headers, last_req_date)
 
@@ -246,3 +248,23 @@ def perform_import_item_search(request_data: str) -> None:
         endpoint_builder.error_callback = on_error
 
         endpoint_builder.perform_remote_calls()
+        
+        
+@frappe.whitelist()
+def create_branch_user() -> None:
+    # TODO: Implement auto-creation through background tasks
+    present_users = frappe.db.get_all(
+        "User", {"name": ["not in", ["Administrator", "Guest"]]}, ["name", "email"]
+    )
+
+    for user in present_users:
+        doc = frappe.new_doc("ZRA Smart Invoice User")
+
+        doc.system_user = user.email
+        doc.branch_id = frappe.get_value(
+            "Branch", {"custom_branch_code": "00"}, ["name"]
+        )  # Created users are assigned to Branch 00
+
+        doc.save()
+
+    frappe.msgprint("Inspect the Branches to make sure they are mapped correctly")
