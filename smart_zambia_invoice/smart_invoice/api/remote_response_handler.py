@@ -1,3 +1,4 @@
+import datetime
 import frappe
 
 
@@ -101,4 +102,73 @@ def on_succesful_customer_search(
             "custom_customer_sector_name": response["sctrNm"],
             "custom_is_validated": 1,
         },
+    )
+
+
+
+def on_imported_items_search_success(response: dict) -> None:
+    items = response["data"]["itemList"]
+    
+
+    def create_if_not_exists(doctype: str, code: str) -> str:
+        """Create the code if the record doesn't exist for the doctype
+
+        Args:
+            doctype (str): The doctype to check and create
+            code (str): The code to filter the record
+
+        Returns:
+            str: The code of the created record
+        """
+        present_code = frappe.db.exists(doctype, {"code": code})
+
+        if not present_code:
+            created = frappe.get_doc(
+                {
+                    "doctype": doctype,
+                    "code": code,
+                    "code_name": code,
+                    "code_description": code,
+                }
+            ).insert(ignore_permissions=True, ignore_if_duplicate=True)
+
+            return created.code_name
+
+        return present_code
+
+    for item in items:
+        doc = frappe.new_doc("ZRA Registered Imported Item")
+
+        doc.item_name = item["itemNm"]
+        doc.task_code = item["taskCd"]
+        doc.declaration_date = datetime.strptime(item["dclDe"], "%d%m%Y")
+        doc.item_sequence = item["itemSeq"]
+        doc.declaration_number = item["dclNo"]
+        doc.hs_code = item["hsCd"]
+        doc.origin_nation_code = frappe.db.get_value(
+            "Smart Zambia Country", {"code": item["orgnNatCd"]}, "code_name"
+        )
+        doc.export_nation_code = frappe.db.get_value(
+            "Smart Zambia Country", {"code": item["exptNatCd"]}, "code_name"
+        )
+        doc.package = item["pkg"]
+        doc.packaging_unit_code = create_if_not_exists(
+            "Smart Zambia Country", item["pkgUnitCd"]
+        )
+        doc.quantity = item["qty"]
+        doc.quantity_unit_code = create_if_not_exists(
+            "ZRA Unit of Quantity", item["qtyUnitCd"]
+        )
+        doc.gross_weight = item["totWt"]
+        doc.net_weight = item["netWt"]
+        doc.suppliers_name = item["spplrNm"]
+        doc.agent_name = item["agntNm"]
+        doc.invoice_foreign_currency_amount = item["invcFcurAmt"]
+        doc.invoice_foreign_currency = item["invcFcurCd"]
+        doc.invoice_foreign_currency_rate = item["invcFcurExcrt"]
+
+        doc.save()
+
+    frappe.msgprint(
+        "Imported Items Fetched. Go to <b>ZRA Registered Imported Item</b> Doctype for more information"
     )

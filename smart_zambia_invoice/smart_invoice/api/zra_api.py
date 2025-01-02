@@ -9,7 +9,7 @@ from datetime import datetime
 from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
-from .remote_response_handler import notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success,on_succesful_customer_search
+from .remote_response_handler import notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success,on_succesful_customer_search
 from .. utilities import (build_request_headers,get_route_path,make_get_request,make_post_request,split_user_mail,get_server_url)
 
 
@@ -183,6 +183,7 @@ def perform_customer_search(request_data: str) -> None:
         request_data (str): Data received from the client
     """
     data: dict = json.loads(request_data)
+    print("The data is: ", data)
 
     company_name = data["company_name"]
 
@@ -211,3 +212,44 @@ def perform_customer_search(request_data: str) -> None:
             document_name=data["name"],
             job_name=f"{data['name']}_customer_search",
         )
+
+
+
+
+@frappe.whitelist()
+def perform_import_item_search(request_data: str) -> None:
+    data: dict = json.loads(request_data)
+
+    company_name = data["company_name"]
+
+    if "branch_code" in data:
+        headers = build_request_headers(company_name, data["branch_code"])
+        server_url = get_server_url(company_name, data["branch_code"])
+
+    else:
+        headers = build_request_headers(company_name)
+        print("The headers are: ", headers)
+        server_url = get_server_url(company_name)
+
+        route_path, last_req_date = get_route_path("GET IMPORTS")
+        last_req_date_str = last_req_date.strftime("%Y%m%d%H%M%S")
+        tpin = headers.get("tpin")
+        bhfId = headers.get("bhfId")
+
+    if headers and server_url and route_path:
+        request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
+        url = f"{server_url}{route_path}"
+        payload = {
+            "tpin": tpin,
+            "lastReqDt": last_req_date_str,
+            "bhfId": bhfId,
+            "dclRefNum":"CX1100096839"
+            }
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = on_imported_items_search_success
+        endpoint_builder.error_callback = on_error
+
+        endpoint_builder.perform_remote_calls()
