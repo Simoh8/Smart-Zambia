@@ -10,7 +10,7 @@ from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
 from .remote_response_handler import notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success,on_succesful_customer_search
-from .. utilities import (build_request_headers,get_route_path,make_get_request,make_post_request,split_user_mail,get_server_url)
+from .. utilities import (build_request_headers,get_route_path,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload)
 
 
 
@@ -50,8 +50,7 @@ def perform_zra_notice_search(request_data: str) -> None:
     data: dict = json.loads(request_data)
     company_name = data["company_name"]
     headers = build_request_headers(company_name)
-    tpin = headers.get("tpin")
-    bhfId = headers.get("bhfId")
+
 
     server_url = get_server_url(company_name)
 
@@ -65,11 +64,8 @@ def perform_zra_notice_search(request_data: str) -> None:
         url = f"{server_url}{route_path}"
 
         # Include tpin and bhfId in the payload
-        payload = {
-            "tpin": tpin,
-            "lastReqDt": last_req_date_str,
-            "bhfId": bhfId
-        }
+        payload = build_common_payload(headers, last_req_date)
+
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -233,18 +229,15 @@ def perform_import_item_search(request_data: str) -> None:
 
         route_path, last_req_date = get_route_path("GET IMPORTS")
         last_req_date_str = last_req_date.strftime("%Y%m%d%H%M%S")
-        tpin = headers.get("tpin")
-        bhfId = headers.get("bhfId")
+
 
     if headers and server_url and route_path:
         request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
         url = f"{server_url}{route_path}"
-        payload = {
-            "tpin": tpin,
-            "lastReqDt": last_req_date_str,
-            "bhfId": bhfId,
-            "dclRefNum":"CX1100096839"
-            }
+        common_payload = build_common_payload(headers, last_req_date)
+
+        payload = {**common_payload, "dclRefNum": "CX1100096839"}
+
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url

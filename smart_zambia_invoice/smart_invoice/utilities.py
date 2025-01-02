@@ -76,6 +76,24 @@ def get_server_url(company_name: str, branch_id: str = "001") -> str | None:
 
 
 
+def build_common_payload(headers: dict, last_req_date: datetime) -> dict:
+    """
+    Constructs the common payload fields used in both APIs.
+    Args:
+        headers (dict): HTTP headers containing 'tpin' and 'bhfId'.
+        last_req_date (datetime): The last request date.
+
+    Returns:
+        dict: A dictionary containing the common payload fields.
+    """
+    return {
+        "tpin": headers.get("tpin"),
+        "lastReqDt": last_req_date.strftime("%Y%m%d%H%M%S"),
+        "bhfId": headers.get("bhfId"),
+    }
+
+
+
 def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str, str] | None:
     settings = get_current_env_settings(company_name, branch_id=branch_id)
     print("on the build headers ", settings)
