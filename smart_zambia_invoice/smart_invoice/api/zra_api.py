@@ -9,7 +9,7 @@ from datetime import datetime
 from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
-from .remote_response_handler import notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success,on_succesful_customer_search
+from .remote_response_handler import on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success,on_succesful_customer_search,
 from .. utilities import (build_request_headers,get_route_path,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload)
 
 
@@ -101,7 +101,6 @@ def ping_zra_server(request_data: str) -> None:
 
     except Exception as e:
         frappe.msgprint(f"Unexpected error: {str(e)}")
-
 
 
 @frappe.whitelist()
@@ -215,6 +214,57 @@ def perform_customer_search(request_data: str) -> None:
 
 
 
+
+@frappe.whitelist()
+def submit_branch_customer_details(request_data: str) -> None:
+    data: dict = json.loads(request_data)
+
+    company_name = data["company_name"]
+
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_request_date = get_route_path("BhfCustSaveReq")
+
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+        payload = {
+            "custNo": data["name"][:14],
+            "custTin": data["customer_pin"],
+            "custNm": data["customer_name"],
+            "adrs": None,
+            "telNo": None,
+            "email": None,
+            "faxNo": None,
+            "useYn": "Y",
+            "remark": None,
+            "regrNm": data["registration_id"],
+            "regrId": split_user_mail(data["registration_id"]),
+            "modrNm": data["modifier_id"],
+            "modrId": split_user_mail(data["modifier_id"]),
+        }
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = partial(
+            on_success_customer_branch_details_submission, document_name=data["name"]
+        )
+        endpoint_builder.error_callback = on_error
+
+        frappe.enqueue(
+            endpoint_builder.perform_remote_calls,
+            is_async=True,
+            queue="default",
+            timeout=300,
+            doctype="Customer",
+            document_name=data["name"],
+            job_name=f"{data['name']}_submit_customer_branch_details",
+        )
+
+
+
+
+
 @frappe.whitelist()
 def perform_import_item_search(request_data: str) -> None:
     data: dict = json.loads(request_data)
@@ -247,7 +297,59 @@ def perform_import_item_search(request_data: str) -> None:
 
         endpoint_builder.perform_remote_calls()
         
-        
+
+
+
+
+
+@frappe.whitelist()
+def send_insurance_details(request_data: str) -> None:
+    data: dict = json.loads(request_data)
+
+    company_name = data["company_name"]
+
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_request_date = get_route_path("BhfInsuranceSaveReq")
+
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+        payload = {
+            "isrccCd": data["insurance_code"],
+            "isrccNm": data["insurance_name"],
+            "isrcRt": round(data["premium_rate"], 0),
+            "useYn": "Y",
+            "regrNm": data["registration_id"],
+            "regrId": split_user_mail(data["registration_id"]),
+            "modrNm": data["modifier_id"],
+            "modrId": split_user_mail(data["modifier_id"]),
+        }
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = partial(
+            on_success_customer_insurance_details_submission, document_name=data["name"]
+        )
+        endpoint_builder.error_callback = on_error
+
+        frappe.enqueue(
+            endpoint_builder.make_remote_call,
+            is_async=True,
+            queue="default",
+            timeout=300,
+            doctype="Customer",
+            document_name=data["name"],
+            job_name=f"{data['name']}_submit_insurance_information",
+        )
+
+
+
+
+
+
+
+
 @frappe.whitelist()
 def create_branch_user() -> None:
     # TODO: Implement auto-creation through background tasks

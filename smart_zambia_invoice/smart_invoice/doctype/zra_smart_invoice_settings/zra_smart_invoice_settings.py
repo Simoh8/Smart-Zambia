@@ -34,7 +34,6 @@ class ZRASmartInvoiceSettings(Document):
                     "bhfId": self.branch_id,
                     "dvcSrlNo": self.vsdc_device_serial_number,
                 }
-                print("The Payload is ", payload)
 
                 integration_request = create_request_log(
                     data=payload,

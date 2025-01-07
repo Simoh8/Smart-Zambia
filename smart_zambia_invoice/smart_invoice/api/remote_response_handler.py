@@ -30,6 +30,31 @@ def item_composition_submission_succes(response: dict, document_name: str) -> No
     )
 
 
+def on_success_customer_branch_details_submission(
+    response: dict, document_name: str
+) -> None:
+    frappe.db.set_value(
+        "Customer",
+        document_name,
+        {"custom_details_submitted_successfully": 1},
+    )
+
+
+# def user_details_submission_on_success(response: dict, document_name: str) -> None:
+#     frappe.db.set_value(
+#         USER_DOCTYPE_NAME, document_name, {"submitted_successfully_to_etims": 1}
+#     )
+
+
+
+def on_success_customer_insurance_details_submission(
+    response: dict, document_name: str
+) -> None:
+    frappe.db.set_value(
+        "Customer",
+        document_name,
+        {"custom_insurance_details_submitted_successfully": 1},
+    )
 
 
 def on_error(
