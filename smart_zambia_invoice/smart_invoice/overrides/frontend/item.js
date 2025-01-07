@@ -4,25 +4,25 @@ frappe.ui.form.on(itemDoctypName, {
   refresh: function (frm) {
     const companyName = frappe.boot.sysdefaults.company;
 
-    if (frm.doc.custom_item_registered) {
-      frm.toggle_enable('custom_item_classification', false);
-      frm.toggle_enable('custom_etims_country_of_origin', false);
-      frm.toggle_enable('custom_taxation_type', false);
-      frm.toggle_enable('custom_packaging_unit', false);
-      frm.toggle_enable('custom_unit_of_quantity', false);
-      frm.toggle_enable('custom_product_type', false);
+    if (frm.doc.custom_zra_item_registered_) {
+      frm.toggle_enable('custom_zra_item_classification_code', false);
+      frm.toggle_enable('custom_zra_country_of_origin', false);
+      frm.toggle_enable('custom_zra_tax_type', false);
+      frm.toggle_enable('custom_zra_packaging_unit', false);
+      frm.toggle_enable('custom_zras_unit_of_quantity', false);
+      frm.toggle_enable('custom_zra_product_type_code', false);
     }
 
-    if (frm.doc.custom_imported_item_submitted) {
-      frm.toggle_enable('custom_referenced_imported_item', false);
-      frm.toggle_enable('custom_imported_item_status', false);
+    if (frm.doc.custom_zra_imported_item_submitted_) {
+      frm.toggle_enable('custom_zra_referenced_imported_item', false);
+      frm.toggle_enable('custom_zra_imported_item_status', false);
     }
 
     if (!frm.is_new()) {
       if (
-        !frm.doc.custom_item_registered &&
-        frm.doc.custom_item_classification &&
-        frm.doc.custom_taxation_type
+        !frm.doc.custom_zra_item_registered_ 
+        // frm.doc.custom_item_classification &&
+        // frm.doc.custom_taxation_type
       ) {
         frm.add_custom_button(
           __('Register Item'),
@@ -30,7 +30,7 @@ frappe.ui.form.on(itemDoctypName, {
             // call with all options
             frappe.call({
               method:
-                'smart_zambia_invoice.smart_invoice.api.zra_ap.make_item_registration',
+                'smart_zambia_invoice.smart_invoice.api.zra_api.make_item_registration',
               args: {
                 request_data: {
                   name: frm.doc.name,
