@@ -228,3 +228,10 @@ def on_success_search_branch_request(response: dict) -> None:
             doc.custom_is_etims_branch = 1
 
             doc.save()
+
+
+
+
+def on_success_item_registration(response: dict, document_name: str) -> None:
+    frappe.db.set_value("Item", document_name, {"custom_item_registered": 1})
+
