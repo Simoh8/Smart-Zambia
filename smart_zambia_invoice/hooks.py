@@ -36,6 +36,7 @@ fixtures = [
                           "Supplier",
                           "Warehouse",
                           "Customer Group",
+                          "ZRA Smart Invoice Settings",
                           "Customer",
                           "Item Tax Template",
                           "Purchase Invoice",
