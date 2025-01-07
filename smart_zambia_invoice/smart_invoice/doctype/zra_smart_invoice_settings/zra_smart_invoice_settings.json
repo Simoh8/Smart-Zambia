@@ -25,7 +25,8 @@
   "branch_name",
   "branch_id",
   "vsdc_device_serial_number",
-  "zra_sales_control_unit_id"
+  "zra_sales_control_unit_id",
+  "custom_sales_control_unit_id"
  ],
  "fields": [
   {
@@ -150,11 +151,16 @@
    "fieldname": "is_active_",
    "fieldtype": "Check",
    "label": "Is Active ?"
+  },
+  {
+   "fieldname": "custom_sales_control_unit_id",
+   "fieldtype": "Data",
+   "label": "Sales Control Unit Id"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-10 13:54:19.627447",
+ "modified": "2025-01-07 10:20:47.760120",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",
