@@ -35,15 +35,15 @@ frappe.ui.form.on(itemDoctypName, {
                 request_data: {
                   name: frm.doc.name,
                   company_name: companyName,
-                  itemCd: frm.doc.custom_item_code_etims,
+                  itemCd: frm.doc.custom_zra_item_code,
                   itemClsCd: frm.doc.custom_item_classification,
                   itemTyCd: frm.doc.custom_product_type,
                   itemNm: frm.doc.item_name,
                   temStdNm: null,
-                  orgnNatCd: frm.doc.custom_etims_country_of_origin_code,
-                  pkgUnitCd: frm.doc.custom_packaging_unit_code,
-                  qtyUnitCd: frm.doc.custom_unit_of_quantity_code,
-                  taxTyCd: frm.doc.custom_taxation_type || 'B',
+                  orgnNatCd: frm.doc.custom_zra_country_origin_code,
+                  pkgUnitCd: frm.doc.custom_zra_packaging_unit_code,
+                  qtyUnitCd: frm.doc.custom_zra_unit_quantity_code,
+                  taxTyCd: frm.doc.custom_zra_tax_type || 'B',
                   btchNo: null,
                   bcd: null,
                   dftPrc: frm.doc.valuation_rate.toFixed(2),
@@ -112,36 +112,36 @@ frappe.ui.form.on(itemDoctypName, {
         frm.doc.custom_item_classification &&
         frm.doc.custom_taxation_type
       ) {
-        // frm.add_custom_button(
-        //   __('Submit Imported Item'),
-        //   function () {
-        //     frappe.call({
-        //       method:
-        //         'kenya_compliance.kenya_compliance.apis.apis.send_imported_item_request',
-        //       args: {
-        //         request_data: {
-        //           company_name: companyName,
-        //           name: frm.doc.name,
-        //           item_sequence: frm.doc.idx,
-        //           item_code: frm.doc.custom_item_code_etims,
-        //           task_code: frm.doc.custom_imported_item_task_code,
-        //           item_classification_code: frm.doc.custom_item_classification,
-        //           import_item_status: frm.doc.custom_imported_item_status_code,
-        //           hs_code: frm.doc.custom_hs_code,
-        //           modified_by: frm.doc.modified_by,
-        //           declaration_date: frm.doc.creation,
-        //         },
-        //       },
-        //       callback: (response) => {
-        //         frappe.msgprint('Request queued. Check later.');
-        //       },
-        //       error: (error) => {
-        //         // Error Handling is Defered to the Server
-        //       },
-        //     });
-        //   },
-        //   __('ZRA Actions'),
-        // );
+        frm.add_custom_button(
+          __('Submit Imported Item'),
+          function () {
+            frappe.call({
+              method:
+                'kenya_compliance.kenya_compliance.apis.apis.send_imported_item_request',
+              args: {
+                request_data: {
+                  company_name: companyName,
+                  name: frm.doc.name,
+                  item_sequence: frm.doc.idx,
+                  item_code: frm.doc.custom_zra_item_code,
+                  task_code: frm.doc.custom_zra_imported_item_task_code,
+                  item_classification_code: frm.doc.custom_zra_item_classification_code,
+                  import_item_status: frm.doc.custom_zra_imported_item_status_code,
+                  hs_code: frm.doc.custom_zra_hs_code,
+                  modified_by: frm.doc.modified_by,
+                  declaration_date: frm.doc.creation,
+                },
+              },
+              callback: (response) => {
+                frappe.msgprint('Request queued. Check later.');
+              },
+              error: (error) => {
+                // Error Handling is Defered to the Server
+              },
+            });
+          },
+          __('ZRA Actions'),
+        );
       }
     }
   },

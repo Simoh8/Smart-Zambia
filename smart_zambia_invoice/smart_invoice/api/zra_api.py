@@ -371,32 +371,50 @@ def create_branch_user() -> None:
 
 
 
-
-
-
 @frappe.whitelist()
 def make_item_registration(request_data: str) -> dict | None:
+    """
+    Registers an item with ZRA by making a remote call.
+
+    Args:
+        request_data (str): JSON string containing request data.
+
+    Returns:
+        dict | None: None if the function is executed asynchronously, or a result dictionary if needed.
+    """
+    # Parse incoming data
     data: dict = json.loads(request_data)
 
+    # Extract company name and build headers, server URL, and route path
     company_name = data.pop("company_name")
-
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_request_date = get_route_path("ItemSaveReq")
+    route_path, last_req_date = get_route_path("SAVE ITEM")
 
     if headers and server_url and route_path:
+        # Construct the full URL
         url = f"{server_url}{route_path}"
 
+        # Build the common payload fields
+        common_payload = build_common_payload(headers, last_req_date)
+
+        # Combine the common payload with the specific item data
+        payload = {**common_payload, **data}
+        
+        print("The payload sent is ",payload)
+
+        # Set up the endpoint builder
         endpoint_builder.headers = headers
         endpoint_builder.url = url
-        endpoint_builder.payload = data
+        endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(
             on_success_item_registration, document_name=data["name"]
         )
         endpoint_builder.error_callback = on_error
 
+        # Enqueue the task for asynchronous execution
         frappe.enqueue(
-            endpoint_builder.make_remote_call,
+            endpoint_builder.perform_remote_calls,
             is_async=True,
             queue="default",
             timeout=300,
@@ -404,4 +422,5 @@ def make_item_registration(request_data: str) -> dict | None:
             document_name=data["name"],
             job_name=f"{data['name']}_register_item",
         )
+
 

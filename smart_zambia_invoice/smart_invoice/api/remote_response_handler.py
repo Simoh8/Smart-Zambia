@@ -40,10 +40,6 @@ def on_success_customer_branch_details_submission(
     )
 
 
-# def user_details_submission_on_success(response: dict, document_name: str) -> None:
-#     frappe.db.set_value(
-#         USER_DOCTYPE_NAME, document_name, {"submitted_successfully_to_etims": 1}
-#     )
 
 
 
@@ -197,6 +193,9 @@ def on_imported_items_search_success(response: dict) -> None:
     frappe.msgprint(
         "Imported Items Fetched. Go to <b>ZRA Registered Imported Item</b> Doctype for more information"
     )
+
+
+
 def on_success_search_branch_request(response: dict) -> None:
     for branch in response["data"]["bhfList"]:
         doc = None
@@ -231,7 +230,7 @@ def on_success_search_branch_request(response: dict) -> None:
 
 
 
-
 def on_success_item_registration(response: dict, document_name: str) -> None:
-    frappe.db.set_value("Item", document_name, {"custom_item_registered": 1})
+    print("The response is ",response)
+    frappe.db.set_value("Item", document_name, {"custom_zra_item_registered_": 1})
 
