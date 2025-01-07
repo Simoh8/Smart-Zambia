@@ -30,7 +30,7 @@ frappe.ui.form.on(itemDoctypName, {
             // call with all options
             frappe.call({
               method:
-                'smart_zambia_invoice.smart_invoice.api.zra_api.make_item_registration',
+                'smart_zambia_invoice.smart_invoice.api.zra_ap.make_item_registration',
               args: {
                 request_data: {
                   name: frm.doc.name,
