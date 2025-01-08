@@ -93,13 +93,16 @@ before_uninstall = "smart_zambia_invoice.uninstall.cleanup_custom_fields"
 doctype_js = {
     "Branch": "smart_invoice/overrides/frontend/branch.js",
     "BOM": "smart_invoice/overrides/frontend/zra_bom.js",
-    "Item": "smart_invoice/overrides/frontend/item.js"
+    "Item": "smart_invoice/overrides/frontend/item.js",
+    "Customer": "smart_invoice/overrides/frontend/customer.js"
+
 }
 
 
 doctype_list_js = {
     "Item": "smart_invoice/overrides/frontend/item_list.js",
-    "Branch":"smart_invoice/overrides/frontend/zra_branch_list.js"
+    "Branch":"smart_invoice/overrides/frontend/zra_branch_list.js",
+
     }
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -195,7 +198,7 @@ override_doctype_class = {
 
 doc_events = {
 	"Item": {
-		"validate": ["smart_zabia_invoice.smart_zambia.overrides.backend.item.validate"],
+		"validate": ["smart_zambia_invoice.smart_zambia.overrides.backend.item.validate"],
 
 	}
 }

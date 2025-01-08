@@ -112,6 +112,11 @@ class EndpointConstructor(BaseEndpointConstructor):
     def error_callback(self, callback: Callable[[dict | str, str, str, str], None]) -> None:
         self._error_callback_handler = callback
 
+
+
+
+
+# the function does the remoe calls for all the requests made to ZRA
     def perform_remote_calls(self, doctype: Document | str | None = None, document_name: str | None = None) -> None:
         if not all([self._url, self._headers, self._success_callback_handler, self._error_callback_handler]):
             frappe.throw(

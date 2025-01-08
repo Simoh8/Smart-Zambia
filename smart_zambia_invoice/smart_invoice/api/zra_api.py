@@ -187,7 +187,7 @@ def perform_customer_search(request_data: str) -> None:
 
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_request_date = get_route_path("CustSearchReq")
+    route_path, last_request_date = get_route_path("GET CUSTOMERS")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"

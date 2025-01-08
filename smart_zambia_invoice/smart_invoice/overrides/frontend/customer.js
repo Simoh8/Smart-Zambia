@@ -10,7 +10,7 @@ frappe.ui.form.on(doctypeName, {
         function () {
           frappe.call({
             method:
-              "smart_zambia_invoice.smart_invoice.api.zra.api.perform_customer_search",
+              "smart_zambia_invoice.smart_invoice.api.zra_api.perform_customer_search",
             args: {
               request_data: {
                 name: frm.doc.name,
@@ -57,9 +57,7 @@ frappe.ui.form.on(doctypeName, {
       }
     }
 
-    if (
-      frm.doc.custom_insurance_applicable &&
-      !frm.doc.custom_insurance_details_submitted_successfully
+    if (frm.doc.custom_insurance_applicable && !frm.doc.custom_insurance_details_submitted_successfully
     ) {
       frm.add_custom_button(
         __("Send Insurance Details"),
