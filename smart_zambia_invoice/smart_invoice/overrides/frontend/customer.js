@@ -69,7 +69,7 @@ frappe.ui.form.on(doctypeName, {
         function () {
           frappe.call({
             method:
-              "smart_zambia_invoice.samrt_zambi.api.zra_api.send_insurance_details",
+              "smart_zambia_invoice.smart_zambi.api.zra_api.send_insurance_details",
             args: {
               request_data: {
                 name: frm.doc.name,
@@ -90,7 +90,7 @@ frappe.ui.form.on(doctypeName, {
             },
           });
         },
-        __("eTims Actions")
+        __("ZRA Actions")
       );
     }
 
