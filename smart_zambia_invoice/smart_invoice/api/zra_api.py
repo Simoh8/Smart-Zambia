@@ -10,7 +10,7 @@ from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
 from .remote_response_handler import  on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success,on_succesful_customer_search
-from .. utilities import (build_request_headers,get_route_path,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload)
+from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload)
 
 
 
@@ -217,32 +217,56 @@ def perform_customer_search(request_data: str) -> None:
 
 @frappe.whitelist()
 def submit_branch_customer_details(request_data: str) -> None:
+    """
+    Submits branch customer details to the ZRA system.
+
+    Args:
+        request_data (str): JSON string containing request data.
+
+    Returns:
+        None
+    """
+    # Parse request data
     data: dict = json.loads(request_data)
+    print("The data sent is ",data)
 
+    # Extract company information and build headers, server URL, and route path
     company_name = data["company_name"]
-
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_request_date = get_route_path("BhfCustSaveReq")
+    route_path, last_req_date = get_route_path("SAVE BRANCH CUSTOMER")
+
 
     if headers and server_url and route_path:
+        # Construct the full URL
         url = f"{server_url}{route_path}"
-        payload = {
-            "custNo": data["name"][:14],
-            "custTin": data["customer_pin"],
+        print("The URL is ",url)
+
+        # Build the common payload fields
+        common_payload = last_request_less_payload(headers)
+        print("The common pyload is",common_payload)
+
+        # Construct the specific payload fields
+        specific_payload = {
+            "custNo": data["customer_phone"],
+            "custTpin": data["customer_pin"],
             "custNm": data["customer_name"],
-            "adrs": None,
-            "telNo": None,
-            "email": None,
-            "faxNo": None,
+            "adrs": "Thika Nairobi",
+            "telNo": data.get("customer_phone"),
+            "email": data.get("customer_email"),
+            "faxNo": "Non4455777e",
             "useYn": "Y",
-            "remark": None,
+            "remark": "DDYUJJIMMUUJN",
             "regrNm": data["registration_id"],
             "regrId": split_user_mail(data["registration_id"]),
             "modrNm": data["modifier_id"],
             "modrId": split_user_mail(data["modifier_id"]),
         }
 
+        # Merge the common payload and specific payload
+        payload = {**common_payload, **specific_payload}
+
+        # Configure the endpoint builder
         endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
@@ -251,15 +275,19 @@ def submit_branch_customer_details(request_data: str) -> None:
         )
         endpoint_builder.error_callback = on_error
 
-        frappe.enqueue(
-            endpoint_builder.perform_remote_calls,
-            is_async=True,
-            queue="default",
-            timeout=300,
-            doctype="Customer",
-            document_name=data["name"],
-            job_name=f"{data['name']}_submit_customer_branch_details",
-        )
+        endpoint_builder.perform_remote_calls()
+
+
+        # Enqueue the task for asynchronous execution
+        # frappe.enqueue(
+        #     endpoint_builder.perform_remote_calls,
+        #     is_async=True,
+        #     queue="default",
+        #     timeout=300,
+        #     doctype="Customer",
+        #     document_name=data["name"],
+        #     job_name=f"{data['name']}_submit_customer_branch_details",
+        # )
 
 
 

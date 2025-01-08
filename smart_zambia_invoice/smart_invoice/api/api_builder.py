@@ -128,8 +128,6 @@ class EndpointConstructor(BaseEndpointConstructor):
         self.doctype, self.document_name = doctype, document_name
         parsed_url = parse.urlparse(self._url)
         route_path = parsed_url.path.replace("/zrasandboxvsdc", "", 1)  # Remove the base path
-        frappe.log_error(f"Request Data: {self._payload}", "Debug Info")
-        frappe.log_error(f"Request Headers: {self._headers}", "Debug Info")
 
 
         self.integration_request = create_request_log(
@@ -143,7 +141,7 @@ class EndpointConstructor(BaseEndpointConstructor):
         )
         try:
             response = asyncio.run(make_post_request(self._url, self._payload, self._headers))
-            print("Hello world")
+            print("The payload used is ",self._payload)
 
 
             if response["resultCd"] == "000":

@@ -30,14 +30,18 @@ def item_composition_submission_succes(response: dict, document_name: str) -> No
     )
 
 
-def on_success_customer_branch_details_submission(
-    response: dict, document_name: str
-) -> None:
-    frappe.db.set_value(
-        "Customer",
-        document_name,
-        {"custom_details_submitted_successfully": 1},
-    )
+def on_success_customer_branch_details_submission(response: dict, document_name: str) -> None:
+    try:
+        # Update the document to indicate success
+        frappe.db.set_value("Customer", document_name, {"custom_details_submitted_successfully": 1})
+        
+        # Display a success message to the user
+        frappe.msgprint(frappe._("User Details Submitted Succesfully on ZRA Portal"))
+    
+    except Exception as e:
+        # Handle any exceptions that occur during the update process
+        frappe.log_error(f"Error updating customer document {document_name}: {str(e)}")
+        frappe.msgprint(frappe._("An error occurred while registering the user. Please try again."))
 
 
 

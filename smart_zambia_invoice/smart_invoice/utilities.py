@@ -92,6 +92,26 @@ def build_common_payload(headers: dict, last_req_date: datetime) -> dict:
         "bhfId": headers.get("bhfId"),
     }
 
+def last_request_less_payload (headers: dict, last_req_date: datetime = None) -> dict:
+    """
+    Constructs the common payload fields used in both APIs.
+    
+    Args:
+        headers (dict): HTTP headers containing 'tpin' and 'bhfId'.
+        last_req_date (datetime, optional): The last request date. Defaults to None.
+    
+    Returns:
+        dict: A dictionary containing the common payload fields.
+    """
+    payload = {
+        "tpin": headers.get("tpin"),
+        "bhfId": headers.get("bhfId"),
+    }
+
+    if last_req_date:
+        payload["lastReqDt"] = last_req_date.strftime("%Y%m%d%H%M%S")
+
+    return payload
 
 
 def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str, str] | None:

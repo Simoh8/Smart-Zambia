@@ -44,6 +44,11 @@ frappe.ui.form.on(doctypeName, {
                   company_name: companyName,
                   registration_id: frm.doc.owner,
                   modifier_id: frm.doc.modified_by,
+                  customer_address: frm.doc.address_html || "", // Default empty string if missing
+                  customer_phone: frm.doc.custom_phone_number || "",  // Default empty string if missing
+                  customer_email: frm.doc.custom_email_address || ""  // Default empty string if missing
+              
+
                 },
               },
               callback: (response) => {},
@@ -64,7 +69,7 @@ frappe.ui.form.on(doctypeName, {
         function () {
           frappe.call({
             method:
-              "kenya_compliance.kenya_compliance.apis.apis.send_insurance_details",
+              "smart_zambia_invoice.samrt_zambi.api.zra_api.send_insurance_details",
             args: {
               request_data: {
                 name: frm.doc.name,
