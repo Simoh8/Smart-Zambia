@@ -9,7 +9,7 @@ from datetime import datetime
 from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
-from .remote_response_handler import  on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success,on_succesful_customer_search
+from .remote_response_handler import  on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success,on_succesful_customer_search, on_success_user_details_submission
 from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload)
 
 
@@ -181,7 +181,6 @@ def perform_customer_search(request_data: str) -> None:
         request_data (str): Data received from the client
     """
     data: dict = json.loads(request_data)
-    print("The data is: ", data)
 
     company_name = data["company_name"]
 
@@ -191,7 +190,7 @@ def perform_customer_search(request_data: str) -> None:
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
-        payload = {"custmTin": data["tax_id"]}
+        payload = {"custmTpin": data["tax_id"]}
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -228,7 +227,6 @@ def submit_branch_customer_details(request_data: str) -> None:
     """
     # Parse request data
     data: dict = json.loads(request_data)
-    print("The data sent is ",data)
 
     # Extract company information and build headers, server URL, and route path
     company_name = data["company_name"]
@@ -240,11 +238,9 @@ def submit_branch_customer_details(request_data: str) -> None:
     if headers and server_url and route_path:
         # Construct the full URL
         url = f"{server_url}{route_path}"
-        print("The URL is ",url)
 
         # Build the common payload fields
         common_payload = last_request_less_payload(headers)
-        print("The common pyload is",common_payload)
 
         # Construct the specific payload fields
         specific_payload = {
@@ -378,24 +374,79 @@ def send_customer_insurance_details(request_data: str) -> None:
 
 
 
+# @frappe.whitelist()
+# def create_zra_branch_user() -> None:
+#     # TODO: Implement auto-creation through background tasks
+#     present_users = frappe.db.get_all(
+#         "User", {"name": ["not in", ["Administrator", "Guest"]]}, ["name", "email"]
+#     )
+
+#     for user in present_users:
+#         doc = frappe.new_doc("ZRA Smart Invoice User")
+
+#         doc.system_user = user.email
+#         doc.branch_id = frappe.get_value(
+#             "Branch", {"custom_branch_code": "00"}, ["name"]
+#         )  # Created users are assigned to Branch 00
+
+#         doc.save()
+
+#     frappe.msgprint("Inspect the Branches to make sure they are mapped correctly")
+
+
+
 @frappe.whitelist()
-def create_zra_branch_user() -> None:
-    # TODO: Implement auto-creation through background tasks
-    present_users = frappe.db.get_all(
-        "User", {"name": ["not in", ["Administrator", "Guest"]]}, ["name", "email"]
-    )
+def submit_zra_branch_user_details(request_data: str) -> None:
+    data: dict = json.loads(request_data)
+    company_name = data["company_name"]
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_request_date = get_route_path("SAVE BRANCH USER")
 
-    for user in present_users:
-        doc = frappe.new_doc("ZRA Smart Invoice User")
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+        common_payload = last_request_less_payload(headers)
 
-        doc.system_user = user.email
-        doc.branch_id = frappe.get_value(
-            "Branch", {"custom_branch_code": "00"}, ["name"]
-        )  # Created users are assigned to Branch 00
 
-        doc.save()
+        custom_payload = {
+            "userId": data["user_id"],
+            "userNm": data["full_names"],
+            "pwd": "password",  # TODO: Find a fix for this
+            "adrs": None,
+            "cntc": None,
+            "authCd": None,
+            "remark": None,
+            "useYn": "Y",
+            "regrNm": data["registration_id"],
+            "regrId": split_user_mail(data["registration_id"]),
+            "modrNm": data["modifier_id"],
+            "modrId": split_user_mail(data["modifier_id"]),
+        }
+        payload = {**common_payload, **custom_payload}
 
-    frappe.msgprint("Inspect the Branches to make sure they are mapped correctly")
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = partial(
+            on_success_user_details_submission, document_name=data["name"]
+        )
+        endpoint_builder.error_callback = on_error
+        endpoint_builder.perform_remote_calls()
+
+        # frappe.enqueue(
+        #     endpoints_builder.make_remote_call,
+        #     is_async=True,
+        #     queue="default",
+        #     timeout=300,
+        #     job_name=f"{data['name']}_send_branch_user_information",
+        #     doctype=USER_DOCTYPE_NAME,
+        #     document_name=data["name"],
+        # )
+
+
+
+
 
 
 

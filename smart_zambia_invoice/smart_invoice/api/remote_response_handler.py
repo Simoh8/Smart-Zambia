@@ -36,7 +36,7 @@ def on_success_customer_branch_details_submission(response: dict, document_name:
         frappe.db.set_value("Customer", document_name, {"custom_details_submitted_successfully": 1})
         
         # Display a success message to the user
-        frappe.msgprint(frappe._("User Details Submitted Succesfully on ZRA Portal"))
+        frappe.msgprint(frappe._("Customer Details Submitted Succesfully on ZRA Portal"))
     
     except Exception as e:
         # Handle any exceptions that occur during the update process
@@ -80,6 +80,7 @@ def on_error(
     )
 
 
+
 def fetch_branch_request_on_success(response: dict) -> None:
     for branch in response["data"]["bhfList"]:
         doc = None
@@ -111,7 +112,9 @@ def fetch_branch_request_on_success(response: dict) -> None:
             doc.custom_is_etims_branch = 1
 
             doc.save()
-            
+
+
+
 def on_succesful_customer_search(
     response: dict,
     document_name: str,
@@ -234,7 +237,16 @@ def on_success_search_branch_request(response: dict) -> None:
 
 
 
+
 def on_success_item_registration(response: dict, document_name: str) -> None:
     print("The response is ",response)
     frappe.db.set_value("Item", document_name, {"custom_zra_item_registered_": 1})
 
+
+
+def on_success_user_details_submission(response:dict, document_name:str)-> None:
+
+    frappe.msgprint(frappe._("The User Details have been Registered Succesfully on ZRA Portal"))
+
+    frappe.db.set_value("ZRA Smart Invoice User", document_name,{"registered_on_smart_invoice":1})
+    

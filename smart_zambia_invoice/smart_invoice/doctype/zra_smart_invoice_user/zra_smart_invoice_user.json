@@ -11,6 +11,7 @@
   "email",
   "column_break_zhyt",
   "branch_located",
+  "branch_id",
   "phone_number",
   "registered_on_smart_invoice"
  ],
@@ -47,7 +48,8 @@
    "default": "0",
    "fieldname": "registered_on_smart_invoice",
    "fieldtype": "Check",
-   "label": "Registered on Smart Invoice"
+   "label": "Registered on Smart Invoice",
+   "read_only": 1
   },
   {
    "fetch_from": "system_user.email",
@@ -60,11 +62,19 @@
    "fieldname": "phone_number",
    "fieldtype": "Data",
    "label": "Phone Number"
+  },
+  {
+   "fetch_from": "branch_located.custom_branch_code",
+   "fieldname": "branch_id",
+   "fieldtype": "Data",
+   "label": "Branch ID",
+   "options": "Branch",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-28 15:18:58.541750",
+ "modified": "2025-01-08 14:19:42.077856",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice User",
