@@ -328,10 +328,10 @@ def perform_import_item_search(request_data: str) -> None:
 
 
 
-
+# Not applicable to the zabian ZRA API for now but its working
 
 @frappe.whitelist()
-def send_insurance_details(request_data: str) -> None:
+def send_customer_insurance_details(request_data: str) -> None:
     data: dict = json.loads(request_data)
 
     company_name = data["company_name"]
@@ -379,7 +379,7 @@ def send_insurance_details(request_data: str) -> None:
 
 
 @frappe.whitelist()
-def create_branch_user() -> None:
+def create_zra_branch_user() -> None:
     # TODO: Implement auto-creation through background tasks
     present_users = frappe.db.get_all(
         "User", {"name": ["not in", ["Administrator", "Guest"]]}, ["name", "email"]

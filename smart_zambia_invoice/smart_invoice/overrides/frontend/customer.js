@@ -64,34 +64,34 @@ frappe.ui.form.on(doctypeName, {
 
     if (frm.doc.custom_insurance_applicable && !frm.doc.custom_insurance_details_submitted_successfully
     ) {
-      frm.add_custom_button(
-        __("Send Insurance Details"),
-        function () {
-          frappe.call({
-            method:
-              "smart_zambia_invoice.smart_zambi.api.zra_api.send_insurance_details",
-            args: {
-              request_data: {
-                name: frm.doc.name,
-                tax_id: frm.doc.tax_id,
-                company_name: companyName,
-                insurance_code: frm.doc.custom_insurance_code,
-                insurance_name: frm.doc.custom_insurance_name,
-                premium_rate: frm.doc.custom_premium_rate,
-                registration_id: frm.doc.owner,
-                modifier_id: frm.doc.modified_by,
-              },
-            },
-            callback: (response) => {
-              frappe.msgprint("Request queued. Please check in later.");
-            },
-            error: (r) => {
-              // Error Handling is Defered to the Server
-            },
-          });
-        },
-        __("ZRA Actions")
-      );
+      // frm.add_custom_button(
+      //   __("Send Insurance Details"),
+      //   function () {
+      //     frappe.call({
+      //       method:
+      //         "smart_zambia_invoice.smart_invoice.api.zra_api.send_customer_insurance_details",
+      //       args: {
+      //         request_data: {
+      //           name: frm.doc.name,
+      //           tax_id: frm.doc.tax_id,
+      //           company_name: companyName,
+      //           insurance_code: frm.doc.custom_insurance_code,
+      //           insurance_name: frm.doc.custom_insurance_name,
+      //           premium_rate: frm.doc.custom_premium_rate,
+      //           registration_id: frm.doc.owner,
+      //           modifier_id: frm.doc.modified_by,
+      //         },
+      //       },
+      //       callback: (response) => {
+      //         frappe.msgprint("Request queued. Please check in later.");
+      //       },
+      //       error: (r) => {
+      //         // Error Handling is Defered to the Server
+      //       },
+      //     });
+      //   },
+      //   __("ZRA Actions")
+      // );
     }
 
     // frm.fields_dict.items.grid.get_field("item_classification_code").get_query =
@@ -143,3 +143,9 @@ frappe.ui.form.on(doctypeName, {
     );
   },
 });
+
+
+
+
+
+
