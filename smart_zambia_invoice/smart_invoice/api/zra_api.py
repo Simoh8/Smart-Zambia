@@ -529,14 +529,14 @@ def fetch_customer_info(request_data: str) -> None:
         endpoint_builder.success_callback = partial(on_success_customer_search, document_name=data["name"])
         endpoint_builder.error_callback = on_error
 
-        endpoint_builder.perform_remote_calls()
+        # endpoint_builder.perform_remote_calls()
 
-        # frappe.enqueue(
-        #     endpoint_builder.perform_remote_calls,
-        #     is_async=True,
-        #     queue="default",
-        #     timeout=300,
-        #     doctype="Customer",
-        #     document_name=data["name"],
-        #     job_name=f"{data['name']}_customer_search",
-        # )
+        frappe.enqueue(
+            endpoint_builder.perform_remote_calls,
+            is_async=True,
+            queue="default",
+            timeout=300,
+            doctype="Customer",
+            document_name=data["name"],
+            job_name=f"{data['name']}_customer_search",
+        )
