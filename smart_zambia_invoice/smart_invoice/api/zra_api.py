@@ -10,7 +10,7 @@ from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
 from .remote_response_handler import  on_success_customer_search, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_user_details_submission
-from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload)
+from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload, truncate_user_id)
 
 
 
@@ -405,15 +405,11 @@ def submit_zra_branch_user_details(request_data: str) -> None:
 
 
         custom_payload = {
-            "userId": data["user_id"],
+            "userId": truncate_user_id(data["user_id"]),
             "userNm": data["full_names"],
-            "pwd": "password",  # TODO: Find a fix for this
             "adrs": None,
-            "cntc": None,
-            "authCd": None,
-            "remark": None,
             "useYn": "Y",
-            "regrNm": data["registration_id"],
+            "regrNm": data["modifier_id"],
             "regrId": split_user_mail(data["registration_id"]),
             "modrNm": data["modifier_id"],
             "modrId": split_user_mail(data["modifier_id"]),
@@ -428,23 +424,17 @@ def submit_zra_branch_user_details(request_data: str) -> None:
             on_success_user_details_submission, document_name=data["name"]
         )
         endpoint_builder.error_callback = on_error
-        endpoint_builder.perform_remote_calls()
-
-        # frappe.enqueue(
-        #     endpoints_builder.make_remote_call,
-        #     is_async=True,
-        #     queue="default",
-        #     timeout=300,
-        #     job_name=f"{data['name']}_send_branch_user_information",
-        #     doctype=USER_DOCTYPE_NAME,
-        #     document_name=data["name"],
-        # )
 
 
-
-
-
-
+        frappe.enqueue(
+            endpoint_builder.perform_remote_calls,
+            is_async=True,
+            queue="default",
+            timeout=300,
+            doctype="ZRA Smart Invoice User",
+            document_name=data["name"][:20],  # Ensure `document_name` is truncated
+            job_name=f"{data['name'][:10]}_info",  # Ensure `job_name` fits
+        )
 
 @frappe.whitelist()
 def make_item_registration(request_data: str) -> dict | None:

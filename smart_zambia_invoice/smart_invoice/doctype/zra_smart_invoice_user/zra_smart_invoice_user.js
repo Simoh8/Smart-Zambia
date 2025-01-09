@@ -11,7 +11,7 @@ frappe.ui.form.on(doctypeName, {
   refresh: async function (frm) {
     const companyName = frappe.boot.sysdefaults.company;
 
-    if (!frm.is_new()) {
+    if (!frm.is_new() && !frm.doc.registered_on_smart_invoice) {
       frm.add_custom_button(
         __("Submit Branch User Details"),
         function () {
@@ -30,7 +30,7 @@ frappe.ui.form.on(doctypeName, {
               },
             },
             callback: (response) => {
-              frappe.msgprint("Request queued. Please check in later.");
+              frappe.msgprint("Request queued. Please refresh the tab.");
             },
             error: (r) => {
               // Error Handling is Defered to the Server

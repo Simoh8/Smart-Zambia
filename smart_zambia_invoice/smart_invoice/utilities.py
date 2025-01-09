@@ -494,3 +494,25 @@ def show_success_message(msg: str) -> None:
         title="Success",
         indicator="green"
     )
+
+
+
+def show_que_success(job, connection, result, *args, **kwargs):
+    # This function is executed after the job has completed successfully
+    frappe.msgprint("The activity has been completed successfully!")
+    # You can also do additional logic here if needed
+
+
+
+def truncate_user_id(user_id, max_length=20):
+    """
+    Truncate the user_id to a maximum length.
+
+    Args:
+        user_id (str): The original user_id.
+        max_length (int): The maximum allowed length for the user_id.
+
+    Returns:
+        str: The truncated user_id.
+    """
+    return user_id[:max_length]

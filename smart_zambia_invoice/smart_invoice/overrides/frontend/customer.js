@@ -1,16 +1,20 @@
+// Copyright (c) 2024, simon muturi and contributors
+// For license information, please see license.txt
+
+
 const doctypeName = "Customer";
 
 frappe.ui.form.on(doctypeName, {
   refresh: async function (frm) {
     const companyName = frappe.boot.sysdefaults.company;
 
-    if (!frm.is_new() && frm.doc.tax_id) {
+    // Only show the "Fetch Customer Details" button if custom_details_submitted_successfully is false
+    if (!frm.is_new() && frm.doc.tax_id && frm.doc.custom_details_submitted_successfully) {
       frm.add_custom_button(
         __("Fetch Customer Details"),
         function () {
           frappe.call({
-            method:
-              "smart_zambia_invoice.smart_invoice.api.zra_api.fetch_customer_info",
+            method: "smart_zambia_invoice.smart_invoice.api.zra_api.fetch_customer_info",
             args: {
               request_data: {
                 name: frm.doc.name,
@@ -19,100 +23,50 @@ frappe.ui.form.on(doctypeName, {
               },
             },
             callback: (response) => {
-              frappe.msgprint("Search queued. Please check in later.");
+              frappe.msgprint("Search queued. Please refresh the tab");
             },
             error: (r) => {
-              // Error Handling is Defered to the Server
+              // Error Handling is Deferred to the Server
             },
           });
         },
         __("ZRA Actions")
       );
-
-      if (!frm.doc.custom_details_submitted_successfully) {
-        frm.add_custom_button(
-          __("Submit Customer Details"),
-          function () {
-            frappe.call({
-              method:
-                "smart_zambia_invoice.smart_invoice.api.zra_api.submit_branch_customer_details",
-              args: {
-                request_data: {
-                  name: frm.doc.name,
-                  customer_pin: frm.doc.tax_id,
-                  customer_name: frm.doc.customer_name,
-                  company_name: companyName,
-                  registration_id: frm.doc.owner,
-                  modifier_id: frm.doc.modified_by,
-                  customer_remarks:frm.doc.customer_details || "",
-                  customer_address: frm.doc.custom_location_address || "", // Default empty string if missing
-                  customer_phone: frm.doc.custom_phone_number || "",  // Default empty string if missing
-                  customer_email: frm.doc.custom_email_address || ""  // Default empty string if missing
-              
-
-                },
+    } else if (!frm.doc.custom_details_submitted_successfully) {
+      // Only show the "Submit Customer Details" button if custom_details_submitted_successfully is false
+      frm.add_custom_button(
+        __("Submit Customer Details"),
+        function () {
+          frappe.call({
+            method:
+              "smart_zambia_invoice.smart_invoice.api.zra_api.submit_branch_customer_details",
+            args: {
+              request_data: {
+                name: frm.doc.name,
+                customer_pin: frm.doc.tax_id,
+                customer_name: frm.doc.customer_name,
+                company_name: companyName,
+                registration_id: frm.doc.owner,
+                modifier_id: frm.doc.modified_by,
+                customer_remarks: frm.doc.customer_details || "",
+                customer_address: frm.doc.custom_location_address || "", // Default empty string if missing
+                customer_phone: frm.doc.custom_phone_number || "",  // Default empty string if missing
+                customer_email: frm.doc.custom_email_address || ""  // Default empty string if missing
               },
-              callback: (response) => {},
-              error: (r) => {
-                // Error Handling is Defered to the Server
-              },
-            });
-          },
-          __("ZRA Actions")
-        );
-      }
+            },
+            callback: (response) => {},
+            error: (r) => {
+              // Error Handling is Deferred to the Server
+            },
+          });
+        },
+        __("ZRA Actions")
+      );
     }
 
-    if (frm.doc.custom_insurance_applicable && !frm.doc.custom_insurance_details_submitted_successfully
-    ) {
-      // frm.add_custom_button(
-      //   __("Send Insurance Details"),
-      //   function () {
-      //     frappe.call({
-      //       method:
-      //         "smart_zambia_invoice.smart_invoice.api.zra_api.send_customer_insurance_details",
-      //       args: {
-      //         request_data: {
-      //           name: frm.doc.name,
-      //           tax_id: frm.doc.tax_id,
-      //           company_name: companyName,
-      //           insurance_code: frm.doc.custom_insurance_code,
-      //           insurance_name: frm.doc.custom_insurance_name,
-      //           premium_rate: frm.doc.custom_premium_rate,
-      //           registration_id: frm.doc.owner,
-      //           modifier_id: frm.doc.modified_by,
-      //         },
-      //       },
-      //       callback: (response) => {
-      //         frappe.msgprint("Request queued. Please check in later.");
-      //       },
-      //       error: (r) => {
-      //         // Error Handling is Defered to the Server
-      //       },
-      //     });
-      //   },
-      //   __("ZRA Actions")
-      // );
-    }
-
-    // frm.fields_dict.items.grid.get_field("item_classification_code").get_query =
-    //   function (doc, cdt, cdn) {
-    //     // Adds a filter to the items item classification code based on item's description
-    //     const itemDescription = locals[cdt][cdn].description;
-    //     const descriptionText = parseItemDescriptionText(itemDescription);
-
-    //     return {
-    //       filters: [
-    //         [
-    //           "Navari KRA eTims Item Classification",
-    //           "itemclsnm",
-    //           "like",
-    //           `%${descriptionText}%`,
-    //         ],
-    //       ],
-    //     };
-    //   };
+    // Additional conditions (for insurance-related buttons, etc.) go here...
   },
+
   customer_group: function (frm) {
     frappe.db.get_value(
       "Customer Group",
@@ -144,9 +98,3 @@ frappe.ui.form.on(doctypeName, {
     );
   },
 });
-
-
-
-
-
-
