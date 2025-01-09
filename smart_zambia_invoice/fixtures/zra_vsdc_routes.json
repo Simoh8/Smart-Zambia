@@ -2,7 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "ZRA VSDC Routes",
-  "modified": "2024-12-24 23:08:59.979338",
+  "modified": "2025-01-09 08:02:44.161088",
   "name": "ZRA VSDC Routes",
   "zra_vscd_routes": [
    {
@@ -48,7 +48,7 @@
     "parenttype": "ZRA VSDC Routes",
     "path": "/branches/saveBrancheUser",
     "path_description": "Saves branch user accounts created in the third-party system to Smart Invoice",
-    "path_function": "Branch Information"
+    "path_function": "SAVE BRANCH USER"
    },
    {
     "last_req_date": "2024-12-06 15:27:00",
@@ -73,7 +73,7 @@
     "parent": "ZRA VSDC Routes",
     "parentfield": "zra_vscd_routes",
     "parenttype": "ZRA VSDC Routes",
-    "path": " /branches/saveBrancheCustomers",
+    "path": "/branches/saveBrancheCustomers",
     "path_description": "Saves customer details captured in third-party system to Smart Invoice",
     "path_function": "SAVE BRANCH CUSTOMER"
    },
@@ -193,6 +193,42 @@
     "path": " /trnsPurchase/savePurchase",
     "path_description": "This endpoint is utilized to approve or reject all purchases made by a business from suppliers",
     "path_function": "SAVE PURCHASES"
+   },
+   {
+    "last_req_date": "2025-01-01 08:00:22",
+    "parent": "ZRA VSDC Routes",
+    "parentfield": "zra_vscd_routes",
+    "parenttype": "ZRA VSDC Routes",
+    "path": "/items/saveItem",
+    "path_description": "saving a single item",
+    "path_function": "SAVE ITEM"
+   },
+   {
+    "last_req_date": "2025-01-01 08:00:52",
+    "parent": "ZRA VSDC Routes",
+    "parentfield": "zra_vscd_routes",
+    "parenttype": "ZRA VSDC Routes",
+    "path": "/stock/selectStockItems",
+    "path_description": "selecting stock items ",
+    "path_function": "GET STOCK ITEMS "
+   },
+   {
+    "last_req_date": "2025-01-01 08:01:11",
+    "parent": "ZRA VSDC Routes",
+    "parentfield": "zra_vscd_routes",
+    "parenttype": "ZRA VSDC Routes",
+    "path": "/stock/saveStockItems",
+    "path_description": "saving stock",
+    "path_function": "SAVE STOCK ITEM"
+   },
+   {
+    "last_req_date": "2025-01-01 08:01:31",
+    "parent": "ZRA VSDC Routes",
+    "parentfield": "zra_vscd_routes",
+    "parenttype": "ZRA VSDC Routes",
+    "path": "/stockMaster/saveStockMaster",
+    "path_description": "saving stock master ",
+    "path_function": "SAVE STOCK MASTER"
    }
   ]
  }
