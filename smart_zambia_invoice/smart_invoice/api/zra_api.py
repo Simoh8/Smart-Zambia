@@ -236,23 +236,19 @@ def submit_branch_customer_details(request_data: str) -> None:
 
 
     if headers and server_url and route_path:
-        # Construct the full URL
         url = f"{server_url}{route_path}"
-
-        # Build the common payload fields
         common_payload = last_request_less_payload(headers)
 
-        # Construct the specific payload fields
         specific_payload = {
             "custNo": data["customer_phone"],
             "custTpin": data["customer_pin"],
             "custNm": data["customer_name"],
-            "adrs": "Thika Nairobi",
+            "adrs": data.get("customer_address", ""),
             "telNo": data.get("customer_phone"),
             "email": data.get("customer_email"),
-            "faxNo": "Non4455777e",
+            "faxNo": "",
             "useYn": "Y",
-            "remark": "DDYUJJIMMUUJN",
+            "remark": data.get["customer_remarks"],
             "regrNm": data["registration_id"],
             "regrId": split_user_mail(data["registration_id"]),
             "modrNm": data["modifier_id"],
@@ -524,14 +520,8 @@ def fetch_customer_info(request_data: str) -> None:
 
         common_payload = last_request_less_payload(headers)
 
-
-
-
         custom_payload = {"custmTpin": data["tax_id"]}
-        payload= {**common_payload, **custom_payload}
-
-        print("The payload is ",payload)
-         
+        payload= {**common_payload, **custom_payload}         
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -539,11 +529,10 @@ def fetch_customer_info(request_data: str) -> None:
         endpoint_builder.success_callback = partial(on_success_customer_search, document_name=data["name"])
         endpoint_builder.error_callback = on_error
 
-        
         endpoint_builder.perform_remote_calls()
 
         # frappe.enqueue(
-        #     endpoint_builder.make_remote_call,
+        #     endpoint_builder.perform_remote_calls,
         #     is_async=True,
         #     queue="default",
         #     timeout=300,

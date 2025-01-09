@@ -44,7 +44,8 @@ frappe.ui.form.on(doctypeName, {
                   company_name: companyName,
                   registration_id: frm.doc.owner,
                   modifier_id: frm.doc.modified_by,
-                  customer_address: frm.doc.address_html || "", // Default empty string if missing
+                  customer_remarks:frm.doc.customer_details || "",
+                  customer_address: frm.doc.custom_location_address || "", // Default empty string if missing
                   customer_phone: frm.doc.custom_phone_number || "",  // Default empty string if missing
                   customer_email: frm.doc.custom_email_address || ""  // Default empty string if missing
               
