@@ -9,7 +9,7 @@ from datetime import datetime
 from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
-from .remote_response_handler import  on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success,on_succesful_customer_search, on_success_user_details_submission
+from .remote_response_handler import  on_success_customer_search, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success,on_succesful_customer_search, on_success_user_details_submission
 from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload)
 
 
@@ -480,7 +480,6 @@ def make_item_registration(request_data: str) -> dict | None:
         # Combine the common payload with the specific item data
         payload = {**common_payload, **data}
         
-        print("The payload sent is ",payload)
 
         # Set up the endpoint builder
         endpoint_builder.headers = headers
@@ -503,3 +502,52 @@ def make_item_registration(request_data: str) -> dict | None:
         )
 
 
+
+
+@frappe.whitelist()
+def fetch_customer_info(request_data: str) -> None:
+    """Search customer details in the ZRA Server
+
+    Args:
+        request_data (str): Data received from the client
+    """
+    data: dict = json.loads(request_data)
+
+    company_name = data["company_name"]
+
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_req_date = get_route_path("GET CUSTOMERS")
+
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+
+        common_payload = last_request_less_payload(headers)
+
+
+
+
+        custom_payload = {"custmTpin": data["tax_id"]}
+        payload= {**common_payload, **custom_payload}
+
+        print("The payload is ",payload)
+         
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = partial(on_success_customer_search, document_name=data["name"])
+        endpoint_builder.error_callback = on_error
+
+        
+        endpoint_builder.perform_remote_calls()
+
+        # frappe.enqueue(
+        #     endpoint_builder.make_remote_call,
+        #     is_async=True,
+        #     queue="default",
+        #     timeout=300,
+        #     doctype="Customer",
+        #     document_name=data["name"],
+        #     job_name=f"{data['name']}_customer_search",
+        # )

@@ -249,4 +249,29 @@ def on_success_user_details_submission(response:dict, document_name:str)-> None:
     frappe.msgprint(frappe._("The User Details have been Registered Succesfully on ZRA Portal"))
 
     frappe.db.set_value("ZRA Smart Invoice User", document_name,{"registered_on_smart_invoice":1})
-    
+
+def on_success_customer_search(
+    response: dict,
+    document_name: str,
+) -> None:
+    print("The response is", response)
+
+    # Extract customer details from the response
+    customer_data = response.get('data', {}).get('custList', [{}])[0]
+    customer_name = customer_data.get('custNm', 'Unknown')
+
+    # Update the Customer document
+    frappe.db.set_value(
+        "Customer",
+        document_name,
+        {
+            "customer_name": customer_name,
+            # Uncomment the lines below if you want to use them
+            # "custom_tax_payers_status": customer_data.get("useYn"),
+            # "custom_county_name": customer_data.get("adrs"),
+            # "custom_subcounty_name": customer_data.get("adrs"),
+            # "custom_tax_locality_name": customer_data.get("adrs"),
+            # "custom_location_name": customer_data.get("adrs"),
+            "custom_is_validated": 1,
+        },
+    )

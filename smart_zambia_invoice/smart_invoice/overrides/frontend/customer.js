@@ -10,7 +10,7 @@ frappe.ui.form.on(doctypeName, {
         function () {
           frappe.call({
             method:
-              "smart_zambia_invoice.smart_invoice.api.zra_api.perform_customer_search",
+              "smart_zambia_invoice.smart_invoice.api.zra_api.fetch_customer_info",
             args: {
               request_data: {
                 name: frm.doc.name,
