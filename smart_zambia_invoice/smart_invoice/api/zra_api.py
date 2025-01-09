@@ -196,7 +196,7 @@ def perform_customer_search(request_data: str) -> None:
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(
-            on_succesful_customer_search, document_name=data["name"]
+            on_success_customer_search, document_name=data["name"]
         )
         endpoint_builder.error_callback = on_error
 
@@ -267,19 +267,19 @@ def submit_branch_customer_details(request_data: str) -> None:
         )
         endpoint_builder.error_callback = on_error
 
-        endpoint_builder.perform_remote_calls()
+        # endpoint_builder.perform_remote_calls()
 
 
         # Enqueue the task for asynchronous execution
-        # frappe.enqueue(
-        #     endpoint_builder.perform_remote_calls,
-        #     is_async=True,
-        #     queue="default",
-        #     timeout=300,
-        #     doctype="Customer",
-        #     document_name=data["name"],
-        #     job_name=f"{data['name']}_submit_customer_branch_details",
-        # )
+        frappe.enqueue(
+            endpoint_builder.perform_remote_calls,
+            is_async=True,
+            queue="default",
+            timeout=300,
+            doctype="Customer",
+            document_name=data["name"],
+            job_name=f"{data['name']}_submit_customer_branch_details",
+        )
 
 
 

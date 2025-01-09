@@ -54,7 +54,10 @@ frappe.ui.form.on(doctypeName, {
                 customer_email: frm.doc.custom_email_address || ""  // Default empty string if missing
               },
             },
-            callback: (response) => {},
+            callback: (response) => {
+              frappe.msgprint("The request has been queud. Please referesh the tab")
+
+            },
             error: (r) => {
               // Error Handling is Deferred to the Server
             },
