@@ -35,12 +35,10 @@ def on_success_customer_branch_details_submission(response: dict, document_name:
     try:
         # Update the document to indicate success
         frappe.db.set_value("Customer", document_name, {"custom_details_submitted_successfully": 1})
-        
-        # Display a success message to the user
-        frappe.msgprint(frappe._("Customer Details Submitted Succesfully on ZRA Portal"))
+
+        show_success_message("Customer Details Submitted Succesfully on ZRA Portal")
     
     except Exception as e:
-        # Handle any exceptions that occur during the update process
         frappe.log_error(f"Error updating customer document {document_name}: {str(e)}")
         frappe.msgprint(frappe._("An error occurred while registering the user. Please try again."))
 
@@ -56,6 +54,9 @@ def on_success_customer_insurance_details_submission(
         document_name,
         {"custom_insurance_details_submitted_successfully": 1},
     )
+
+
+
 
 
 def on_error(
@@ -115,23 +116,6 @@ def fetch_branch_request_on_success(response: dict) -> None:
             doc.save()
 
 
-
-def on_succesful_customer_search(
-    response: dict,
-    document_name: str,
-) -> None:
-    frappe.db.set_value(
-        "Customer",
-        document_name,
-        {
-            "custom_tax_payers_name": response["taxprNm"],
-            "custom_tax_payers_status": response["taxprSttsCd"],
-            "custom__province_name": response["prvncNm"],
-            "custom_tax_locality_name": response["dstrtNm"],
-            "custom_customer_sector_name": response["sctrNm"],
-            "custom_is_validated": 1,
-        },
-    )
 
 
 
