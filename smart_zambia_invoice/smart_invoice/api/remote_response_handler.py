@@ -1,5 +1,6 @@
 import datetime
 import frappe
+from smart_zambia_invoice.smart_invoice.utilities import show_success_message
 
 
 from ..error_handlers import handle_errors
@@ -239,39 +240,52 @@ def on_success_search_branch_request(response: dict) -> None:
 
 
 def on_success_item_registration(response: dict, document_name: str) -> None:
-    print("The response is ",response)
     frappe.db.set_value("Item", document_name, {"custom_zra_item_registered_": 1})
+    show_success_message("Item registration succesful")
+
+
 
 
 
 def on_success_user_details_submission(response:dict, document_name:str)-> None:
-
-    frappe.msgprint(frappe._("The User Details have been Registered Succesfully on ZRA Portal"))
-
+    
     frappe.db.set_value("ZRA Smart Invoice User", document_name,{"registered_on_smart_invoice":1})
+    show_success_message("The user has been succesfully registered on the ZRA Portal")
+
+
+
+
 
 def on_success_customer_search(
     response: dict,
     document_name: str,
 ) -> None:
-    print("The response is", response)
-
-    # Extract customer details from the response
+        # Extract customer data
     customer_data = response.get('data', {}).get('custList', [{}])[0]
     customer_name = customer_data.get('custNm', 'Unknown')
+    custom_phone_number = customer_data.get('telNo', 'Unknown')
+    custom_email_address = customer_data.get('email', 'Unknown')
+    tax_id = customer_data.get('custTpin', 'Unknown')
+    custom_tax_payers_status = "Active" if customer_data.get('useYn') == 'Y' else "Inactive"
+    custom_province_name = customer_data.get('adrs', 'Unknown')  # Extract address
 
-    # Update the Customer document
+# Include additional information from the zra server when need be but for now work with the name and tpin
     frappe.db.set_value(
         "Customer",
         document_name,
         {
             "customer_name": customer_name,
-            # Uncomment the lines below if you want to use them
-            # "custom_tax_payers_status": customer_data.get("useYn"),
-            # "custom_county_name": customer_data.get("adrs"),
-            # "custom_subcounty_name": customer_data.get("adrs"),
-            # "custom_tax_locality_name": customer_data.get("adrs"),
-            # "custom_location_name": customer_data.get("adrs"),
+            "custom_tax_payers_name":customer_name,
+            "custom_phone_number": custom_phone_number,
+            "custom_email_address": custom_email_address,
+            "custom_tax_payers_status":custom_tax_payers_status,
+            "custom__province_name": custom_province_name,  
+
+            "tax_id": tax_id,
             "custom_is_validated": 1,
         },
     )
+    show_success_message("Customer details updated successfully")
+
+
+

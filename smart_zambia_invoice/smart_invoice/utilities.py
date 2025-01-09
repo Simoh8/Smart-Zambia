@@ -479,3 +479,18 @@ def get_taxation_types(doc):
                 "taxable_amount": taxable_amount
             }
     return taxation_totals
+
+
+
+def show_success_message(msg: str) -> None:
+    """
+    Display a success message dialog in Frappe.
+    
+    Args:
+        msg (str): The success message to display.
+    """
+    frappe.msgprint(
+        msg=msg,
+        title="Success",
+        indicator="green"
+    )
