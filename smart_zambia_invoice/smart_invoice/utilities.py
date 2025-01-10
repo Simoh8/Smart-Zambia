@@ -516,3 +516,31 @@ def truncate_user_id(user_id, max_length=20):
         str: The truncated user_id.
     """
     return user_id[:max_length]
+
+
+def generate_next_item_code(country_code, product_type, packaging_unit, quantity_unit):
+    """
+    Generate the next unique item code based on the last registered item code.
+    """
+    # Fetch the latest item code
+    last_item_code = frappe.db.get_value('Item', 
+                                         {'custom_zra_country_origin_code': country_code, 
+                                          'custom_zra_product_type_code': product_type,
+                                          'custom_zra_packaging_unit_code': packaging_unit, 
+                                          'custom_zra_unit_quantity_code': quantity_unit},
+                                         'custom_zra_item_code',
+                                         order_by='custom_zra_item_code DESC')
+
+    # If there's no previous item code, start from 1
+    if not last_item_code:
+        increment = 1
+    else:
+        # Extract the last increment value from the item code (assuming it's the last 7 digits)
+        last_increment = int(last_item_code[-7:])
+        increment = last_increment + 1
+
+    # Format the increment value with zero padding
+    increment_str = f"{increment:07d}"  # Ensure the increment is 7 digits
+
+    # Return the new item code by concatenating the parts
+    return f"{country_code}{product_type}{packaging_unit}{quantity_unit}{increment_str}"

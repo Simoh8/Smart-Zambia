@@ -8,7 +8,7 @@ from frappe.model.document import Document
 
 from .... import __version__
 from ...api.zra_api import make_zra_item_registration
-from ...utilities import split_user_mail
+from ...utilities import split_user_mail,generate_next_item_code
 
 
 @deprecation.deprecated(
@@ -17,13 +17,31 @@ from ...utilities import split_user_mail
     current_version=__version__,
     details="Use the Register Item button in Item record",
 )
+
+
+
+
 def before_insert(doc: Document, method: str) -> None:
     """Item doctype before insertion hook"""
-
+    
+    # Generate a unique item code if not provided
+    if not doc.custom_zra_item_code:
+        # Retrieve required fields for generating the item code
+        country_code = doc.custom_zra_country_origin_code or "ZZ"  # Default to "ZZ" if missing
+        product_type = doc.custom_zra_product_type_code or "0"     # Default to "0" if missing
+        packaging_unit = doc.custom_zra_packaging_unit_code or "XX"  # Default to "XX" if missing
+        quantity_unit = doc.custom_zra_unit_quantity_code or "YY"   # Default to "YY" if missing
+        
+        # Generate the next item code
+        doc.custom_zra_item_code = generate_next_item_code(
+            country_code, product_type, packaging_unit, quantity_unit
+        )
+    
+    # Prepare the registration data
     item_registration_data = {
         "name": doc.name,
         "company_name": frappe.defaults.get_user_default("Company"),
-        "itemCd": doc.custom_zra_item_code,
+        "itemCd": "hello",
         "itemClsCd": doc.custom_zra_item_classification_code,
         "itemTyCd": doc.custom_zra_product_type_code,
         "itemNm": doc.item_name,
@@ -41,7 +59,7 @@ def before_insert(doc: Document, method: str) -> None:
         "grpPrcL4": None,
         "grpPrcL5": None,
         "addInfo": None,
-        "sftyQty": None,
+        "sftyQty": "demo",
         "isrcAplcbYn": "Y",
         "useYn": "Y",
         "regrId": split_user_mail(doc.owner),
@@ -50,55 +68,5 @@ def before_insert(doc: Document, method: str) -> None:
         "modrNm": doc.modified_by,
     }
 
-
+    # Make the ZRA item registration request
     make_zra_item_registration(json.dumps(item_registration_data))
-
-
-
-
-
-def validate(doc: Document, method: str) -> None:
-    
-    new_prefix = f"{doc.custom_zra_country_origin_code}{doc.custom_zra_product_type_code}{doc.custom_zra_packaging_unit_code}{doc.custom_zra_unit_quantity_code}"
-    
-    # Check if custom_item_code_etims exists and extract its suffix if so
-    if doc.custom_zra_item_code:
-        # Extract the last 7 digits as the suffix
-        existing_suffix = doc.custom_zra_item_code[-7:]
-    else:
-        # If there is no existing code, generate a new suffix
-        last_code = frappe.db.sql(
-            """
-            SELECT custom_zra_item_code 
-            FROM `tabItem`
-            WHERE custom_zra_item_classification_code = %s
-            ORDER BY CAST(SUBSTRING(custom_zra_item_code, -7) AS UNSIGNED) DESC
-            LIMIT 1
-            """,
-            (doc.custom_zra_item_classification_code,),
-            as_dict=True,
-        )
-
-        if last_code:
-            last_suffix = int(last_code[0]["custom_zra_item_code"][-7:])
-            existing_suffix = str(last_suffix + 1).zfill(7)
-        else:
-            # Start from '0000001' if no matching classification item exists
-            existing_suffix = "0000001"
-
-    # Combine the new prefix with the existing or new suffix
-    doc.custom_item_code_etims = f"{new_prefix}{existing_suffix}"
-
-    # Check if the tax type field has changed
-    is_tax_type_changed = doc.has_value_changed("custom_zra_tax_type")
-    if doc.custom_zra_tax_type and is_tax_type_changed:
-        relevant_tax_templates = frappe.get_all(
-            "Item Tax Template",
-            ["*"],
-            {"custom_zra_tax_type": doc.custom_zra_tax_type},
-        )
-
-        if relevant_tax_templates:
-            doc.set("taxes", [])
-            for template in relevant_tax_templates:
-                doc.append("taxes", {"item_tax_template": template.name})
