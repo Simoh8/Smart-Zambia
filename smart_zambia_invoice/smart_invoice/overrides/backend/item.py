@@ -7,7 +7,7 @@ import frappe.defaults
 from frappe.model.document import Document
 
 from .... import __version__
-from ...api.zra_api import make_item_registration
+from ...api.zra_api import make_zra_item_registration
 from ...utilities import split_user_mail
 
 
@@ -31,7 +31,7 @@ def before_insert(doc: Document, method: str) -> None:
         "orgnNatCd": doc.custom_zra_country_origin_code,
         "pkgUnitCd": doc.custom_zra_packaging_unit_code,
         "qtyUnitCd": doc.custom_zra_unit_quantity_code,
-        "taxTyCd": ("B" if not doc.custom_zra_tax_type else doc.custom_taxation_type),
+        "taxTyCd": "B" if not doc.custom_zra_tax_type else doc.custom_zra_tax_type,
         "btchNo": None,
         "bcd": None,
         "dftPrc": doc.valuation_rate,
@@ -50,7 +50,8 @@ def before_insert(doc: Document, method: str) -> None:
         "modrNm": doc.modified_by,
     }
 
-    make_item_registration(json.dumps(item_registration_data))
+
+    make_zra_item_registration(json.dumps(item_registration_data))
 
 
 
@@ -90,11 +91,11 @@ def validate(doc: Document, method: str) -> None:
 
     # Check if the tax type field has changed
     is_tax_type_changed = doc.has_value_changed("custom_zra_tax_type")
-    if doc.custom_taxation_type and is_tax_type_changed:
+    if doc.custom_zra_tax_type and is_tax_type_changed:
         relevant_tax_templates = frappe.get_all(
             "Item Tax Template",
             ["*"],
-            {"custom_etims_taxation_type": doc.custom_zra_tax_type},
+            {"custom_zra_tax_type": doc.custom_zra_tax_type},
         )
 
         if relevant_tax_templates:

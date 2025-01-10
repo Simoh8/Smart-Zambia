@@ -198,7 +198,7 @@ override_doctype_class = {
 
 doc_events = {
 	"Item": {
-		"validate": ["smart_zambia_invoice.smart_zambia.overrides.backend.item.validate"],
+		"validate": ["smart_zambia_invoice.smart_invoice.overrides.backend.item.validate"],
 
 	}
 }

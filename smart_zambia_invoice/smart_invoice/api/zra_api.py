@@ -102,75 +102,7 @@ def ping_zra_server(request_data: str) -> None:
     except Exception as e:
         frappe.msgprint(f"Unexpected error: {str(e)}")
 
-
-@frappe.whitelist()
-def submit_item_composition(request_data: str) -> None:
-    data: dict = json.loads(request_data)
-
-    company_name = data["company_name"]
-
-    headers = build_request_headers(company_name)
-    server_url = get_server_url(company_name)
-    route_path, last_request_date = get_route_path("SaveItemComposition")
-
-    if headers and server_url and route_path:
-        url = f"{server_url}{route_path}"
-
-        all_items = frappe.db.get_all("Item", ["*"])
-
-        # Check if item to manufacture is registered before proceeding
-        manufactured_item = frappe.get_value(
-            "Item",
-            {"name": data["item_name"]},
-            ["custom_item_registered", "name"],
-            as_dict=True,
-        )
-
-        if not manufactured_item.custom_item_registered:
-            frappe.throw(
-                f"Please register item: <b>{manufactured_item.name}</b> first to proceed.",
-                title="Integration Error",
-            )
-
-        for item in data["items"]:
-            for fetched_item in all_items:
-                if item["item_code"] == fetched_item.item_code:
-                    if fetched_item.custom_item_registered == 1:
-                        payload = {
-                            "itemCd": data["item_code"],
-                            "cpstItemCd": fetched_item.custom_item_code_etims,
-                            "cpstQty": item["qty"],
-                            "regrId": split_user_mail(data["registration_id"]),
-                            "regrNm": data["registration_id"],
-                        }
-
-                        endpoint_builder.headers = headers
-                        endpoint_builder.url = url
-                        endpoint_builder.payload = payload
-                        endpoint_builder.success_callback = partial(
-                            item_composition_submission_succes,
-                            document_name=data["name"],
-                        )
-                        endpoint_builder.error_callback = on_error
-
-                        frappe.enqueue(
-                            endpoint_builder.perform_remote_calls,
-                            is_async=True,
-                            queue="default",
-                            timeout=300,
-                            job_name=f"{data['name']}_submit_item_composition",
-                            doctype="BOM",
-                            document_name=data["name"],
-                        )
-
-                    else:
-                        frappe.throw(
-                            f"""
-                            Item: <b>{fetched_item.name}</b> is not registered.
-                            <b>Ensure ALL Items are registered first to submit this composition</b>""",
-                            title="Integration Error",
-                        )
-                        
+                    
                         
                         
 @frappe.whitelist()
@@ -366,31 +298,6 @@ def send_customer_insurance_details(request_data: str) -> None:
 
 
 
-
-
-
-
-# @frappe.whitelist()
-# def create_zra_branch_user() -> None:
-#     # TODO: Implement auto-creation through background tasks
-#     present_users = frappe.db.get_all(
-#         "User", {"name": ["not in", ["Administrator", "Guest"]]}, ["name", "email"]
-#     )
-
-#     for user in present_users:
-#         doc = frappe.new_doc("ZRA Smart Invoice User")
-
-#         doc.system_user = user.email
-#         doc.branch_id = frappe.get_value(
-#             "Branch", {"custom_branch_code": "00"}, ["name"]
-#         )  # Created users are assigned to Branch 00
-
-#         doc.save()
-
-#     frappe.msgprint("Inspect the Branches to make sure they are mapped correctly")
-
-
-
 @frappe.whitelist()
 def submit_zra_branch_user_details(request_data: str) -> None:
     data: dict = json.loads(request_data)
@@ -436,58 +343,6 @@ def submit_zra_branch_user_details(request_data: str) -> None:
             job_name=f"{data['name'][:10]}_info",  # Ensure `job_name` fits
         )
 
-@frappe.whitelist()
-def make_item_registration(request_data: str) -> dict | None:
-    """
-    Registers an item with ZRA by making a remote call.
-
-    Args:
-        request_data (str): JSON string containing request data.
-
-    Returns:
-        dict | None: None if the function is executed asynchronously, or a result dictionary if needed.
-    """
-    # Parse incoming data
-    data: dict = json.loads(request_data)
-
-    # Extract company name and build headers, server URL, and route path
-    company_name = data.pop("company_name")
-    headers = build_request_headers(company_name)
-    server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("SAVE ITEM")
-
-    if headers and server_url and route_path:
-        # Construct the full URL
-        url = f"{server_url}{route_path}"
-
-        # Build the common payload fields
-        common_payload = build_common_payload(headers, last_req_date)
-
-        # Combine the common payload with the specific item data
-        payload = {**common_payload, **data}
-        
-
-        # Set up the endpoint builder
-        endpoint_builder.headers = headers
-        endpoint_builder.url = url
-        endpoint_builder.payload = payload
-        endpoint_builder.success_callback = partial(
-            on_success_item_registration, document_name=data["name"]
-        )
-        endpoint_builder.error_callback = on_error
-
-        # Enqueue the task for asynchronous execution
-        frappe.enqueue(
-            endpoint_builder.perform_remote_calls,
-            is_async=True,
-            queue="default",
-            timeout=300,
-            doctype="Item",
-            document_name=data["name"],
-            job_name=f"{data['name']}_register_item",
-        )
-
-
 
 
 @frappe.whitelist()
@@ -530,3 +385,162 @@ def fetch_customer_info(request_data: str) -> None:
             document_name=data["name"],
             job_name=f"{data['name']}_customer_search",
         )
+
+
+
+
+@frappe.whitelist()
+def zra_item_search(request_data: str) -> None:
+    data: dict = json.loads(request_data)
+
+    company_name = data["company_name"]
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_req_date = get_route_path("GET ITEMS")
+
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+
+        request_date = last_req_date.strftime("%Y%m%d%H%M%S")
+        payload = {"lastReqDt": request_date}
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = lambda response: frappe.msgprint(
+            f"{response}"
+        )
+        endpoint_builder.error_callback = on_error
+
+        endpoint_builder.perform_remote_calls(doctype="Item")
+
+
+@frappe.whitelist()
+def make_zra_item_registration(request_data: str) -> dict | None:
+    """
+    Registers an item with ZRA by making a remote call.
+
+    Args:
+        request_data (str): JSON string containing request data.
+
+    Returns:
+        dict | None: None if the function is executed asynchronously, or a result dictionary if needed.
+    """
+    # Parse incoming data
+    data: dict = json.loads(request_data)
+
+    # Extract company name and build headers, server URL, and route path
+    company_name = data.pop("company_name")
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_req_date = get_route_path("SAVE ITEM")
+
+    if headers and server_url and route_path:
+        # Construct the full URL
+        url = f"{server_url}{route_path}"
+
+        # Build the common payload fields
+        common_payload = build_common_payload(headers, last_req_date)
+
+        # Combine the common payload with the specific item data
+        payload = {**common_payload, **data}
+        
+
+        # Set up the endpoint builder
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = partial(
+            on_success_item_registration, document_name=data["name"]
+        )
+        endpoint_builder.error_callback = on_error
+        endpoint_builder.perform_remote_calls()
+
+        # # Enqueue the task for asynchronous execution
+        # frappe.enqueue(
+        #     endpoint_builder.perform_remote_calls,
+        #     is_async=True,
+        #     queue="default",
+        #     timeout=300,
+        #     doctype="Item",
+        #     document_name=data["name"],
+        #     job_name=f"{data['name']}_register_item",
+        # )
+
+
+
+
+
+
+
+
+
+
+@frappe.whitelist()
+def submit_item_composition(request_data: str) -> None:
+    data: dict = json.loads(request_data)
+
+    company_name = data["company_name"]
+
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_request_date = get_route_path("SaveItemComposition")
+
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+
+        all_items = frappe.db.get_all("Item", ["*"])
+
+        # Check if item to manufacture is registered before proceeding
+        manufactured_item = frappe.get_value(
+            "Item",
+            {"name": data["item_name"]},
+            ["custom_item_registered", "name"],
+            as_dict=True,
+        )
+
+        if not manufactured_item.custom_item_registered:
+            frappe.throw(
+                f"Please register item: <b>{manufactured_item.name}</b> first to proceed.",
+                title="Integration Error",
+            )
+
+        for item in data["items"]:
+            for fetched_item in all_items:
+                if item["item_code"] == fetched_item.item_code:
+                    if fetched_item.custom_item_registered == 1:
+                        payload = {
+                            "itemCd": data["item_code"],
+                            "cpstItemCd": fetched_item.custom_item_code_etims,
+                            "cpstQty": item["qty"],
+                            "regrId": split_user_mail(data["registration_id"]),
+                            "regrNm": data["registration_id"],
+                        }
+
+                        endpoint_builder.headers = headers
+                        endpoint_builder.url = url
+                        endpoint_builder.payload = payload
+                        endpoint_builder.success_callback = partial(
+                            item_composition_submission_succes,
+                            document_name=data["name"],
+                        )
+                        endpoint_builder.error_callback = on_error
+
+                        frappe.enqueue(
+                            endpoint_builder.perform_remote_calls,
+                            is_async=True,
+                            queue="default",
+                            timeout=300,
+                            job_name=f"{data['name']}_submit_item_composition",
+                            doctype="BOM",
+                            document_name=data["name"],
+                        )
+
+                    else:
+                        frappe.throw(
+                            f"""
+                            Item: <b>{fetched_item.name}</b> is not registered.
+                            <b>Ensure ALL Items are registered first to submit this composition</b>""",
+                            title="Integration Error",
+                        )
+    
