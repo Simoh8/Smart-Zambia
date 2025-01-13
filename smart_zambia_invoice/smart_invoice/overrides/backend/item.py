@@ -73,54 +73,6 @@ def before_insert(doc: Document, method: str) -> None:
 
 
 
-# def validate(doc: Document, method: str) -> None:
-    
-#     new_prefix = f"{doc.custom_zra_country_origin_code}{doc.custom_zra_product_type_code}{doc.custom_zra_packaging_unit_code}{doc.custom_zra_unit_quantity_code}"
-    
-#     # Check if custom_item_code_etims exists and extract its suffix if so
-#     if doc.custom_zra_item_code:
-#         # Extract the last 7 digits as the suffix
-#         existing_suffix = doc.custom_zra_item_code[-7:]
-#     else:
-#         # If there is no existing code, generate a new suffix
-#         last_code = frappe.db.sql(
-#             """
-#             SELECT custom_zra_item_code 
-#             FROM `tabItem`
-#             WHERE custom_zra_item_classification_code = %s
-#             ORDER BY CAST(SUBSTRING(custom_zra_item_code, -7) AS UNSIGNED) DESC
-#             LIMIT 1
-#             """,
-#             (doc.custom_zra_item_classification_code,),
-#             as_dict=True,
-#         )
-
-#         if last_code:
-#             last_suffix = int(last_code[0]["custom_zra_item_code"][-7:])
-#             existing_suffix = str(last_suffix + 1).zfill(7)
-#         else:
-#             # Start from '0000001' if no matching classification item exists
-#             existing_suffix = "0000001"
-
-#     # Combine the new prefix with the existing or new suffix
-#     doc.custom_zra_item_code = f"{new_prefix}{existing_suffix}"
-
-#     # Check if the tax type field has changed
-#     is_tax_type_changed = doc.has_value_changed("custom_zra_tax_type")
-#     if doc.custom_zra_tax_type and is_tax_type_changed:
-#         relevant_tax_templates = frappe.get_all(
-#             "Item Tax Template",
-#             ["*"],
-#             {"custom_zra_taxation_type_": doc.custom_zra_tax_type},
-#         )
-
-#         if relevant_tax_templates:
-#             doc.set("taxes", [])
-#             for template in relevant_tax_templates:
-#                 doc.append("taxes", {"item_tax_template": template.name})
-
-
-
 def validate(doc: Document, method: str) -> None:
     """
     Generates a unique item code for the CIS compliance.
