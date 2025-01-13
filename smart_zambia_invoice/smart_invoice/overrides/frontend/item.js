@@ -35,9 +35,11 @@ frappe.ui.form.on(itemDoctypName, {
                 request_data: {
                   name: frm.doc.name,
                   company_name: companyName,
-                  itemCd: frm.doc.custom_zra_item_code,
+                  // itemCd: frm.doc.custom_zra_item_code,
+                  itemCd: "ZM2NTBA0000012" ,
+
                   itemClsCd: frm.doc.custom_item_classification,
-                  itemTyCd: frm.doc.custom_product_type,
+                  itemTyCd: frm.doc.custom_zra_product_type_code,
                   itemNm: frm.doc.item_name,
                   temStdNm: null,
                   orgnNatCd: frm.doc.custom_zra_country_origin_code,

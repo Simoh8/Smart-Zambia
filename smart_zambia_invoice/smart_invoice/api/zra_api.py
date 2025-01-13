@@ -440,7 +440,7 @@ def make_zra_item_registration(request_data: str) -> dict | None:
         url = f"{server_url}{route_path}"
 
         # Build the common payload fields
-        common_payload = build_common_payload(headers, last_req_date)
+        common_payload = last_request_less_payload(headers)
 
         # Combine the common payload with the specific item data
         payload = {**common_payload, **data}
