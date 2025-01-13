@@ -32,7 +32,7 @@ frappe.ui.form.on(itemDoctypName, {
                   name: frm.doc.name,
                   company_name: companyName,
                   itemCd: frm.doc.custom_zra_item_code,
-                  itemClsCd: "43322555",
+                  itemClsCd: frm.doc.custom_zra_item_classification_code,
                   itemTyCd: frm.doc.custom_product_code,
                   itemNm: frm.doc.item_name,
                   temStdNm: frm.doc.item_name,

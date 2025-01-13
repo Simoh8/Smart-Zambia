@@ -468,6 +468,36 @@ def make_zra_item_registration(request_data: str) -> dict | None:
 
 
 
+@frappe.whitelist()
+def make_item_classification_search(request_data: str, vendor="OSCU KRA") -> None:
+    data: dict = json.loads(request_data)
+
+    company_name = data["company_name"]
+
+    headers = build_request_headers(company_name, vendor)
+    server_url = get_server_url(company_name, vendor)
+    route_path, last_request_date = get_route_path("ItemClsSearchReq")
+
+    if headers and server_url and route_path:
+        request_date = last_request_date.strftime("%Y%m%d%H%M%S")
+
+        url = f"{server_url}{route_path}"
+        payload = {"lastReqDt": request_date}
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = lambda response: frappe.msgprint(
+            f"{response}"
+        )
+        endpoint_builder.error_callback = on_error
+
+        endpoint_builder.perform_remote_calls(
+            doctype="Item",
+        )
+
+
+
 
 
 
