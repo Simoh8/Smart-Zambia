@@ -374,7 +374,7 @@ def fetch_customer_info(request_data: str) -> None:
         endpoint_builder.success_callback = partial(on_success_customer_search, document_name=data["name"])
         endpoint_builder.error_callback = on_error
 
-        # endpoint_builder.perform_remote_calls()
+        endpoint_builder.perform_remote_calls()
 
         frappe.enqueue(
             endpoint_builder.perform_remote_calls,
@@ -407,8 +407,7 @@ def zra_item_search(request_data: str) -> None:
         endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
-        endpoint_builder.success_callback = lambda response: frappe.msgprint(
-            f"{response}"
+        endpoint_builder.success_callback = lambda response: frappe.msgprint(f"{response}"
         )
         endpoint_builder.error_callback = on_error
 
@@ -417,55 +416,51 @@ def zra_item_search(request_data: str) -> None:
 
 @frappe.whitelist()
 def make_zra_item_registration(request_data: str) -> dict | None:
-    """
-    Registers an item with ZRA by making a remote call.
-
-    Args:
-        request_data (str): JSON string containing request data.
-
-    Returns:
-        dict | None: None if the function is executed asynchronously, or a result dictionary if needed.
-    """
-    # Parse incoming data
+  
+        # Parse incoming data
     data: dict = json.loads(request_data)
 
-    # Extract company name and build headers, server URL, and route path
-    company_name = data.pop("company_name")
-    headers = build_request_headers(company_name)
+        # Extract company name and build headers, server URL, and route path
+    company_name = data["company_name"]
+    headers = build_request_headers(company_name )
     server_url = get_server_url(company_name)
     route_path, last_req_date = get_route_path("SAVE ITEM")
 
     if headers and server_url and route_path:
         # Construct the full URL
-        url = f"{server_url}{route_path}"
+            url = f"{server_url}{route_path}"
 
-        # Build the common payload fields
-        common_payload = last_request_less_payload(headers)
+            # Build the common payload fields
+            common_payload = last_request_less_payload(headers)
 
-        # Combine the common payload with the specific item data
-        payload = {**common_payload, **data}
-        
+            # Exclude `name` and `company_name` from `data`
+            data_to_send = {key: value for key, value in data.items() if key not in ["name", "company_name"]}
 
-        # Set up the endpoint builder
-        endpoint_builder.headers = headers
-        endpoint_builder.url = url
-        endpoint_builder.payload = payload
-        endpoint_builder.success_callback = partial(
-            on_success_item_registration, document_name=data["name"]
-        )
-        endpoint_builder.error_callback = on_error
-        endpoint_builder.perform_remote_calls()
 
-        # # Enqueue the task for asynchronous execution
-        # frappe.enqueue(
-        #     endpoint_builder.perform_remote_calls,
-        #     is_async=True,
-        #     queue="default",
-        #     timeout=300,
-        #     doctype="Item",
-        #     document_name=data["name"],
-        #     job_name=f"{data['name']}_register_item",
-        # )
+            # Combine the common payload with the filtered item data
+            payload = {**common_payload, **data_to_send}
+
+            # Set up the endpoint builder
+            endpoint_builder.headers = headers
+            endpoint_builder.url = url
+            endpoint_builder.payload = payload
+            endpoint_builder.success_callback = partial(
+                on_success_item_registration, document_name=data.get("name")
+            )
+            endpoint_builder.error_callback = on_error
+
+
+
+            # Enqueue the task for asynchronous execution
+            frappe.enqueue(
+                endpoint_builder.perform_remote_calls (),
+                is_async=True,
+                queue="default",
+                timeout=300,
+                doctype="Item",
+                document_name=data["name"],
+                job_name=f"{data['name']}_register_item",
+            )
 
 
 

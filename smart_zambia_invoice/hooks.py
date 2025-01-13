@@ -98,7 +98,6 @@ doctype_js = {
 
 }
 
-
 doctype_list_js = {
     "Item": "smart_invoice/overrides/frontend/item_list.js",
     "Branch":"smart_invoice/overrides/frontend/zra_branch_list.js",
