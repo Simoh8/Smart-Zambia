@@ -285,10 +285,8 @@ def on_successful_fetch_latest_items(frm, response):
     for item in response.get('data', {}).get('itemList', []):
         print(f"Processing item: {item}")
 
-        # Use itemNm as the item code if itemCd is missing
         item_code = item.get("itemCd") or item.get("itemNm") or frm.get("custom_zra_item_code") or "DEFAULT_ITEM_CODE"
 
-        # Check if the item already exists in the system to avoid duplicates
         existing_item = frappe.get_all("Item", filters={"item_code": item_code}, limit=1)
 
         if existing_item:
@@ -299,7 +297,6 @@ def on_successful_fetch_latest_items(frm, response):
             doc.item_code = item_code  # Update the item_code with the new value
         else:
             # If the item doesn't exist, create a new document
-            print(f"Creating a new item for {item_code}")
             doc = frappe.new_doc("Item")
 
         # Set values for the item document
@@ -324,6 +321,7 @@ def on_successful_fetch_latest_items(frm, response):
         doc.service_charge_applicable = item.get("svcChargeYn", "N") == "Y"
         doc.rental_applicable = item.get("rentalYn", "N") == "Y"
         doc.is_active = item.get("useYn", "Y") == "Y"
+        doc.custom_zra_item_registered_="1"
         doc.owner = item.get("regrId", frm.get("owner", "DefaultOwner"))
         doc.modified_by = item.get("modrId", frm.get("modified_by", "DefaultModifier"))
 

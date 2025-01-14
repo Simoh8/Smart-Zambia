@@ -20,8 +20,10 @@ frappe.ui.form.on(itemDoctypName, {
 
     if (!frm.is_new()) {
       if (!frm.doc.custom_zra_item_registered_) {
+
+
         frm.add_custom_button(
-          __("Register Item"),
+          __("Register/Update Item"),
           function () {
             // call with all options
             frappe.call({
