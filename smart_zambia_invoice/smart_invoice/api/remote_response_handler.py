@@ -1,6 +1,6 @@
 import datetime
 import frappe
-from smart_zambia_invoice.smart_invoice.utilities import get_code_name_from_doctype, show_success_message
+from smart_zambia_invoice.smart_invoice.utilities import get_real_name, show_success_message
 
 
 from ..error_handlers import handle_errors
@@ -292,30 +292,43 @@ def on_successful_fetch_latest_items(frm, response):
         else:
             doc = frappe.new_doc("Item")
 
-        country_code = item.get("orgnNatCd", frm.get("custom_zra_country_origin_code", "DefaultCountry"))
-        code_name = None
+        country_code = item.get("orgnNatCd")
+        packaging_unit= item.get("pkgUnitCd")
+        unit_quantity= item.get("qtyUnitCd")
+        product_type= item.get("itemTyCd")
+        custom_zra_item_classification_code = item.get("itemClsCd")
+        print("The classification name is,", custom_zra_item_classification_code)
+
+
+        
 
         if country_code:
             # Corrected: Pass the target_field parameter explicitly
-            code_name = get_code_name_from_doctype("Smart Zambia Country", "code", country_code, "code_name")
+            unit_quantity_name=get_real_name("ZRA Unit of Quantity", "code", unit_quantity, "code_name" )
+            code_name = get_real_name("Smart Zambia Country", "code", country_code, "code_name")
+            # packaging_unit_name =get_real_name("ZRA Packaging Unit", "code", packaging_unit, "code_name" )
+            # product_type_name=get_real_name("ZRA Product Type", "code",product_type,"code_name")
+
+
+            
 
         if not code_name:
             code_name = "UnknownCountry"  # Default fallback if no match is found
 
 
+        doc.custom_zra_item_classification_code = custom_zra_item_classification_code
         doc.item_group = "All Item Groups"
         doc.item_code = item_code  
         doc.item_name = item.get("itemNm", frm.get("item_name", "DefaultItemName"))
         doc.company = item.get("company_name", frm.get("company_name", "DefaultCompany"))
         doc.standard_rate = float(item.get("dftPrc", frm.get("valuation_rate", 0)))
         doc.custom_zra_country_of_origin = code_name
-        doc.custom_zra_packaging_unit = "ML"
-        doc.custom_zra_unit_quantity_code = "U"
+        doc.custom_zra_packaging_unit = item.get("pkgUnitCd")
+        doc.custom_zra_unit_quantity_code = item.get("qtyUnitCd")
         doc.custom_zra_tax_type = item.get("vatCatCd", frm.get("custom_zra_tax_type", "DefaultTax"))
         doc.batch_no = item.get("btchNo")
-        doc.custom_zra_item_classification_code = "53103001"
-        doc.custom_zra_product_type_code = "2"
-        doc.custom_zras_unit_of_quantity = "Pair"
+        doc.custom_zra_product_type_code = item.get("itemTyCd")
+        doc.custom_zras_unit_of_quantity = unit_quantity_name
         doc.additional_info = item.get("addInfo")
         doc.safety_quantity = item.get("sftyQty", "0")
         doc.manufacturer_tpin = item.get("manufactuterTpin", "1000000000")

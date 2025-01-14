@@ -549,7 +549,7 @@ def generate_next_item_code(country_code, product_type, packaging_unit, quantity
 
 
 
-def get_code_name_from_doctype(doctype, field_name, value, target_field):
+def get_real_name(doctype, field_name, value, target_field):
     """
     Fetches a target field (default 'code_name') from a specified doctype 
     based on a given field's value.
