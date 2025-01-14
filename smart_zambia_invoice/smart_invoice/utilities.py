@@ -544,3 +544,43 @@ def generate_next_item_code(country_code, product_type, packaging_unit, quantity
 
     # Return the new item code by concatenating the parts
     return f"{country_code}{product_type}{packaging_unit}{quantity_unit}{increment_str}"
+
+
+
+import frappe
+
+def get_dynamic_field_value(doc_type, record_name, dict_type_field, field_to_fetch):
+    """
+    Fetches the actual value of a field from a DictType based on a dynamically retrieved setting.
+    
+    Args:
+        doc_type (str): The DocType where the setting is stored (e.g., 'ZRA Settings').
+        record_name (str): The specific record name to retrieve from the DocType.
+        dict_type_field (str): The field in the settings record that holds the reference to the DictType.
+        field_to_fetch (str): The field in the DictType from which to fetch the actual value.
+        
+    Returns:
+        str: The actual value retrieved from the DictType, or None if not found.
+    """
+    try:
+        # Fetch the settings document dynamically
+        settings_doc = frappe.get_doc(doc_type, record_name)
+        
+        # Get the dict type code from the settings
+        dict_type_code = getattr(settings_doc, dict_type_field, None)
+        
+        if not dict_type_code:
+            return None
+        
+        # Fetch the relevant DictType record
+        dict_type_record = frappe.get_all("DictType", filters={"name": dict_type_code}, fields=[field_to_fetch])
+        
+        if dict_type_record:
+            # Return the actual value from the DictType
+            return dict_type_record[0].get(field_to_fetch)
+        else:
+            return None
+        
+    except Exception as e:
+        frappe.log_error(f"Error fetching dynamic field value: {str(e)}")
+        return None

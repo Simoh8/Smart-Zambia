@@ -42,9 +42,9 @@ frappe.ui.form.on(itemDoctypName, {
                   pkgUnitCd: frm.doc.custom_zra_packaging_unit_code,
                   qtyUnitCd: frm.doc.custom_zra_unit_quantity_code,
                   vatCatCd: frm.doc.custom_zra_tax_type,
-                  iplCatCd: frm.doc.custom_zra_tax_type,
-                  tlCatCd: frm.doc.custom_zra_tax_type,
-                  exciseTxCatCd: frm.doc.custom_zra_tax_type,
+                  iplCatCd: null,
+                  tlCatCd: null,
+                  exciseTxCatCd: null,
                   btchNo: null,
                   bcd: null,
                   dftPrc: frm.doc.valuation_rate.toFixed(2),
@@ -64,7 +64,7 @@ frappe.ui.form.on(itemDoctypName, {
               },
               callback: (response) => {
                 frappe.msgprint(
-                  "Item Registration Queued. Please check in later."
+                  "Item Registration Queued. Please refresh the browser tab."
                 );
               },
               error: (error) => {

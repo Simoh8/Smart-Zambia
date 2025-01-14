@@ -274,13 +274,9 @@ def on_success_customer_search(
 
 
 def on_successful_fetch_latest_items(frm, response):
-    print("Callback triggered!")
-    print(f"Response: {response}")
-    print(f"frm: {frm}")
 
-    # Safeguard: if frm is None, use default values or skip the logic that depends on frm
     if frm is None:
-        frm = {}  # Set a default empty dictionary or handle accordingly
+        frm = {} 
 
     for item in response.get('data', {}).get('itemList', []):
         print(f"Processing item: {item}")
@@ -290,22 +286,25 @@ def on_successful_fetch_latest_items(frm, response):
         existing_item = frappe.get_all("Item", filters={"item_code": item_code}, limit=1)
 
         if existing_item:
-            # If the item exists, append an underscore or suffix to the item code
             item_code = f"{item_code}_"
             print(f"Item {item_code} exists. Appending underscore to item_code.")
             doc = frappe.get_doc("Item", existing_item[0].get("name"))
-            doc.item_code = item_code  # Update the item_code with the new value
+            doc.item_code = item_code  
         else:
-            # If the item doesn't exist, create a new document
             doc = frappe.new_doc("Item")
 
-        # Set values for the item document
+
+        country_code = item.get("orgnNatCd", frm.get("custom_zra_country_origin_code", "DefaultCountry"))
+        country_record = frappe.db.get_value("Smart Zambia Country", {"code": country_code}, "code_name")
+        custom_zra_country_of_origin = country_record if country_record else "UnknownCountry"
+
+
         doc.item_group = "All Item Groups"
-        doc.item_code = item_code  # Use the modified item_code
+        doc.item_code = item_code  
         doc.item_name = item.get("itemNm", frm.get("item_name", "DefaultItemName"))
         doc.company = item.get("company_name", frm.get("company_name", "DefaultCompany"))
         doc.standard_rate = float(item.get("dftPrc", frm.get("valuation_rate", 0)))
-        doc.custom_zra_country_of_origin = item.get("orgnNatCd", frm.get("custom_zra_country_origin_code", "DefaultCountry"))
+        doc.custom_zra_country_of_origin = custom_zra_country_of_origin
         doc.custom_zra_packaging_unit = "ML"
         doc.custom_zra_unit_quantity_code = "U"
         doc.custom_zra_tax_type = item.get("vatCatCd", frm.get("custom_zra_tax_type", "DefaultTax"))
