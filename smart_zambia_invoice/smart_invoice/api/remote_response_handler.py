@@ -1,6 +1,6 @@
 import datetime
 import frappe
-from smart_zambia_invoice.smart_invoice.utilities import show_success_message
+from smart_zambia_invoice.smart_invoice.utilities import get_code_name_from_doctype, show_success_message
 
 
 from ..error_handlers import handle_errors
@@ -279,7 +279,6 @@ def on_successful_fetch_latest_items(frm, response):
         frm = {} 
 
     for item in response.get('data', {}).get('itemList', []):
-        print(f"Processing item: {item}")
 
         item_code = item.get("itemCd") or item.get("itemNm") or frm.get("custom_zra_item_code") or "DEFAULT_ITEM_CODE"
 
@@ -293,10 +292,15 @@ def on_successful_fetch_latest_items(frm, response):
         else:
             doc = frappe.new_doc("Item")
 
-
         country_code = item.get("orgnNatCd", frm.get("custom_zra_country_origin_code", "DefaultCountry"))
-        country_record = frappe.db.get_value("Smart Zambia Country", {"code": country_code}, "code_name")
-        custom_zra_country_of_origin = country_record if country_record else "UnknownCountry"
+        code_name = None
+
+        if country_code:
+            # Corrected: Pass the target_field parameter explicitly
+            code_name = get_code_name_from_doctype("Smart Zambia Country", "code", country_code, "code_name")
+
+        if not code_name:
+            code_name = "UnknownCountry"  # Default fallback if no match is found
 
 
         doc.item_group = "All Item Groups"
@@ -304,7 +308,7 @@ def on_successful_fetch_latest_items(frm, response):
         doc.item_name = item.get("itemNm", frm.get("item_name", "DefaultItemName"))
         doc.company = item.get("company_name", frm.get("company_name", "DefaultCompany"))
         doc.standard_rate = float(item.get("dftPrc", frm.get("valuation_rate", 0)))
-        doc.custom_zra_country_of_origin = custom_zra_country_of_origin
+        doc.custom_zra_country_of_origin = code_name
         doc.custom_zra_packaging_unit = "ML"
         doc.custom_zra_unit_quantity_code = "U"
         doc.custom_zra_tax_type = item.get("vatCatCd", frm.get("custom_zra_tax_type", "DefaultTax"))

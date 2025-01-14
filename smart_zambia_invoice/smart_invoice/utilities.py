@@ -547,40 +547,28 @@ def generate_next_item_code(country_code, product_type, packaging_unit, quantity
 
 
 
-import frappe
 
-def get_dynamic_field_value(doc_type, record_name, dict_type_field, field_to_fetch):
+
+def get_code_name_from_doctype(doctype, field_name, value, target_field):
     """
-    Fetches the actual value of a field from a DictType based on a dynamically retrieved setting.
+    Fetches a target field (default 'code_name') from a specified doctype 
+    based on a given field's value.
     
     Args:
-        doc_type (str): The DocType where the setting is stored (e.g., 'ZRA Settings').
-        record_name (str): The specific record name to retrieve from the DocType.
-        dict_type_field (str): The field in the settings record that holds the reference to the DictType.
-        field_to_fetch (str): The field in the DictType from which to fetch the actual value.
-        
+        doctype (str): The name of the doctype to query.
+        field_name (str): The field to filter on (e.g., 'country_code').
+        value (str): The value to match in the field.
+        target_field (str): The field to retrieve (default is 'code_name').
+    
     Returns:
-        str: The actual value retrieved from the DictType, or None if not found.
+        str: The value of the target field if found, or None if no match is found.
     """
-    try:
-        # Fetch the settings document dynamically
-        settings_doc = frappe.get_doc(doc_type, record_name)
-        
-        # Get the dict type code from the settings
-        dict_type_code = getattr(settings_doc, dict_type_field, None)
-        
-        if not dict_type_code:
-            return None
-        
-        # Fetch the relevant DictType record
-        dict_type_record = frappe.get_all("DictType", filters={"name": dict_type_code}, fields=[field_to_fetch])
-        
-        if dict_type_record:
-            # Return the actual value from the DictType
-            return dict_type_record[0].get(field_to_fetch)
-        else:
-            return None
-        
-    except Exception as e:
-        frappe.log_error(f"Error fetching dynamic field value: {str(e)}")
+    if not (doctype and field_name and value):
+        frappe.throw("Doctype, field_name, and value must all be provided.")
+
+    result = frappe.db.get_value(doctype, {field_name: value}, target_field)
+    
+    if result:
+        return result
+    else:
         return None
