@@ -273,3 +273,64 @@ def on_success_customer_search(
 
 
 
+def on_successful_fetch_latest_items(frm, response):
+    print("Callback triggered!")
+    print(f"Response: {response}")
+    print(f"frm: {frm}")
+
+    # Safeguard: if frm is None, use default values or skip the logic that depends on frm
+    if frm is None:
+        frm = {}  # Set a default empty dictionary or handle accordingly
+
+    for item in response.get('data', {}).get('itemList', []):
+        print(f"Processing item: {item}")
+
+        # Use itemNm as the item code if itemCd is missing
+        item_code = item.get("itemCd") or item.get("itemNm") or frm.get("custom_zra_item_code") or "DEFAULT_ITEM_CODE"
+
+        # Check if the item already exists in the system to avoid duplicates
+        existing_item = frappe.get_all("Item", filters={"item_code": item_code}, limit=1)
+
+        if existing_item:
+            # If the item exists, append an underscore or suffix to the item code
+            item_code = f"{item_code}_"
+            print(f"Item {item_code} exists. Appending underscore to item_code.")
+            doc = frappe.get_doc("Item", existing_item[0].get("name"))
+            doc.item_code = item_code  # Update the item_code with the new value
+        else:
+            # If the item doesn't exist, create a new document
+            print(f"Creating a new item for {item_code}")
+            doc = frappe.new_doc("Item")
+
+        # Set values for the item document
+        doc.item_group = "All Item Groups"
+        doc.item_code = item_code  # Use the modified item_code
+        doc.item_name = item.get("itemNm", frm.get("item_name", "DefaultItemName"))
+        doc.company = item.get("company_name", frm.get("company_name", "DefaultCompany"))
+        doc.standard_rate = float(item.get("dftPrc", frm.get("valuation_rate", 0)))
+        doc.custom_zra_country_of_origin = item.get("orgnNatCd", frm.get("custom_zra_country_origin_code", "DefaultCountry"))
+        doc.custom_zra_packaging_unit = "ML"
+        doc.custom_zra_unit_quantity_code = "U"
+        doc.custom_zra_tax_type = item.get("vatCatCd", frm.get("custom_zra_tax_type", "DefaultTax"))
+        doc.batch_no = item.get("btchNo")
+        doc.custom_zra_item_classification_code = "53103001"
+        doc.custom_zra_product_type_code = "2"
+        doc.custom_zras_unit_of_quantity = "Pair"
+        doc.additional_info = item.get("addInfo")
+        doc.safety_quantity = item.get("sftyQty", "0")
+        doc.manufacturer_tpin = item.get("manufactuterTpin", "1000000000")
+        doc.manufacturer_item_code = item.get("manufacturerItemCd", "ZM2EA1234")
+        doc.rrp = float(item.get("rrp", 0))
+        doc.service_charge_applicable = item.get("svcChargeYn", "N") == "Y"
+        doc.rental_applicable = item.get("rentalYn", "N") == "Y"
+        doc.is_active = item.get("useYn", "Y") == "Y"
+        doc.owner = item.get("regrId", frm.get("owner", "DefaultOwner"))
+        doc.modified_by = item.get("modrId", frm.get("modified_by", "DefaultModifier"))
+
+        try:
+            # Save the document (either create a new item or update the existing one)
+            doc.insert()
+            print(f"Document created/updated for item: {item_code}")
+        except Exception as e:
+            print(f"Error saving item {item_code}: {str(e)}")
+
