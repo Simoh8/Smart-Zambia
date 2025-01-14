@@ -417,7 +417,6 @@ def zra_item_search(request_data: str) -> None:
 @frappe.whitelist()
 def make_zra_item_registration(request_data: str) -> dict | None:
   
-        # Parse incoming data
     data: dict = json.loads(request_data)
 
         # Extract company name and build headers, server URL, and route path
@@ -427,7 +426,6 @@ def make_zra_item_registration(request_data: str) -> dict | None:
     route_path, last_req_date = get_route_path("SAVE ITEM")
 
     if headers and server_url and route_path:
-        # Construct the full URL
             url = f"{server_url}{route_path}"
 
             # Build the common payload fields
@@ -435,12 +433,8 @@ def make_zra_item_registration(request_data: str) -> dict | None:
 
             # Exclude `name` and `company_name` from `data`
             data_to_send = {key: value for key, value in data.items() if key not in ["name", "company_name"]}
-
-
-            # Combine the common payload with the filtered item data
             payload = {**common_payload, **data_to_send}
 
-            # Set up the endpoint builder
             endpoint_builder.headers = headers
             endpoint_builder.url = url
             endpoint_builder.payload = payload
@@ -453,7 +447,7 @@ def make_zra_item_registration(request_data: str) -> dict | None:
 
             # Enqueue the task for asynchronous execution
             frappe.enqueue(
-                endpoint_builder.perform_remote_calls (),
+                endpoint_builder.perform_remote_calls,
                 is_async=True,
                 queue="default",
                 timeout=300,

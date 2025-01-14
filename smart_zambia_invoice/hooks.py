@@ -11,8 +11,8 @@ app_license = "mit"
 require_app =["frappe/erpnext"]
 
 fixtures = [
-    # "ZRA Tax Type",
-    # "ZRA VSDC Routes",
+    "ZRA Tax Type",
+    "ZRA VSDC Routes",
     # "Smart Zambia Country",
     # "ZRA Transaction Type",
     # "ZRA Payment Method",
