@@ -2,7 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "ZRA VSDC Routes",
-  "modified": "2025-01-14 07:52:53.235645",
+  "modified": "2025-01-15 11:18:24.480813",
   "name": "ZRA VSDC Routes",
   "zra_vscd_routes": [
    {
@@ -100,7 +100,7 @@
     "parent": "ZRA VSDC Routes",
     "parentfield": "zra_vscd_routes",
     "parenttype": "ZRA VSDC Routes",
-    "path": "/items/selectItems ",
+    "path": "/items/selectItems",
     "path_description": "Retrieves a list of all product items saved in Smart Invoice",
     "path_function": "GET ITEMS"
    },
@@ -109,7 +109,7 @@
     "parent": "ZRA VSDC Routes",
     "parentfield": "zra_vscd_routes",
     "parenttype": "ZRA VSDC Routes",
-    "path": " /items/saveItemComposition",
+    "path": "/items/saveItemComposition",
     "path_description": " This endpoint is designed to manage the storage of items involved in processing or repackaging activities",
     "path_function": "SAVE ITEM COMPOSITION"
    },

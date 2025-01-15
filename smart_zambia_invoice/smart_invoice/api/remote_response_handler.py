@@ -336,3 +336,12 @@ def on_successful_fetch_latest_items(frm, response):
         except Exception as e:
             print(f"Error saving item {item_code}: {str(e)}")
 
+
+
+
+
+
+def on_success_item_composition_submission(response: dict, document_name: str) -> None:
+    frappe.db.set_value(
+        "BOM", document_name, {"custom_has_item_composition_been_submitted_successfully": 1}
+    )

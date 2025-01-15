@@ -8,7 +8,7 @@ from datetime import datetime
 from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
-from .remote_response_handler import  on_success_customer_search, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_user_details_submission, on_successful_fetch_latest_items
+from .remote_response_handler import  on_success_customer_search, on_success_item_composition_submission, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_user_details_submission, on_successful_fetch_latest_items
 from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload, truncate_user_id)
 
 endpoint_builder = EndpointConstructor()
@@ -457,4 +457,79 @@ def fetch_latest_items(request_data: str, frm: dict = None) -> None:  # Default 
         endpoint_builder.error_callback = on_error
 
         endpoint_builder.perform_remote_calls(doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None))
+
+
+
+
+@frappe.whitelist()
+def save_item_composition(request_data: str) -> None:
+    data: dict = json.loads(request_data)
+
+    company_name = data["company_name"]
+
+    headers = build_request_headers(company_name)
+    print("headers are:", headers)
+    server_url = get_server_url(company_name)
+    route_path, last_req_date = get_route_path("SAVE ITEM COMPOSITION")
+
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+
+        all_items = frappe.db.get_all("Item", ["*"])
+
+        # Check if item to manufacture is registered before proceeding
+        manufactured_item = frappe.get_value(
+            "Item",
+            {"name": data["item_name"]},
+            ["custom_zra_item_registered_", "name"],
+            as_dict=True,
+        )
+
+        if not manufactured_item.custom_zra_item_registered_:
+            frappe.throw(
+                f"Please register item: <b>{manufactured_item.name}</b> first to proceed.",
+                title="Integration Error",
+            )
+
+        for item in data["items"]:
+            for fetched_item in all_items:
+                if item["item_code"] == fetched_item.item_code:
+                    if fetched_item.custom_zra_item_registered_ == 1:
+                        composition_payload = {
+                            "itemCd": data["item_code"],
+                            "cpstItemCd": fetched_item.custom_zra_item_code,
+                            "cpstQty": item["qty"],
+                            "regrId": split_user_mail(data["registration_id"]),
+                            "regrNm": data["registration_id"],
+                        }
+                        common_payload = last_request_less_payload(headers)
+                        payload= {**common_payload, **composition_payload}         
+
+
+                        endpoint_builder.headers = headers
+                        endpoint_builder.url = url
+                        endpoint_builder.payload = payload
+                        endpoint_builder.success_callback = partial(on_success_item_composition_submission,
+                            document_name=data["name"],
+                        )
+                        endpoint_builder.error_callback = on_error
+                        endpoint_builder.perform_remote_calls()
+
+                        # frappe.enqueue(
+                        #     endpoint_builder.perform_remote_calls,
+                        #     is_async=True,
+                        #     queue="default",
+                        #     timeout=300,
+                        #     job_name=f"{data['name']}_submit_item_composition",
+                        #     doctype="BOM",
+                        #     document_name=data["name"],
+                        # )
+
+                    else:
+                        frappe.throw(
+                            f"""
+                            Item: <b>{fetched_item.name}</b> is not registered.
+                            <b>Ensure ALL Items are registered first to submit this composition</b>""",
+                            title="Integration Error",
+                        )
 
