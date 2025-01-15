@@ -4,19 +4,19 @@ frappe.ui.form.on(itemDoctypName, {
   refresh: function (frm) {
     const companyName = frappe.boot.sysdefaults.company;
 
-    // if (frm.doc.custom_zra_item_registered_) {
-    //   frm.toggle_enable("custom_zra_item_classification_code", false);
-    //   frm.toggle_enable("custom_zra_country_of_origin", false);
-    //   frm.toggle_enable("custom_zra_tax_type", false);
-    //   frm.toggle_enable("custom_zra_packaging_unit", false);
-    //   frm.toggle_enable("custom_zras_unit_of_quantity", false);
-    //   frm.toggle_enable("custom_zra_product_type_code", false);
-    // }
+    if (frm.doc.custom_zra_item_registered_) {
+      frm.toggle_enable("custom_zra_item_classification_code", false);
+      frm.toggle_enable("custom_zra_country_of_origin", false);
+      frm.toggle_enable("custom_zra_tax_type", false);
+      frm.toggle_enable("custom_zra_packaging_unit", false);
+      frm.toggle_enable("custom_zras_unit_of_quantity", false);
+      frm.toggle_enable("custom_zra_product_type_code", false);
+    }
 
-    // if (frm.doc.custom_zra_imported_item_submitted_) {
-    //   frm.toggle_enable("custom_zra_referenced_imported_item", false);
-    //   frm.toggle_enable("custom_zra_imported_item_status", false);
-    // }
+    if (frm.doc.custom_zra_imported_item_submitted_) {
+      frm.toggle_enable("custom_zra_referenced_imported_item", false);
+      frm.toggle_enable("custom_zra_imported_item_status", false);
+    }
 
     if (!frm.is_new()) {
       if (!frm.doc.custom_zra_item_registered_) {
@@ -105,6 +105,33 @@ frappe.ui.form.on(itemDoctypName, {
       //     __('ZRA Actions'),
       //   );
       // }
+      if(frm.custom_has_a_recommended_retail_price_rrp_){
+        frm.add_custom_button(__("Submit RRP Product"),
+        function(){
+          frappe.call({
+            method: "smart_zambia_invoice.smart_invoice.api.zra_api.make_zra_item_registration",
+            args: {
+              request_data: {
+                company_name: companyName,
+                name: frm.doc.name,
+                item_sequence: frm.doc.idx,
+                item_code: frm.doc.custom_zra_item_code,
+                task_code: frm.doc.custom_zra_imported_item_task_code,
+                item_classification_code:frm.doc.custom_zra_item_classification_code,
+                import_item_status:frm.doc.custom_zra_imported_item_status_code,
+                hs_code: frm.doc.custom_zra_hs_code,
+                modified_by: frm.doc.modified_by,
+                declaration_date: frm.doc.creation,
+              },
+            },
+          })
+
+        }
+            
+      
+      
+      )
+      }
 
       if (!frm.doc.custom_zra_item_registered_) {
         frm.add_custom_button(
@@ -120,13 +147,12 @@ frappe.ui.form.on(itemDoctypName, {
                   item_sequence: frm.doc.idx,
                   item_code: frm.doc.custom_zra_item_code,
                   task_code: frm.doc.custom_zra_imported_item_task_code,
-                  item_classification_code:
-                    frm.doc.custom_zra_item_classification_code,
-                  import_item_status:
-                    frm.doc.custom_zra_imported_item_status_code,
+                  item_classification_code:frm.doc.custom_zra_item_classification_code,
+                  import_item_status:frm.doc.custom_zra_imported_item_status_code,
                   hs_code: frm.doc.custom_zra_hs_code,
                   modified_by: frm.doc.modified_by,
                   declaration_date: frm.doc.creation,
+                  rrp:doc.custom_recommended_retail_price
                 },
               },
               callback: (response) => {

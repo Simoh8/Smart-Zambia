@@ -18,21 +18,21 @@ frappe.listview_settings[doctypeName].onload = function (listview) {
       },
     });
   });
-  // listview.page.add_inner_button(__('Fetch Latest Products'), function (listview) {
-  //   frappe.call({
-  //     method:
-  //     "smart_zambia_invoice.smart_invoice.api.zra_api.fetch_latest_items",
-  //     args: {
-  //       request_data: {
-  //         company_name: companyName,
-  //       },
-  //     },
-  //     callback: (response) => {},
-  //     error: (r) => {
-  //       // Error Handling is Defered to the Server
-  //     },
-  //   });
-  // });
+  listview.page.add_inner_button(__('Fetch Latest Products'), function (listview) {
+    frappe.call({
+      method:
+      "smart_zambia_invoice.smart_invoice.api.zra_api.fetch_latest_items",
+      args: {
+        request_data: {
+          company_name: companyName,
+        },
+      },
+      callback: (response) => {},
+      error: (r) => {
+        // Error Handling is Defered to the Server
+      },
+    });
+  });
 
 
   listview.page.add_action_item(__('Bulk Register Items'), function () {
