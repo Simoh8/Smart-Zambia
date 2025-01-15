@@ -5,14 +5,11 @@ import frappe
 import json
 import datetime
 from datetime import datetime
-
 from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
 from .remote_response_handler import  on_success_customer_search, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_user_details_submission, on_successful_fetch_latest_items
 from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload, truncate_user_id)
-
-
 
 endpoint_builder = EndpointConstructor()
 
@@ -44,7 +41,36 @@ def make_branch_request(request_data: str) -> None:
         endpoint_builder.perform_remote_calls(
             doctype="Branch",
         )
-        
+
+
+
+
+@frappe.whitelist()
+def ping_zra_server(request_data: str) -> None:
+    data = json.loads(request_data)
+    url = data.get("server_url")
+    
+
+    try:
+        response = asyncio.run(make_get_request(url))
+
+        # Check if response is None, indicating a connection issue
+        if response is None:
+            frappe.msgprint("The ZRA Server is Offline Please Again Try  Later")
+            return
+
+        # Check if the status code is 200 (OK)
+        if response.status == 200:
+            frappe.msgprint("The Server is Online")
+        else:
+            frappe.msgprint(f"The Server returned an error: {response.status}")
+
+    except Exception as e:
+        frappe.msgprint(f"Unexpected error: {str(e)}")
+
+
+
+
         
 # searching for the new notices available from zra
 @frappe.whitelist()
@@ -76,33 +102,8 @@ def perform_zra_notice_search(request_data: str) -> None:
         endpoint_builder.error_callback = on_error
 
         endpoint_builder.perform_remote_calls(doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None))
+        
 
-
-
-@frappe.whitelist()
-def ping_zra_server(request_data: str) -> None:
-    data = json.loads(request_data)
-    url = data.get("server_url")
-    
-
-    try:
-        response = asyncio.run(make_get_request(url))
-
-        # Check if response is None, indicating a connection issue
-        if response is None:
-            frappe.msgprint("The ZRA Server is Offline Please Again Try  Later")
-            return
-
-        # Check if the status code is 200 (OK)
-        if response.status == 200:
-            frappe.msgprint("The Server is Online")
-        else:
-            frappe.msgprint(f"The Server returned an error: {response.status}")
-
-    except Exception as e:
-        frappe.msgprint(f"Unexpected error: {str(e)}")
-
-                    
                         
                         
 @frappe.whitelist()
@@ -393,8 +394,6 @@ def fetch_customer_info(request_data: str) -> None:
 def make_zra_item_registration(request_data: str) -> dict | None:
   
     data: dict = json.loads(request_data)
-
-        # Extract company name and build headers, server URL, and route path
     company_name = data["company_name"]
     headers = build_request_headers(company_name )
     server_url = get_server_url(company_name)

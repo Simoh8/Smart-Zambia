@@ -292,54 +292,42 @@ def on_successful_fetch_latest_items(frm, response):
         else:
             doc = frappe.new_doc("Item")
 
-        country_code = item.get("orgnNatCd")
-        packaging_unit= item.get("pkgUnitCd")
-        unit_quantity= item.get("qtyUnitCd")
-        product_type= item.get("itemTyCd")
-        custom_zra_item_classification_code = item.get("itemClsCd")
-        print("The classification name is,", custom_zra_item_classification_code)
-
-
-        
-
-        if country_code:
+            country_code = item.get("orgnNatCd")
+            packaging_unit= item.get("pkgUnitCd")
+            unit_quantity= item.get("qtyUnitCd")
+            product_type= item.get("itemTyCd")
+            
             # Corrected: Pass the target_field parameter explicitly
-            unit_quantity_name=get_real_name("ZRA Unit of Quantity", "code", unit_quantity, "code_name" )
+            # unit_quantity_name=get_real_name("ZRA Unit of Quantity", "code", unit_quantity, "code_name" )
             code_name = get_real_name("Smart Zambia Country", "code", country_code, "code_name")
             # packaging_unit_name =get_real_name("ZRA Packaging Unit", "code", packaging_unit, "code_name" )
-            # product_type_name=get_real_name("ZRA Product Type", "code",product_type,"code_name")
-
-
-            
-
-        if not code_name:
-            code_name = "UnknownCountry"  # Default fallback if no match is found
-
-
-        doc.custom_zra_item_classification_code = custom_zra_item_classification_code
-        doc.item_group = "All Item Groups"
-        doc.item_code = item_code  
-        doc.item_name = item.get("itemNm", frm.get("item_name", "DefaultItemName"))
-        doc.company = item.get("company_name", frm.get("company_name", "DefaultCompany"))
-        doc.standard_rate = float(item.get("dftPrc", frm.get("valuation_rate", 0)))
-        doc.custom_zra_country_of_origin = code_name
-        doc.custom_zra_packaging_unit = item.get("pkgUnitCd")
-        doc.custom_zra_unit_quantity_code = item.get("qtyUnitCd")
-        doc.custom_zra_tax_type = item.get("vatCatCd", frm.get("custom_zra_tax_type", "DefaultTax"))
-        doc.batch_no = item.get("btchNo")
-        doc.custom_zra_product_type_code = item.get("itemTyCd")
-        doc.custom_zras_unit_of_quantity = unit_quantity_name
-        doc.additional_info = item.get("addInfo")
-        doc.safety_quantity = item.get("sftyQty", "0")
-        doc.manufacturer_tpin = item.get("manufactuterTpin", "1000000000")
-        doc.manufacturer_item_code = item.get("manufacturerItemCd", "ZM2EA1234")
-        doc.rrp = float(item.get("rrp", 0))
-        doc.service_charge_applicable = item.get("svcChargeYn", "N") == "Y"
-        doc.rental_applicable = item.get("rentalYn", "N") == "Y"
-        doc.is_active = item.get("useYn", "Y") == "Y"
-        doc.custom_zra_item_registered_="1"
-        doc.owner = item.get("regrId", frm.get("owner", "DefaultOwner"))
-        doc.modified_by = item.get("modrId", frm.get("modified_by", "DefaultModifier"))
+            # product_type_name=get_real_name("ZRA Product Type", "code",product_type,"code_name"            
+            doc.custom_zra_item_classification_code = item.get("itemClsCd")
+            doc.item_group = "All Item Groups"
+            doc.custom_zra_item_code="item.get(itemCd)"
+            doc.item_code = item.get("itemNm", frm.get("item_name", "DefaultItemName"))
+            doc.item_name = item.get("itemNm", frm.get("item_name", "DefaultItemName"))
+            doc.company = item.get("company_name", frm.get("company_name", "DefaultCompany"))
+            doc.standard_rate = float(item.get("dftPrc", frm.get("valuation_rate", 0)))
+            doc.custom_zra_country_of_origin = code_name
+            doc.custom_zra_packaging_unit = item.get("pkgUnitCd")
+            doc.custom_zra_unit_quantity_code = item.get("qtyUnitCd")
+            doc.custom_zra_tax_type = item.get("vatCatCd", frm.get("custom_zra_tax_type", "DefaultTax"))
+            doc.batch_no = item.get("btchNo")
+            doc.custom_zra_product_type_code = item.get("itemTyCd")
+            doc.custom_zras_unit_of_quantity = "Pair"
+            doc.additional_info = item.get("addInfo")
+            doc.safety_quantity = item.get("sftyQty", "0")
+            doc.manufacturer_tpin = item.get("manufactuterTpin", "1000000000")
+            doc.manufacturer_item_code = item.get("manufacturerItemCd", "ZM2EA1234")
+            doc.rrp = float(item.get("rrp", 0))
+            doc.service_charge_applicable = item.get("svcChargeYn", "N") == "Y"
+            doc.rental_applicable = item.get("rentalYn", "N") == "Y"
+            doc.is_active = item.get("useYn", "Y") == "Y"
+            doc.custom_zra_item_registered_="0"
+            doc.owner = item.get("regrId", frm.get("owner", "DefaultOwner"))
+            doc.custom_zra_item_registered_="1"
+            doc.modified_by = item.get("modrId", frm.get("modified_by", "DefaultModifier"))
 
         try:
             # Save the document (either create a new item or update the existing one)
