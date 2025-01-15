@@ -8,8 +8,8 @@ from datetime import datetime
 from frappe.utils.dateutils import add_to_date
 from .api_builder import EndpointConstructor
 
-from .remote_response_handler import  on_success_customer_search, on_success_item_composition_submission, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,item_composition_submission_succes,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_user_details_submission, on_successful_fetch_latest_items
-from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,make_post_request,split_user_mail,get_server_url,build_common_payload, truncate_user_id)
+from .remote_response_handler import  on_success_customer_search, on_success_item_composition_submission, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_rrp_item_registration, on_success_user_details_submission, on_successful_fetch_latest_items
+from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,split_user_mail,get_server_url,build_common_payload, truncate_user_id)
 
 endpoint_builder = EndpointConstructor()
 
@@ -515,15 +515,15 @@ def save_item_composition(request_data: str) -> None:
                         endpoint_builder.error_callback = on_error
                         endpoint_builder.perform_remote_calls()
 
-                        # frappe.enqueue(
-                        #     endpoint_builder.perform_remote_calls,
-                        #     is_async=True,
-                        #     queue="default",
-                        #     timeout=300,
-                        #     job_name=f"{data['name']}_submit_item_composition",
-                        #     doctype="BOM",
-                        #     document_name=data["name"],
-                        # )
+                        frappe.enqueue(
+                            endpoint_builder.perform_remote_calls,
+                            is_async=True,
+                            queue="default",
+                            timeout=300,
+                            job_name=f"{data['name']}_submit_item_composition",
+                            doctype="BOM",
+                            document_name=data["name"],
+                        )
 
                     else:
                         frappe.throw(
@@ -532,4 +532,49 @@ def save_item_composition(request_data: str) -> None:
                             <b>Ensure ALL Items are registered first to submit this composition</b>""",
                             title="Integration Error",
                         )
+
+
+
+
+
+@frappe.whitelist()
+def make_rrp_item_registration(request_data: str) -> dict | None:
+  
+    data: dict = json.loads(request_data)
+    company_name = data["company_name"]
+    headers = build_request_headers(company_name )
+    server_url = get_server_url(company_name)
+    route_path, last_req_date = get_route_path("SAVE ITEM")
+
+    if headers and server_url and route_path:
+            url = f"{server_url}{route_path}"
+
+            # Build the common payload fields
+            common_payload = last_request_less_payload(headers)
+
+            # Exclude `name` and `company_name` from `data`
+            data_to_send = {key: value for key, value in data.items() if key not in ["name", "company_name"]}
+            payload = {**common_payload, **data_to_send}
+
+            endpoint_builder.headers = headers
+            endpoint_builder.url = url
+            endpoint_builder.payload = payload
+            endpoint_builder.success_callback = partial(
+                on_success_rrp_item_registration, document_name=data.get("name")
+            )
+            endpoint_builder.error_callback = on_error
+            endpoint_builder.perform_remote_calls()
+
+
+
+            # # Enqueue the task for asynchronous execution
+            # frappe.enqueue(
+            #     endpoint_builder.perform_remote_calls,
+            #     is_async=True,
+            #     queue="default",
+            #     timeout=300,
+            #     doctype="Item",
+            #     document_name=data["name"],
+            #     job_name=f"{data['name']}_register_item",
+            # )
 

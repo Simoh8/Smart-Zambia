@@ -345,3 +345,10 @@ def on_success_item_composition_submission(response: dict, document_name: str) -
     frappe.db.set_value(
         "BOM", document_name, {"custom_has_item_composition_been_submitted_successfully": 1}
     )
+
+
+
+def on_success_rrp_item_registration(response: dict, document_name: str) -> None:
+    frappe.db.set_value("Item", document_name, {"custom_zra_item_registered_": 1})
+    show_success_message(" RRP Item registration succesful")
+
