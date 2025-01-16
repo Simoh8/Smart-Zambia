@@ -5,7 +5,9 @@ import frappe
 import json
 import datetime
 from datetime import datetime
+import frappe.defaults
 from frappe.utils.dateutils import add_to_date
+from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides import on_success_sales_information_submission
 from smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice import on_submit
 from .api_builder import EndpointConstructor
 
@@ -578,6 +580,195 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
 
 
 
+
+
+@frappe.whitelist()
+def submit_sales_invoice(record:str) -> None:
+
+
+    sales_invoice= frappe.get_doc("Sales Invoice", record, for_update=False)
+
+
+    request_data={
+        "name": sales_invoice.name,
+        "companyname": frappe.defaults.get_user_default("Company"),
+        "orgInvcNo": 0,
+        "cisInvcNo": "CIS001-1380",
+        "custTpin": "2000000000",
+        "custNm": "Smart Customer",
+        "salesTyCd": "N",
+        "rcptTyCd": "S",
+        "pmtTyCd": "01",
+        "salesSttsCd": "02",
+        "cfmDt": "20240508102010",
+        "salesDt": "20240728",
+        "stockRlsDt": "null",
+        "cnclReqDt": "null",
+        "cnclDt": "null",
+        "rfdDt": "null",
+        "rfdRsnCd": "null",
+        "totItemCnt": 2,
+        "taxblAmtA": 86.2069,
+        "taxblAmtB": 0.0,
+        "taxblAmtC1": 0.0,
+        "taxblAmtC2": 0.0,
+        "taxblAmtC3": 0.0,
+        "taxblAmtD": 0.0,
+        "taxblAmtRvat": 0.0,
+        "taxblAmtE": 0.0,
+        "taxblAmtF": 0.0,
+        "taxblAmtIpl1": 0.0,
+        "taxblAmtIpl2": 100,
+        "taxblAmtTl": 0.0,
+        "taxblAmtEcm": 0,
+        "taxblAmtExeeg": 0.0,
+        "taxblAmtTot": 0.0,
+        "taxRtA": 16,
+        "taxRtB": 16,
+        "taxRtC1": 0,
+        "taxRtC2": 0,
+        "taxRtC3": 0,
+        "taxRtD": 0,
+        "tlAmt": 0.0,
+        "taxRtRvat": 16,
+        "taxRtE": 0,
+        "taxRtF": 10,
+        "taxRtIpl1": 5,
+        "taxRtIpl2": 0,
+        "taxRtTl": 1.5,
+        "taxRtEcm": 5,
+        "taxRtExeeg": 3,
+        "taxRtTot": 0,
+        "taxAmtA": 13.7931,
+        "taxAmtB": 0.0,
+        "taxAmtC1": 0.0,
+        "taxAmtC2": 0.0,
+        "taxAmtC3": 0.0,
+        "taxAmtD": 0.0,
+        "taxAmtRvat": 0.0,
+        "taxAmtE": 0.0,
+        "taxAmtF": 0.0,
+        "taxAmtIpl1": 0.0,
+        "taxAmtIpl2": 0.0,
+        "taxAmtTl": 0.0,
+        "taxAmtEcm": 0.0,
+        "taxAmtExeeg": 0.0,
+        "taxAmtTot": 0.0,
+        "totTaxblAmt": 186.2069,
+        "totTaxAmt": 13.7931,
+        "cashDcRt": 25,
+        "cashDcAmt": 50,
+        "totAmt": 150,
+        "prchrAcptcYn": "N",
+        "remark": "",
+        "regrId": "admin",
+        "regrNm": "admin",
+        "modrId": "admin",
+        "modrNm": "admin",
+        "saleCtyCd": "1",
+        "lpoNumber": "null",
+        "currencyTyCd": "ZMW",
+        "exchangeRt": "1",
+        "destnCountryCd": "",
+        "dbtRsnCd": "",
+        "invcAdjustReason": "",
+        "itemList": [
+            {
+            "itemSeq": 1,
+            "itemCd": "20056",
+            "itemClsCd": "50102518",
+            "itemNm": "Bread",
+            "bcd": "",
+            "pkgUnitCd": "BA",
+            "pkg": 0.0,
+            "qtyUnitCd": "BE",
+            "qty": 1.0,
+            "prc": 125,
+            "splyAmt": 125,
+            "dcRt": 20,
+            "dcAmt": 25,
+            "isrccCd": "",
+            "isrccNm": "",
+            "isrcRt": 0.0,
+            "isrcAmt": 0.0,
+            "vatCatCd": "A",
+            "exciseTxCatCd": "null",
+            "tlCatCd": "null",
+            "iplCatCd": "null",
+            "vatTaxblAmt": 86.2069,
+            "vatAmt": 13.7931,
+            "exciseTaxblAmt": 0,
+            "tlTaxblAmt": 0.0,
+            "iplTaxblAmt": 0.0,
+            "iplAmt": 0.0,
+            "tlAmt": 0.0,
+            "exciseTxAmt": 0,
+            "totAmt": 100
+            },
+            {
+            "itemSeq": 2,
+            "itemCd": "20056",
+            "itemClsCd": "50102518",
+            "itemNm": "Reinsurance",
+            "bcd": "",
+            "pkgUnitCd": "BA",
+            "pkg": 0.0,
+            "qtyUnitCd": "BE",
+            "qty": 1.0,
+            "prc": 100,
+            "splyAmt": 100,
+            "dcRt": 0.0,
+            "dcAmt": 0.0,
+            "isrccCd": "",
+            "isrccNm": "",
+            "isrcRt": 0.0,
+            "isrcAmt": 0.0,
+            "vatCatCd": "null",
+            "exciseTxCatCd": "null",
+            "vatTaxblAmt": 0.0,
+            "exciseTaxblAmt": 0,
+            "tlTaxblAmt": 0.0,
+            "tlCatCd": "null",
+            "tlAmt": 0.0,
+            "iplCatCd": "IPL2",
+            "iplAmt": 0.0,
+            "iplTaxblAmt": 100,
+            "vatAmt": 0.0,
+            "exciseTxAmt": 0,
+            "totAmt": 100
+            }
+        ]
+    }
+    perform_sales_invoice_registration(request_data=json.dumps(request_data))
+
+
+
+
+@frappe.whitelist()
+def perform_sales_invoice_registration(request_data:str, )-> dict |None:
+    data:dict =json.loads(request_data)
+    company_name =data["company_name"]
+    headers= build_request_headers(company_name)
+    server_url=get_server_url(company_name)
+    route_path, last_req_date= get_route_path("SAVE SALES")
+
+
+    if headers and server_url and route_path:
+        url= f"{server_url}{route_path}"
+        endpoint_builder.headers=headers
+        endpoint_builder.url=url
+        endpoint_builder.payload=data
+        endpoint_builder.success_callback=partial(on_success_sales_information_submission,document_name=data["name"])
+        endpoint_builder.error_callback=on_error
+
+
+        endpoint_builder.perform_remote_calls()
+
+
+
+
+
+
 @frappe.whitelist()
 def submit_bulk_sales_invoices(docs_list: str) -> None:
 
@@ -591,6 +782,3 @@ def submit_bulk_sales_invoices(docs_list: str) -> None:
             if record == invoice.name:
                 doc = frappe.get_doc("Sales Invoice", record, for_update=False)
                 on_submit(doc, method=None)
-
-@frappe.whitelist()
-def submit_sales_invoice(doc_list:str)
