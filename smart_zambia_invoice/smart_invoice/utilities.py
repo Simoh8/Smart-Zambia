@@ -123,6 +123,7 @@ def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str
         headers = {
             "tpin": settings.get("company_tpin"),  # Adjusted to match the key in `settings`
             "bhfId": settings.get("branch_id"), 
+            "Content-Type": "application/json"
         }
 
         return headers
@@ -571,3 +572,155 @@ def get_real_name(doctype, field_name, value, target_field):
         return result
     else:
         return None
+
+
+
+def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None]]:
+    """Iterates over the invoice items and extracts relevant data
+
+    Args:
+        invoice (Document): The invoice
+
+    Returns:
+        list[dict[str, str | int | None]]: The parsed data as a list of dictionaries
+    """
+    # FIXME: Handle cases where same item can appear on different lines with different rates etc.
+    # item_taxes = get_itemised_tax_breakup_data(invoice)
+    items_list = []
+
+    for index, item in enumerate(invoice.items):
+
+        items_list.append(
+            {
+                "itemSeq": item.idx,
+                "itemCd": item.custom_item_code_etims,
+                "itemClsCd": item.custom_item_classification,
+                "itemNm": item.item_name,
+                "bcd": item.barcode,
+                "pkgUnitCd": item.custom_packaging_unit_code,
+                "pkg": 1,
+                "qtyUnitCd": item.custom_unit_of_quantity_code,
+                "qty": abs(item.qty),
+                "prc": round(item.base_rate, 2),
+                "splyAmt": round(item.base_amount, 2),
+                "dcRt": round(item.discount_percentage, 2) or 0,
+                "dcAmt": round(item.discount_amount, 2) or 0,
+                "isrccCd": None,
+                "isrccNm": None,
+                "isrcRt": None,
+                "isrcAmt": None,
+                "taxTyCd": item.custom_taxation_type_code,
+                "taxblAmt": round(item.net_amount, 2), #taxable_amount,
+                # "taxAmt": tax_amount,
+                "taxAmt": round(item.custom_tax_amount, 2),
+                "totAmt": round(item.net_amount + item.custom_tax_amount, 2),
+                # "totAmt": (taxable_amount + tax_amount),
+            }
+        )
+
+    return items_list
+
+
+
+
+
+def build_invoice_payload(
+    invoice: Document, invoice_type_identifier: Literal["S", "C"], company_name: str
+) -> dict[str, str | int | float]:
+    # Retrieve taxation data for the invoice
+    taxation_type = get_taxation_types(invoice)
+    # frappe.throw(str(taxation_type))
+    """Converts relevant invoice data to a JSON payload
+
+    Args:
+        invoice (Document): The Invoice record to generate data from
+        invoice_type_identifier (Literal["S", "C"]): The
+        Invoice type identifier. S for Sales Invoice, C for Credit Notes
+        company_name (str): The company name used to fetch the valid settings doctype record
+
+    Returns:
+        dict[str, str | int | float]: The payload
+    """
+    post_time = invoice.posting_time
+
+    # Ensure post_time is a string if it's a timedelta
+    if isinstance(post_time, timedelta):
+        post_time = str(post_time)
+
+    # Parse posting date and time
+    posting_date = make_datetime_from_string(
+        f"{invoice.posting_date} {post_time[:8].replace('.', '')}",
+        format="%Y-%m-%d %H:%M:%S",
+    )
+
+    validated_date = posting_date.strftime("%Y%m%d%H%M%S")
+    sales_date = posting_date.strftime("%Y%m%d")
+
+    # Fetch list of invoice items
+    items_list = get_invoice_items_list(invoice)
+
+    # Determine the invoice number format
+    invoice_name = invoice.name
+    if invoice.amended_from:
+        invoice_name = clean_invc_no(invoice_name)
+        
+    payload = {
+        "invcNo": get_invoice_number(invoice_name),
+        "orgInvcNo": (
+            0 if invoice_type_identifier == "S"
+            else frappe.get_doc("Sales Invoice", invoice.return_against).custom_submission_sequence_number
+        ),
+        "trdInvcNo": invoice_name,
+        "custTin": invoice.tax_id if invoice.tax_id else None,
+        "custNm": None,
+        "rcptTyCd": invoice_type_identifier if invoice_type_identifier == "S" else "R",
+        "pmtTyCd": invoice.custom_payment_type_code,
+        "salesSttsCd": invoice.custom_transaction_progress_code,
+        "cfmDt": validated_date,
+        "salesDt": sales_date,
+        "stockRlsDt": validated_date,
+        "cnclReqDt": None,
+        "cnclDt": None,
+        "rfdDt": None,
+        "rfdRsnCd": None,
+        "totItemCnt": len(items_list),
+        
+        "taxRtA": taxation_type.get("A", {}).get("tax_rate", 0),
+        "taxRtB": taxation_type.get("B", {}).get("tax_rate", 0),
+        "taxRtC": taxation_type.get("C", {}).get("tax_rate", 0),
+        "taxRtD": taxation_type.get("D", {}).get("tax_rate", 0),
+        "taxRtE": taxation_type.get("E", {}).get("tax_rate", 0),
+        "taxAmtA": taxation_type.get("A", {}).get("tax_amount", 0),
+        "taxAmtB": taxation_type.get("B", {}).get("tax_amount", 0),
+        "taxAmtC": taxation_type.get("C", {}).get("tax_amount", 0),
+        "taxAmtD": taxation_type.get("D", {}).get("tax_amount", 0),
+        "taxAmtE": taxation_type.get("E", {}).get("tax_amount", 0),
+        "taxblAmtA": taxation_type.get("A", {}).get("taxable_amount", 0),
+        "taxblAmtB": taxation_type.get("B", {}).get("taxable_amount", 0),
+        "taxblAmtC": taxation_type.get("C", {}).get("taxable_amount", 0),
+        "taxblAmtD": taxation_type.get("D", {}).get("taxable_amount", 0),
+        "taxblAmtE": taxation_type.get("E", {}).get("taxable_amount", 0),
+        "totTaxblAmt": round(invoice.base_net_total, 2),
+        "totTaxAmt": round(invoice.total_taxes_and_charges, 2),
+        "totAmt": round(invoice.grand_total, 2),
+        "prchrAcptcYn": "Y",
+        "remark": None,
+        "regrId": split_user_mail(invoice.owner),
+        "regrNm": invoice.owner,
+        "modrId": split_user_mail(invoice.modified_by),
+        "modrNm": invoice.modified_by,
+        "receipt": {
+            "custTin": invoice.tax_id if invoice.tax_id else None,
+            "custMblNo": None,
+            "rptNo": 1,
+            "rcptPbctDt": validated_date,
+            "trdeNm": "",
+            "adrs": "",
+            "topMsg": "ERPNext",
+            "btmMsg": "",
+            "prchrAcptcYn": "Y",
+        },
+        "itemList": items_list,
+    }
+    
+    return payload

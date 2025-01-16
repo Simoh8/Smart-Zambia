@@ -38,7 +38,7 @@ frappe.ui.form.on(itemDoctypName, {
                   itemClsCd: frm.doc.custom_zra_item_classification_code,
                   itemTyCd: frm.doc.custom_product_code,
                   itemNm: frm.doc.item_name,
-                  temStdNm: frm.doc.item_name,
+                  itemStdNm: frm.doc.item_name,
                   orgnNatCd: frm.doc.custom_zra_country_origin_code,
                   pkgUnitCd: frm.doc.custom_zra_packaging_unit_code,
                   qtyUnitCd: frm.doc.custom_zra_unit_quantity_code,
@@ -53,7 +53,7 @@ frappe.ui.form.on(itemDoctypName, {
                   sftyQty: "0",
                   manufactuterTpin: "1000000000",
                   manufacturerItemCd: "ZM2EA1234",
-                  rrp: "1000.0",
+                  rrp: frm.doc.custom_recommended_retail_price,
                   svcChargeYn: "Y",
                   rentalYn: "N",
                   useYn: "Y",
@@ -129,7 +129,7 @@ frappe.ui.form.on(itemDoctypName, {
                   qtyUnitCd: frm.doc.custom_zra_unit_quantity_code,
                   rrp: frm.doc.custom_recommended_retail_price,
                   useYn: "Y",
-                  
+
                   regrId: frm.doc.owner,
                   regrNm: frm.doc.owner,
                   modrId: frm.doc.modified_by,

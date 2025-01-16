@@ -352,3 +352,37 @@ def on_success_rrp_item_registration(response: dict, document_name: str) -> None
     frappe.db.set_value("Item", document_name, {"custom_zra_item_registered_": 1})
     show_success_message(" RRP Item registration succesful")
 
+
+def on_success_sales_information_submission(
+    response: dict,
+    invoice_type: str,
+    document_name: str,
+    company_name: str,
+    invoice_number: int | str,
+    pin: str,
+    branch_id: str = "00",
+) -> None:
+    response_data = response["data"]
+    receipt_signature = response_data["rcptSign"]
+
+    encoded_uri = requote_uri(
+        f"https://etims-sbx.kra.go.ke/common/link/etims/receipt/indexEtimsReceiptData?Data={pin}{branch_id}{receipt_signature}"
+    )
+
+    qr_code = get_qr_code(encoded_uri)
+
+    frappe.db.set_value(
+        invoice_type,
+        document_name,
+        {
+            "custom_current_receipt_number": response_data["curRcptNo"],
+            "custom_total_receipt_number": response_data["totRcptNo"],
+            "custom_internal_data": response_data["intrlData"],
+            "custom_receipt_signature": receipt_signature,
+            "custom_control_unit_date_time": response_data["sdcDateTime"],
+            "custom_successfully_submitted": 1,
+            "custom_submission_sequence_number": invoice_number,
+            "custom_qr_code": qr_code,
+        },
+    )
+

@@ -6,6 +6,7 @@ import json
 import datetime
 from datetime import datetime
 from frappe.utils.dateutils import add_to_date
+from smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice import on_submit
 from .api_builder import EndpointConstructor
 
 from .remote_response_handler import  on_success_customer_search, on_success_item_composition_submission, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_rrp_item_registration, on_success_user_details_submission, on_successful_fetch_latest_items
@@ -417,8 +418,6 @@ def make_zra_item_registration(request_data: str) -> dict | None:
             )
             endpoint_builder.error_callback = on_error
 
-
-
             # Enqueue the task for asynchronous execution
             frappe.enqueue(
                 endpoint_builder.perform_remote_calls,
@@ -577,3 +576,21 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
                 job_name=f"{data['name']}_register_item",
             )
 
+
+
+@frappe.whitelist()
+def submit_bulk_sales_invoices(docs_list: str) -> None:
+
+    data = json.loads(docs_list)
+    all_sales_invoices = frappe.db.get_all(
+        "Sales Invoice", {"docstatus": 1, "custom_successfully_submitted": 0}, ["name"]
+    )
+
+    for record in data:
+        for invoice in all_sales_invoices:
+            if record == invoice.name:
+                doc = frappe.get_doc("Sales Invoice", record, for_update=False)
+                on_submit(doc, method=None)
+
+@frappe.whitelist()
+def submit_sales_invoice(doc_list:str)

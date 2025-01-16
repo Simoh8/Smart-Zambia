@@ -94,13 +94,16 @@ doctype_js = {
     "Branch": "smart_invoice/overrides/frontend/branch.js",
     "BOM": "smart_invoice/overrides/frontend/zra_bom.js",
     "Item": "smart_invoice/overrides/frontend/item.js",
-    "Customer": "smart_invoice/overrides/frontend/customer.js"
+    "Customer": "smart_invoice/overrides/frontend/customer.js",
+    "Sales Invoice": "smart_invoice/overrides/frontend/sales_invoice.js"
+
 
 }
 
 doctype_list_js = {
     "Item": "smart_invoice/overrides/frontend/item_list.js",
     "Branch":"smart_invoice/overrides/frontend/zra_branch_list.js",
+    "Sales Invoice": "smart_invoice/overrides/frontend/sales_invoice_list.js"
 
     }
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
