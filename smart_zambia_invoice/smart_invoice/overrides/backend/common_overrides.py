@@ -14,6 +14,9 @@ from ...api. remote_response_handler import (
 from ...utilities import (
     build_request_headers,
     get_server_url,
+    get_route_path,
+
+    get_current_env_settings
 )
 
 endpoint_builder = EndpointConstructor()
@@ -30,10 +33,9 @@ def on_submit_override_generic_invoices(
         The Type of the invoice. Either Sales, or POS
     """
     company_name = doc.company
-    vendor="OSCU KRA"
-    headers = build_request_headers(company_name,vendor, doc.branch)
-    server_url = get_server_url(company_name,vendor, doc.branch)
-    route_path, last_request_date = get_route_path("TrnsSalesSaveWrReq")
+    headers = build_request_headers(company_name, doc.branch)
+    server_url = get_server_url(company_name, doc.branch)
+    route_path, last_req_date = get_route_path("SAVE SALES")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
@@ -67,7 +69,7 @@ def on_submit_override_generic_invoices(
 
 
 def validate(doc: Document, method: str) -> None:
-    doc.custom_scu_id = get_curr_env_etims_settings(
+    doc.custom_scu_id = get_current_env_settings(
         frappe.defaults.get_user_default("Company"), doc.branch
     ).scu_id
     if not doc.branch:
