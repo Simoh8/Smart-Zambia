@@ -210,6 +210,21 @@
   "user_defined_code_3": null
  },
  {
+  "code": "DefaultTax",
+  "code_class": "DefaultTax",
+  "code_description": "DefaultTax",
+  "code_name": "DefaultTax",
+  "docstatus": 0,
+  "doctype": "ZRA Tax Type",
+  "is_used": 1,
+  "modified": "2025-01-17 10:40:32.096515",
+  "name": "DefaultTax",
+  "sort_order": 0,
+  "user_defined_code_1": "DefaultTax",
+  "user_defined_code_2": "DefaultTax",
+  "user_defined_code_3": "DefaultTax"
+ },
+ {
   "code": "A",
   "code_class": "VAT",
   "code_description": "Category applies to products and services which attract VAT at 16% by nature",
