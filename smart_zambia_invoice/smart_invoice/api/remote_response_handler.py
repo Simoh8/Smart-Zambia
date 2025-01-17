@@ -1,6 +1,6 @@
 import datetime
 import frappe
-from smart_zambia_invoice.smart_invoice.utilities import get_real_name, show_success_message
+from smart_zambia_invoice.smart_invoice.utilities import fetch_qr_code, get_real_name, requote_current_url, show_success_message
 
 
 from ..error_handlers import handle_errors
@@ -361,11 +361,11 @@ def on_success_sales_information_submission(
     response_data = response["data"]
     receipt_signature = response_data["rcptSign"]
 
-    encoded_uri = requote_uri(
-        f"https://etims-sbx.kra.go.ke/common/link/etims/receipt/indexEtimsReceiptData?Data={pin}{branch_id}{receipt_signature}"
+    encoded_url = requote_current_url(
+        f"https://sandboxportal.zra.org.zm/common/link/ebm/receipt/indexEbmReceiptData?Data={pin}{branch_id}{receipt_signature}"
     )
 
-    qr_code = get_qr_code(encoded_uri)
+    qr_code = fetch_qr_code(encoded_url)
 
     frappe.db.set_value(
         invoice_type,

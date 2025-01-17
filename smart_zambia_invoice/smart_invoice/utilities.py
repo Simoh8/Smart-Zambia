@@ -22,6 +22,32 @@ from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
 # Utility Functions
 # -------------------------------
 
+
+
+
+def requote_current_url(url):
+    """Re-quote the given URI.
+
+    This function passes the given URI through an unquote/quote cycle to
+    ensure that it is fully and consistently quoted.
+
+    :rtype: str
+    """
+    safe_with_percent = "!#$%&'()*+,/:;=?@[]~"
+    safe_without_percent = "!#$&'()*+,/:;=?@[]~"
+    try:
+        # Unquote only the unreserved characters
+        # Then quote only illegal characters (do not quote reserved,
+        # unreserved, or '%')
+        return quote(unquote_unreserved(uri), safe=safe_with_percent)
+    except InvalidURL:
+        # We couldn't unquote the given URI, so let's try quoting it, but
+        # there may be unquoted '%'s in the URI. We need to make sure they're
+        # properly quoted so they do not cause issues elsewhere.
+        return quote(uri, safe=safe_without_percent)
+
+
+
 def is_valid_tpin(tpin: str) -> bool:
     """Validates if the string is a valid TPIN pattern (10 digits)."""
     pattern = r"^\d{10}$"
@@ -311,7 +337,7 @@ def bytes_to_base64_string(data: bytes) -> str:
 
 
 
-def generate_qr_code(data: str) -> BytesIO:
+def fetch_qr_code(data: str) -> BytesIO:
     """Generates a QR code for the provided data and returns it as an image."""
     img = qrcode.make(data)
     byte_io = BytesIO()
