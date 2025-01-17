@@ -1,20 +1,5 @@
 [
  {
-  "code": "C1",
-  "code_class": "VAT",
-  "code_description": "Applies to exports",
-  "code_name": "Exports 0%",
-  "docstatus": 0,
-  "doctype": "ZRA Tax Type",
-  "is_used": 1,
-  "modified": "2025-01-14 09:25:13.075083",
-  "name": "C1",
-  "sort_order": 3,
-  "user_defined_code_1": null,
-  "user_defined_code_2": null,
-  "user_defined_code_3": null
- },
- {
   "code": "C2",
   "code_class": "VAT",
   "code_description": "Applies to transactions involving customers or projects granted exemption from paying taxes",
@@ -190,6 +175,21 @@
   "modified": "2024-11-12 15:03:16.376454",
   "name": "TL",
   "sort_order": 0,
+  "user_defined_code_1": null,
+  "user_defined_code_2": null,
+  "user_defined_code_3": null
+ },
+ {
+  "code": "C1",
+  "code_class": "VAT",
+  "code_description": "Applies to exports",
+  "code_name": "Exports 0%",
+  "docstatus": 0,
+  "doctype": "ZRA Tax Type",
+  "is_used": 1,
+  "modified": "2025-01-14 09:25:13.075083",
+  "name": "C1",
+  "sort_order": 3,
   "user_defined_code_1": null,
   "user_defined_code_2": null,
   "user_defined_code_3": null

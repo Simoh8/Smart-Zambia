@@ -371,14 +371,14 @@ def on_success_sales_information_submission(
         invoice_type,
         document_name,
         {
-            "custom_current_receipt_number": response_data["curRcptNo"],
-            "custom_total_receipt_number": response_data["totRcptNo"],
-            "custom_internal_data": response_data["intrlData"],
-            "custom_receipt_signature": receipt_signature,
-            "custom_control_unit_date_time": response_data["sdcDateTime"],
-            "custom_successfully_submitted": 1,
-            "custom_submission_sequence_number": invoice_number,
-            "custom_qr_code": qr_code,
+            "custom_receipt_number": response_data["curRcptNo"],
+            "custom_receipt_number": response_data["totRcptNo"],
+            "custom_zra_internal_data": response_data["intrlData"],
+            "custom_zra_receipt_signature": receipt_signature,
+            "custom_zra_control_unit_time": response_data["sdcDateTime"],
+            "custom_has_it_been_successfully_submitted": 1,
+            "custom_zra_submission_sequence_number": invoice_number,
+            "custom_sales_qr": qr_code,
         },
     )
 
