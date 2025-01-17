@@ -460,6 +460,30 @@ def fetch_latest_items(request_data: str, frm: dict = None) -> None:  # Default 
         endpoint_builder.perform_remote_calls(doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None))
 
 
+@frappe.whitelist()
+def fetch_rrp_latest_items(request_data: str, frm: dict = None) -> None:  # Default to None if frm is not passed
+    data: dict = json.loads(request_data)
+
+    company_name = data["company_name"]
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_req_date = get_route_path("SELECT RRP ITEMS")
+
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+
+        request_date = last_req_date.strftime("%Y%m%d%H%M%S")
+        payload = build_common_payload(headers, last_req_date)
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = lambda response: on_successful_fetch_latest_items(frm, response)  # Pass frm here if available
+        endpoint_builder.error_callback = on_error
+
+        endpoint_builder.perform_remote_calls(doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None))
+
+
 
 
 @frappe.whitelist()

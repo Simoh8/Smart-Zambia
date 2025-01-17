@@ -286,7 +286,6 @@ def on_successful_fetch_latest_items(frm, response):
 
         if existing_item:
             item_code = f"{item_code}_"
-            print(f"Item {item_code} exists. Appending underscore to item_code.")
             doc = frappe.get_doc("Item", existing_item[0].get("name"))
             doc.item_code = item_code  
         else:
@@ -332,11 +331,8 @@ def on_successful_fetch_latest_items(frm, response):
         try:
             # Save the document (either create a new item or update the existing one)
             doc.insert()
-            print(f"Document created/updated for item: {item_code}")
         except Exception as e:
-            print(f"Error saving item {item_code}: {str(e)}")
-
-
+            pass
 
 
 
