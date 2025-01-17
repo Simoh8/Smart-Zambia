@@ -19,7 +19,7 @@ from ...utilities import (
 endpoint_builder = EndpointConstructor()
 
 
-def generic_invoices_on_submit_override(
+def on_submit_override_generic_invoices(
     doc: Document, invoice_type: Literal["Sales Invoice", "POS Invoice"]
 ) -> None:
     """Defines a function to handle sending of Sales information from relevant invoice documents
