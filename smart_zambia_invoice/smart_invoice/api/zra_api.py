@@ -545,7 +545,7 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
     company_name = data["company_name"]
     headers = build_request_headers(company_name )
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("SAVE ITEM")
+    route_path, last_req_date = get_route_path("SAVE RRP ITEMS")
 
     if headers and server_url and route_path:
             url = f"{server_url}{route_path}"
@@ -553,9 +553,12 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
             # Build the common payload fields
             common_payload = last_request_less_payload(headers)
 
-            # Exclude `name` and `company_name` from `data`
-            data_to_send = {key: value for key, value in data.items() if key not in ["name", "company_name"]}
-            payload = {**common_payload, **data_to_send}
+            # Exclude `name` and `company_name` from `data` and format the `itemList`
+            item_data = {key: value for key, value in data.items() if key not in ["name", "company_name"]}
+            item_list = [item_data]  # Wrap the item data into a list for `itemList`
+
+            # Construct the payload in the required format
+            payload = {**common_payload, "itemList": item_list}
 
             endpoint_builder.headers = headers
             endpoint_builder.url = url
@@ -564,7 +567,6 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
                 on_success_rrp_item_registration, document_name=data.get("name")
             )
             endpoint_builder.error_callback = on_error
-            # endpoint_builder.perform_remote_calls()
 
 
             # Enqueue the task for asynchronous execution
