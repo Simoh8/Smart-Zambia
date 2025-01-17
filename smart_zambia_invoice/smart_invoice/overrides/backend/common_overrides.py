@@ -13,9 +13,6 @@ from ...api. remote_response_handler import (
 )
 from ...utilities import (
     build_request_headers,
-    paylo,
-    get_curr_env_etims_settings,
-    get_route_path,
     get_server_url,
 )
 
@@ -34,7 +31,7 @@ def generic_invoices_on_submit_override(
     """
     company_name = doc.company
     vendor="OSCU KRA"
-    headers = build_headers(company_name,vendor, doc.branch)
+    headers = build_request_headers(company_name,vendor, doc.branch)
     server_url = get_server_url(company_name,vendor, doc.branch)
     route_path, last_request_date = get_route_path("TrnsSalesSaveWrReq")
 
@@ -42,7 +39,7 @@ def generic_invoices_on_submit_override(
         url = f"{server_url}{route_path}"
 
         invoice_identifier = "C" if doc.is_return else "S"
-        payload = build_invoice_payload(doc, invoice_identifier, company_name)
+        payload = build_request_headers(doc, invoice_identifier, company_name)
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url

@@ -8,6 +8,7 @@ const settingsDoctypeName = 'ZRA Smart Invoice Settings';
 frappe.ui.form.on(parentDoctype, {
   refresh: function (frm) {
     frm.set_value('update_stock', 1);
+    
     if (frm.doc.update_stock === 1) {
       frm.toggle_reqd('set_warehouse', true);
     }
