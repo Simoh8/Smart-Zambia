@@ -1,9 +1,12 @@
 import datetime
 import frappe
 from smart_zambia_invoice.smart_invoice.utilities import fetch_qr_code, get_real_name, requote_current_url, show_success_message
-
-
 from ..error_handlers import handle_errors
+
+
+
+
+
 
 def notices_search_on_success(response: dict) -> None:
     notices_list = response["data"]["noticeList"]
@@ -25,10 +28,14 @@ def notices_search_on_success(response: dict) -> None:
             frappe.log_error(title="Duplicate entries")
 
 
+
+
 def item_composition_submission_succes(response: dict, document_name: str) -> None:
     frappe.db.set_value(
         "BOM", document_name, {"custom_item_composition_submitted_successfully": 1}
     )
+
+
 
 
 def on_success_customer_branch_details_submission(response: dict, document_name: str) -> None:
@@ -45,7 +52,6 @@ def on_success_customer_branch_details_submission(response: dict, document_name:
 
 
 
-
 def on_success_customer_insurance_details_submission(
     response: dict, document_name: str
 ) -> None:
@@ -54,7 +60,6 @@ def on_success_customer_insurance_details_submission(
         document_name,
         {"custom_insurance_details_submitted_successfully": 1},
     )
-
 
 
 
@@ -114,7 +119,6 @@ def fetch_branch_request_on_success(response: dict) -> None:
             doc.custom_is_etims_branch = 1
 
             doc.save()
-
 
 
 
@@ -185,6 +189,7 @@ def on_imported_items_search_success(response: dict) -> None:
     frappe.msgprint(
         "Imported Items Fetched. Go to <b>ZRA Registered Imported Item</b> Doctype for more information"
     )
+
 
 
 
@@ -270,6 +275,8 @@ def on_success_customer_search(
         },
     )
     show_success_message("Customer details updated successfully")
+
+
 
 
 

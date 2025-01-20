@@ -7,10 +7,40 @@ const settingsDoctypeName = 'ZRA Smart Invoice Settings';
 
 frappe.ui.form.on(parentDoctype, {
   refresh: function (frm) {
+    const companyName = frappe.boot.sysdefaults.company;
+
     frm.set_value('update_stock', 1);
-    
+
     if (frm.doc.update_stock === 1) {
       frm.toggle_reqd('set_warehouse', true);
+    }
+
+    // Add "Submit Invoice" button
+    if (!frm.is_new() && frm.doc.docstatus === 0) {
+      frm.add_custom_button(__('Submit Invoice'), function () {
+        // Call the custom method to handle invoice submission
+        frappe.call({
+          method: 'smart_zambia_invoice.smart_invoice.api.zra_api.perform_sales_invoice_registration',
+          args: {
+            request_data :{
+              name: frm.doc.name,
+              invoice_name: frm.doc.name,
+              company_name: companyName
+
+            },
+          },
+          callback: function (response) {
+            if (response.message) {
+              frappe.msgprint(__('Invoice submitted successfully: ') + response.message);
+              frm.reload_doc(); // Reload the document after submission
+            }
+          },
+          error: function (error) {
+            frappe.msgprint(__('An error occurred while submitting the invoice.'));
+            console.error(error);
+          },
+        });
+      }).addClass('btn-primary'); // Add a primary button style
     }
   },
   validate: function (frm) {
@@ -46,17 +76,17 @@ frappe.ui.form.on(parentDoctype, {
 frappe.ui.form.on(childDoctype, {
   item_code: function (frm, cdt, cdn) {
     const item = locals[cdt][cdn].item_code;
-    const taxationType = locals[cdt][cdn].custom_taxation_type;
+    const taxationType = locals[cdt][cdn].custom_zra_tax_type;
 
     if (!taxationType) {
       frappe.db.get_value(
         'Item',
         { item_code: item },
-        ['custom_taxation_type'],
+        ['custom_zra_tax_type'],
         (response) => {
-          locals[cdt][cdn].custom_taxation_type = response.custom_taxation_type;
+          locals[cdt][cdn].custom_zra_tax_type = response.custom_zra_tax_type;
           locals[cdt][cdn].custom_taxation_type_code =
-            response.custom_taxation_type;
+            response.custom_zra_tax_type;
         },
       );
     }

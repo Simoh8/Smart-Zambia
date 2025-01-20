@@ -778,7 +778,6 @@ def perform_sales_invoice_registration(request_data:str, )-> dict |None:
     server_url=get_server_url(company_name)
     route_path, last_req_date= get_route_path("SAVE SALES")
 
-
     if headers and server_url and route_path:
         url= f"{server_url}{route_path}"
         endpoint_builder.headers=headers
