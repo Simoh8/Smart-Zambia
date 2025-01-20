@@ -308,7 +308,7 @@ def submit_zra_branch_user_details(request_data: str) -> None:
     company_name = data["company_name"]
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_request_date = get_route_path("SAVE BRANCH USER")
+    route_path, last_req_date = get_route_path("SAVE BRANCH USER")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
@@ -769,25 +769,35 @@ def submit_sales_invoice(record:str) -> None:
 
 
 
-
 @frappe.whitelist()
-def perform_sales_invoice_registration(request_data:str, )-> dict |None:
-    data:dict =json.loads(request_data)
-    company_name =data["company_name"]
-    headers= build_request_headers(company_name)
-    server_url=get_server_url(company_name)
-    route_path, last_req_date= get_route_path("SAVE SALES")
+def perform_sales_invoice_registration(request_data: str) -> dict | None:
+    data: dict = json.loads(request_data)
+    company_name = data["company_name"]
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_req_date = get_route_path("SAVE SALES")
+    print("The headers are ", headers)
 
     if headers and server_url and route_path:
-        url= f"{server_url}{route_path}"
-        endpoint_builder.headers=headers
-        endpoint_builder.url=url
-        endpoint_builder.payload=data
-        endpoint_builder.success_callback=partial(on_success_sales_information_submission,document_name=data["name"])
-        endpoint_builder.error_callback=on_error
+        url = f"{server_url}{route_path}"
 
+        # Common payload with tpin and bhfId from headers
+        common_payload = last_request_less_payload(headers)
+
+        # Merge common payload and request data
+        payload = {**common_payload, **data}
+        print("The payload is :", payload)
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = partial(
+            on_success_sales_information_submission, document_name=data["name"]
+        )
+        endpoint_builder.error_callback = on_error
 
         endpoint_builder.perform_remote_calls()
+
 
 
 
