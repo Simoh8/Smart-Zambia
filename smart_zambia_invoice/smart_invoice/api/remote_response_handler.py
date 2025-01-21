@@ -405,7 +405,7 @@ def on_success_sales_information_submission(
                 "custom_zra_control_unit_time": control_unit_time,
                 "custom_has_it_been_successfully_submitted": 1,
                 "custom_zra_submission_sequence_number": invoice_number,
-                # "custom_sales_qr": qr_code,
+                "custom_zra_sales_invoice_qr_code": qr_code_data,
             },
         )
         show_success_message("The Sales Invoice has been succesfully registered on the ZRA Portal")

@@ -1,4 +1,5 @@
 
+import base64
 from urllib.parse import quote, unquote
 from urllib.parse import urlsplit, urlunsplit
 import re
@@ -376,14 +377,14 @@ def bytes_to_base64_string(data: bytes) -> str:
 
 
 
-def fetch_qr_code(data: str) -> BytesIO:
-    """Generates a QR code for the provided data and returns it as an image."""
+def fetch_qr_code(data: str) -> str:
+    """Generates a QR code for the provided data and returns it as a base64-encoded string."""
     img = qrcode.make(data)
     byte_io = BytesIO()
     img.save(byte_io, 'PNG')
     byte_io.seek(0)
-    return byte_io
-
+    # Convert the BytesIO content to a base64 string
+    return base64.b64encode(byte_io.read()).decode('utf-8')
 
 
 
@@ -689,103 +690,103 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
 
 
 
-def build_invoice_payload(
-    invoice: Document, invoice_type_identifier: Literal["S", "C"], company_name: str
-) -> dict[str, str | int | float]:
-    # Retrieve taxation data for the invoice
-    taxation_type = get_taxation_types(invoice)
-    # frappe.throw(str(taxation_type))
-    """Converts relevant invoice data to a JSON payload
+# def build_invoice_payload(
+#     invoice: Document, invoice_type_identifier: Literal["S", "C"], company_name: str
+# ) -> dict[str, str | int | float]:
+#     # Retrieve taxation data for the invoice
+#     taxation_type = get_taxation_types(invoice)
+#     # frappe.throw(str(taxation_type))
+#     """Converts relevant invoice data to a JSON payload
 
-    Args:
-        invoice (Document): The Invoice record to generate data from
-        invoice_type_identifier (Literal["S", "C"]): The
-        Invoice type identifier. S for Sales Invoice, C for Credit Notes
-        company_name (str): The company name used to fetch the valid settings doctype record
+#     Args:
+#         invoice (Document): The Invoice record to generate data from
+#         invoice_type_identifier (Literal["S", "C"]): The
+#         Invoice type identifier. S for Sales Invoice, C for Credit Notes
+#         company_name (str): The company name used to fetch the valid settings doctype record
 
-    Returns:
-        dict[str, str | int | float]: The payload
-    """
-    post_time = invoice.posting_time
+#     Returns:
+#         dict[str, str | int | float]: The payload
+#     """
+#     post_time = invoice.posting_time
 
-    # Ensure post_time is a string if it's a timedelta
-    if isinstance(post_time, timedelta):
-        post_time = str(post_time)
+#     # Ensure post_time is a string if it's a timedelta
+#     if isinstance(post_time, timedelta):
+#         post_time = str(post_time)
 
-    # Parse posting date and time
-    posting_date = make_datetime_from_string(
-        f"{invoice.posting_date} {post_time[:8].replace('.', '')}",
-        format="%Y-%m-%d %H:%M:%S",
-    )
+#     # Parse posting date and time
+#     posting_date = make_datetime_from_string(
+#         f"{invoice.posting_date} {post_time[:8].replace('.', '')}",
+#         format="%Y-%m-%d %H:%M:%S",
+#     )
 
-    validated_date = posting_date.strftime("%Y%m%d%H%M%S")
-    sales_date = posting_date.strftime("%Y%m%d")
+#     validated_date = posting_date.strftime("%Y%m%d%H%M%S")
+#     sales_date = posting_date.strftime("%Y%m%d")
 
-    # Fetch list of invoice items
-    items_list = get_invoice_items_list(invoice)
+#     # Fetch list of invoice items
+#     items_list = get_invoice_items_list(invoice)
 
-    # Determine the invoice number format
-    invoice_name = invoice.name
-    if invoice.amended_from:
-        invoice_name = clean_invc_no(invoice_name)
+#     # Determine the invoice number format
+#     invoice_name = invoice.name
+#     if invoice.amended_from:
+#         invoice_name = clean_invc_no(invoice_name)
         
-    payload = {
-        "invcNo": get_invoice_number(invoice_name),
-        "orgInvcNo": (
-            0 if invoice_type_identifier == "S"
-            else frappe.get_doc("Sales Invoice", invoice.return_against).custom_submission_sequence_number
-        ),
-        "trdInvcNo": invoice_name,
-        "custTin": invoice.tax_id if invoice.tax_id else None,
-        "custNm": None,
-        "rcptTyCd": invoice_type_identifier if invoice_type_identifier == "S" else "R",
-        "pmtTyCd": invoice.custom_payment_type_code,
-        "salesSttsCd": invoice.custom_transaction_progress_code,
-        "cfmDt": validated_date,
-        "salesDt": sales_date,
-        "stockRlsDt": validated_date,
-        "cnclReqDt": None,
-        "cnclDt": None,
-        "rfdDt": None,
-        "rfdRsnCd": None,
-        "totItemCnt": len(items_list),
+#     payload = {
+#         "invcNo": get_invoice_number(invoice_name),
+#         "orgInvcNo": (
+#             0 if invoice_type_identifier == "S"
+#             else frappe.get_doc("Sales Invoice", invoice.return_against).custom_submission_sequence_number
+#         ),
+#         "trdInvcNo": invoice_name,
+#         "custTin": invoice.tax_id if invoice.tax_id else None,
+#         "custNm": None,
+#         "rcptTyCd": invoice_type_identifier if invoice_type_identifier == "S" else "R",
+#         "pmtTyCd": invoice.custom_payment_type_code,
+#         "salesSttsCd": invoice.custom_transaction_progress_code,
+#         "cfmDt": validated_date,
+#         "salesDt": sales_date,
+#         "stockRlsDt": validated_date,
+#         "cnclReqDt": None,
+#         "cnclDt": None,
+#         "rfdDt": None,
+#         "rfdRsnCd": None,
+#         "totItemCnt": len(items_list),
         
-        "taxRtA": taxation_type.get("A", {}).get("tax_rate", 0),
-        "taxRtB": taxation_type.get("B", {}).get("tax_rate", 0),
-        "taxRtC": taxation_type.get("C", {}).get("tax_rate", 0),
-        "taxRtD": taxation_type.get("D", {}).get("tax_rate", 0),
-        "taxRtE": taxation_type.get("E", {}).get("tax_rate", 0),
-        "taxAmtA": taxation_type.get("A", {}).get("tax_amount", 0),
-        "taxAmtB": taxation_type.get("B", {}).get("tax_amount", 0),
-        "taxAmtC": taxation_type.get("C", {}).get("tax_amount", 0),
-        "taxAmtD": taxation_type.get("D", {}).get("tax_amount", 0),
-        "taxAmtE": taxation_type.get("E", {}).get("tax_amount", 0),
-        "taxblAmtA": taxation_type.get("A", {}).get("taxable_amount", 0),
-        "taxblAmtB": taxation_type.get("B", {}).get("taxable_amount", 0),
-        "taxblAmtC": taxation_type.get("C", {}).get("taxable_amount", 0),
-        "taxblAmtD": taxation_type.get("D", {}).get("taxable_amount", 0),
-        "taxblAmtE": taxation_type.get("E", {}).get("taxable_amount", 0),
-        "totTaxblAmt": round(invoice.base_net_total, 2),
-        "totTaxAmt": round(invoice.total_taxes_and_charges, 2),
-        "totAmt": round(invoice.grand_total, 2),
-        "prchrAcptcYn": "Y",
-        "remark": None,
-        "regrId": split_user_mail(invoice.owner),
-        "regrNm": invoice.owner,
-        "modrId": split_user_mail(invoice.modified_by),
-        "modrNm": invoice.modified_by,
-        "receipt": {
-            "custTin": invoice.tax_id if invoice.tax_id else None,
-            "custMblNo": None,
-            "rptNo": 1,
-            "rcptPbctDt": validated_date,
-            "trdeNm": "",
-            "adrs": "",
-            "topMsg": "ERPNext",
-            "btmMsg": "",
-            "prchrAcptcYn": "Y",
-        },
-        "itemList": items_list,
-    }
+#         "taxRtA": taxation_type.get("A", {}).get("tax_rate", 0),
+#         "taxRtB": taxation_type.get("B", {}).get("tax_rate", 0),
+#         "taxRtC": taxation_type.get("C", {}).get("tax_rate", 0),
+#         "taxRtD": taxation_type.get("D", {}).get("tax_rate", 0),
+#         "taxRtE": taxation_type.get("E", {}).get("tax_rate", 0),
+#         "taxAmtA": taxation_type.get("A", {}).get("tax_amount", 0),
+#         "taxAmtB": taxation_type.get("B", {}).get("tax_amount", 0),
+#         "taxAmtC": taxation_type.get("C", {}).get("tax_amount", 0),
+#         "taxAmtD": taxation_type.get("D", {}).get("tax_amount", 0),
+#         "taxAmtE": taxation_type.get("E", {}).get("tax_amount", 0),
+#         "taxblAmtA": taxation_type.get("A", {}).get("taxable_amount", 0),
+#         "taxblAmtB": taxation_type.get("B", {}).get("taxable_amount", 0),
+#         "taxblAmtC": taxation_type.get("C", {}).get("taxable_amount", 0),
+#         "taxblAmtD": taxation_type.get("D", {}).get("taxable_amount", 0),
+#         "taxblAmtE": taxation_type.get("E", {}).get("taxable_amount", 0),
+#         "totTaxblAmt": round(invoice.base_net_total, 2),
+#         "totTaxAmt": round(invoice.total_taxes_and_charges, 2),
+#         "totAmt": round(invoice.grand_total, 2),
+#         "prchrAcptcYn": "Y",
+#         "remark": None,
+#         "regrId": split_user_mail(invoice.owner),
+#         "regrNm": invoice.owner,
+#         "modrId": split_user_mail(invoice.modified_by),
+#         "modrNm": invoice.modified_by,
+#         "receipt": {
+#             "custTin": invoice.tax_id if invoice.tax_id else None,
+#             "custMblNo": None,
+#             "rptNo": 1,
+#             "rcptPbctDt": validated_date,
+#             "trdeNm": "",
+#             "adrs": "",
+#             "topMsg": "ERPNext",
+#             "btmMsg": "",
+#             "prchrAcptcYn": "Y",
+#         },
+#         "itemList": items_list,
+#     }
     
-    return payload
+    # return payload
