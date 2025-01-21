@@ -15,7 +15,6 @@ from ...utilities import (
     build_request_headers,
     get_server_url,
     get_route_path,
-
     get_current_env_settings
 )
 

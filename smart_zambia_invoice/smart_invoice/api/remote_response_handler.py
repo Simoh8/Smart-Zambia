@@ -355,6 +355,14 @@ def on_success_rrp_item_registration(response: dict, document_name: str) -> None
     frappe.db.set_value("Item", document_name, {"custom_zra_item_registered_": 1})
     show_success_message(" RRP Item registration succesful")
 
+import base64
+from io import BytesIO
+
+def convert_qr_code_to_base64(qr_code_data):
+    """Convert QR code binary data from BytesIO to a base64 string."""
+    if isinstance(qr_code_data, BytesIO):
+        qr_code_data = qr_code_data.read()  # Read the content from BytesIO
+    return base64.b64encode(qr_code_data).decode('utf-8')
 
 def on_success_sales_information_submission(
     response: dict,
@@ -362,30 +370,49 @@ def on_success_sales_information_submission(
     document_name: str,
     company_name: str,
     invoice_number: int | str,
-    pin: str,
+    tpin: str,
     branch_id: str = "00",
 ) -> None:
-    response_data = response["data"]
-    receipt_signature = response_data["rcptSign"]
+    try:
+        response_data = response["data"]
 
-    encoded_url = requote_current_url(
-        f"https://sandboxportal.zra.org.zm/common/link/ebm/receipt/indexEbmReceiptData?Data={pin}{branch_id}{receipt_signature}"
-    )
+        # Extracting the relevant fields from the response data
+        receipt_signature = response_data["rcptSign"]
+        receipt_number = response_data["rcptNo"]
+        internal_data = response_data["intrlData"]
+        control_unit_time = response_data["vsdcRcptPbctDate"]  # Make sure this is correct field
+        # qr_code_url = response_data["qrCodeUrl"]
 
-    qr_code = fetch_qr_code(encoded_url)
+        # Encoding the URL for the QR Code generation
+        encoded_url = requote_current_url(
+            f"https://sandboxportal.zra.org.zm/common/link/ebm/receipt/indexEbmReceiptData?Data={tpin}{branch_id}{receipt_signature}"
+        )
 
-    frappe.db.set_value(
-        invoice_type,
-        document_name,
-        {
-            "custom_receipt_number": response_data["curRcptNo"],
-            "custom_receipt_number": response_data["totRcptNo"],
-            "custom_zra_internal_data": response_data["intrlData"],
-            "custom_zra_receipt_signature": receipt_signature,
-            "custom_zra_control_unit_time": response_data["sdcDateTime"],
-            "custom_has_it_been_successfully_submitted": 1,
-            "custom_zra_submission_sequence_number": invoice_number,
-            "custom_sales_qr": qr_code,
-        },
-    )
+        # Fetch the QR code
+        qr_code_data = fetch_qr_code(encoded_url)
 
+        # If qr_code_data is in BytesIO format, convert to base64
+        qr_code = convert_qr_code_to_base64(qr_code_data)
+        print("The response is :", response)
+
+        # Setting values in the database
+        frappe.db.set_value(
+            invoice_type,
+            document_name,
+            {
+                "custom_receipt_number": receipt_number,
+                "custom_zra_internal_data": internal_data,
+                "custom_zra_receipt_signature": receipt_signature,
+                "custom_zra_control_unit_time": control_unit_time,
+                "custom_has_it_been_successfully_submitted": 1,
+                "custom_zra_submission_sequence_number": invoice_number,
+                # "custom_sales_qr": qr_code,
+            },
+        )
+
+    except KeyError as e:
+        # Handle missing fields from the response data
+        frappe.throw(f"Missing expected field in the response: {str(e)}")
+    except Exception as e:
+        # Handle any other exceptions
+        frappe.throw(f"An error occurred while processing the submission: {str(e)}")

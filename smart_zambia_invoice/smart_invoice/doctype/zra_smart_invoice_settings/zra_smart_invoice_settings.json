@@ -19,7 +19,6 @@
   "column_break_brag",
   "company_name",
   "company_tpin",
-  "country",
   "mrc_number",
   "column_break_puna",
   "branch_name",
@@ -101,13 +100,6 @@
    "label": "VSDC Device Serial Number"
   },
   {
-   "bold": 1,
-   "fetch_from": "company_name.country",
-   "fieldname": "country",
-   "fieldtype": "Data",
-   "label": "Country"
-  },
-  {
    "fieldname": "column_break_mzbs",
    "fieldtype": "Column Break"
   },
@@ -160,7 +152,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-07 10:20:47.760120",
+ "modified": "2025-01-20 14:46:03.478761",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",

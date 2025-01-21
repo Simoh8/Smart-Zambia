@@ -1,6 +1,10 @@
+
+from urllib.parse import quote, unquote
+from urllib.parse import urlsplit, urlunsplit
 import re
 import frappe
 import aiohttp
+from frappe.auth import quote
 import qrcode
 import asyncio
 
@@ -8,7 +12,7 @@ from base64 import b64encode
 from datetime import datetime, timedelta
 from io import BytesIO
 from typing import Literal, Optional, Union
-from aiohttp import ClientTimeout
+from aiohttp import ClientTimeout, InvalidURL
 from frappe.model.document import Document
 from frappe.utils import cint
 from .zra_logger import zra_vsdc_logger
@@ -21,12 +25,49 @@ from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
 # -------------------------------
 # Utility Functions
 # -------------------------------
+UNRESERVED_SET = frozenset(
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + "0123456789-._~"
+)
 
+def unquote_unreserved(url):
+    """Un-escape any percent-escape sequences in a URI that are unreserved
+    characters. This leaves all reserved, illegal and non-ASCII bytes encoded.
 
+    :rtype: str
+    """
+    parts = url.split("%")
+    for i in range(1, len(parts)):
+        h = parts[i][0:2]
+        if len(h) == 2 and h.isalnum():
+            try:
+                c = chr(int(h, 16))
+            except ValueError:
+                raise InvalidURL(f"Invalid percent-escape sequence: '{h}'")
 
+            if c in UNRESERVED_SET:
+                parts[i] = c + parts[i][2:]
+            else:
+                parts[i] = f"%{parts[i]}"
+        else:
+            parts[i] = f"%{parts[i]}"
+    return "".join(parts)
+
+def unquote_unreserved(url):
+    """
+    Unquote only unreserved characters as per RFC 3986.
+    """
+    unreserved = re.compile(r'([A-Za-z0-9._~-]+)')
+    parts = urlsplit(url)
+    unquoted_path = unreserved.sub(lambda m: unquote(m.group(0)), parts.path)
+    return urlunsplit((parts.scheme, parts.netloc, unquoted_path, parts.query, parts.fragment))
+
+class InvalidURL(Exception):
+    """Custom exception for invalid URLs."""
+    pass
 
 def requote_current_url(url):
-    """Re-quote the given URI.
+    """
+    Re-quote the given URI.
 
     This function passes the given URI through an unquote/quote cycle to
     ensure that it is fully and consistently quoted.
@@ -35,17 +76,15 @@ def requote_current_url(url):
     """
     safe_with_percent = "!#$%&'()*+,/:;=?@[]~"
     safe_without_percent = "!#$&'()*+,/:;=?@[]~"
+
     try:
         # Unquote only the unreserved characters
         # Then quote only illegal characters (do not quote reserved,
         # unreserved, or '%')
-        return quote(unquote_unreserved(uri), safe=safe_with_percent)
-    except InvalidURL:
-        # We couldn't unquote the given URI, so let's try quoting it, but
-        # there may be unquoted '%'s in the URI. We need to make sure they're
-        # properly quoted so they do not cause issues elsewhere.
-        return quote(uri, safe=safe_without_percent)
-
+        return quote(unquote_unreserved(url), safe=safe_with_percent)
+    except Exception as e:
+        # Handle invalid URL cases
+        return quote(url, safe=safe_without_percent)
 
 
 def is_valid_tpin(tpin: str) -> bool:

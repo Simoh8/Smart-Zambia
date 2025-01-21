@@ -786,13 +786,22 @@ def perform_sales_invoice_registration(request_data: str) -> dict | None:
 
         # Merge common payload and request data
         payload = {**common_payload, **data}
-        print("The payload is :", payload)
+        # Fetch additional required data for callback
+        invoice_type = "Sales Invoice"  # Example: replace with appropriate DocType if different
+        document_name = data["name"]
+        invoice_number = data.get("cisInvcNo", "")
+        tpin = data.get("custTpin", "")
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(
-            on_success_sales_information_submission, document_name=data["name"]
+            on_success_sales_information_submission,
+            invoice_type=invoice_type,
+            document_name=document_name,
+            company_name=company_name,
+            invoice_number=invoice_number,
+            tpin=tpin,
         )
         endpoint_builder.error_callback = on_error
 
@@ -804,16 +813,17 @@ def perform_sales_invoice_registration(request_data: str) -> dict | None:
 
 
 
-@frappe.whitelist()
-def submit_bulk_sales_invoices(docs_list: str) -> None:
 
-    data = json.loads(docs_list)
-    all_sales_invoices = frappe.db.get_all(
-        "Sales Invoice", {"docstatus": 1, "custom_successfully_submitted": 0}, ["name"]
-    )
+# @frappe.whitelist()
+# def submit_bulk_sales_invoices(docs_list: str) -> None:
 
-    for record in data:
-        for invoice in all_sales_invoices:
-            if record == invoice.name:
-                doc = frappe.get_doc("Sales Invoice", record, for_update=False)
-                on_submit(doc, method=None)
+#     data = json.loads(docs_list)
+#     all_sales_invoices = frappe.db.get_all(
+#         "Sales Invoice", {"docstatus": 1, "custom_successfully_submitted": 0}, ["name"]
+#     )
+
+#     for record in data:
+#         for invoice in all_sales_invoices:
+#             if record == invoice.name:
+#                 doc = frappe.get_doc("Sales Invoice", record, for_update=False)
+#                 on_submit(doc, method=None)
