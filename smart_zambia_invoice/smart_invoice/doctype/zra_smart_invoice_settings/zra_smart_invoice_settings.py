@@ -65,12 +65,24 @@ class ZRASmartInvoiceSettings(Document):
                         )
                         frappe.throw("Server Error. Check logs.")
 
-                    # Process the response
+                                        # Process the response
                     if response["resultCd"] == "000":
+                        # Extract info from the response
                         info = response.get("data", {}).get("info", {})
-                        self.communication_key = info.get("cmcKey")
+                        
+                        # Setting the fields from the API response
                         self.sales_control_unit_id = info.get("sdcId")
+                        self.company_name = info.get("taxprNm")  # Setting company name
+                        self.company_tpin = info.get("tin")  # Setting company TPIN
+                        self.branch_name = info.get("bhfNm")  # Setting branch name
+                        self.branch_id = info.get("bhfId")  # Setting branch ID
+                        self.province_name = info.get("prvncNm")  # Setting province name
+                        self.manager_email = info.get("mgrEmail")  # Setting manager's email
+                        self.manager_contract_number = info.get("mrcNo")  # Setting manager contract number
+                        self.manager_name = info.get("mgrNm")  # Setting manager name
+                        self.location_description = info.get("locDesc")  # Setting location description
 
+                        # Update the last request date and integration request status
                         update_last_request_date(response.get("resultDt"), route_path)
                         update_integration_request(
                             integration_request.name,
@@ -78,6 +90,7 @@ class ZRASmartInvoiceSettings(Document):
                             output=f'{response.get("resultMsg", "Success")}, {response["resultCd"]}',
                             error=None,
                         )
+
                     else:
                         error_message = f'{response.get("resultMsg", "Error")}, {response["resultCd"]}'
                         update_integration_request(
