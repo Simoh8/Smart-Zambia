@@ -19,13 +19,20 @@
   "column_break_brag",
   "company_name",
   "company_tpin",
-  "mrc_number",
   "column_break_puna",
   "branch_name",
   "branch_id",
   "vsdc_device_serial_number",
-  "zra_sales_control_unit_id",
-  "custom_sales_control_unit_id"
+  "information_from_zra_section",
+  "custom_sales_control_unit_id",
+  "mrc_number",
+  "manager_contract_number",
+  "taxpayer_name",
+  "column_break_sdpj",
+  "manager_email",
+  "branch_office_id",
+  "province_name",
+  "district_name"
  ],
  "fields": [
   {
@@ -124,13 +131,6 @@
    "read_only": 1
   },
   {
-   "bold": 1,
-   "fieldname": "zra_sales_control_unit_id",
-   "fieldtype": "Data",
-   "label": "ZRA Sales Control Unit Id",
-   "read_only": 1
-  },
-  {
    "fieldname": "branch_name",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -147,12 +147,58 @@
   {
    "fieldname": "custom_sales_control_unit_id",
    "fieldtype": "Data",
-   "label": "Sales Control Unit Id"
+   "label": "Sales Control Unit Id",
+   "read_only": 1
+  },
+  {
+   "fieldname": "information_from_zra_section",
+   "fieldtype": "Section Break",
+   "label": "Information From ZRA "
+  },
+  {
+   "fieldname": "manager_contract_number",
+   "fieldtype": "Data",
+   "label": "Manager Contract Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "taxpayer_name",
+   "fieldtype": "Data",
+   "label": "Taxpayer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_sdpj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "manager_email",
+   "fieldtype": "Data",
+   "label": "Manager Email",
+   "read_only": 1
+  },
+  {
+   "fieldname": "branch_office_id",
+   "fieldtype": "Data",
+   "label": "Branch Office Id",
+   "read_only": 1
+  },
+  {
+   "fieldname": "province_name",
+   "fieldtype": "Data",
+   "label": "Province Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "district_name",
+   "fieldtype": "Data",
+   "label": "District Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-20 14:46:03.478761",
+ "modified": "2025-01-21 15:26:41.691036",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",
