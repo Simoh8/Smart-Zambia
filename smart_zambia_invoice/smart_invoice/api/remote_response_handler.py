@@ -417,3 +417,25 @@ def on_success_sales_information_submission(
     except Exception as e:
         # Handle any other exceptions
         frappe.throw(f"An error occurred while processing the submission: {str(e)}")
+
+
+
+
+def on_success_item_classification_search(response: dict) -> None:
+    classification_codes = response["data"]["noticeList"]
+
+    for classification_code in classification_codes:
+        doc = frappe.new_doc("ZRA Notice ")
+
+        doc.notice_number = notice["noticeNo"]
+        doc.notice_title = notice["title"]
+        doc.registration_name = notice["regrNm"]
+        doc.notice_url = notice["dtlUrl"]
+        doc.notice_registration_datetime = notice["regDt"]
+        doc.notice_contents = notice["cont"]
+
+        try:
+            doc.submit()
+
+        except frappe.exceptions.DuplicateEntryError:
+            frappe.log_error(title="Duplicate entries")

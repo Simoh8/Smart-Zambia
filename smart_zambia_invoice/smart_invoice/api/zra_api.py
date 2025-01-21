@@ -809,6 +809,37 @@ def perform_sales_invoice_registration(request_data: str) -> dict | None:
 
 
 
+# searching for the new notices available from zra
+@frappe.whitelist()
+def perform_zra_item_code_classification_search(request_data: str) -> None:
+    data: dict = json.loads(request_data)
+    company_name = data["company_name"]
+    headers = build_request_headers(company_name)
+
+
+    server_url = get_server_url(company_name)
+
+    # Get route path and last request date
+    route_path, last_req_date = get_route_path("Classification Codes")
+    last_req_date_str = last_req_date.strftime("%Y%m%d%H%M%S")
+
+    request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
+
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+
+        # Include tpin and bhfId in the payload
+        payload = build_common_payload(headers, last_req_date)
+
+
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = notices_search_on_success
+        endpoint_builder.error_callback = on_error
+
+        endpoint_builder.perform_remote_calls(doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None))
+        
 
 
 

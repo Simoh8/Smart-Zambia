@@ -104,6 +104,7 @@ doctype_list_js = {
     "Item": "smart_invoice/overrides/frontend/item_list.js",
     "Branch":"smart_invoice/overrides/frontend/zra_branch_list.js",
     "Sales Invoice": "smart_invoice/overrides/frontend/sales_invoice_list.js"
+    # "ZRA Item Classification":""
 
     }
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
