@@ -11,7 +11,7 @@ from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides impor
 from smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice import on_submit
 from .api_builder import EndpointConstructor
 
-from .remote_response_handler import on_success_sales_information_submission,  on_success_customer_search, on_success_item_composition_submission, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_rrp_item_registration, on_success_user_details_submission, on_successful_fetch_latest_items
+from .remote_response_handler import on_success_item_classification_search, on_success_sales_information_submission,  on_success_customer_search, on_success_item_composition_submission, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_rrp_item_registration, on_success_user_details_submission, on_successful_fetch_latest_items
 from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,split_user_mail,get_server_url,build_common_payload, truncate_user_id)
 
 endpoint_builder = EndpointConstructor()
@@ -809,7 +809,6 @@ def perform_sales_invoice_registration(request_data: str) -> dict | None:
 
 
 
-# searching for the new notices available from zra
 @frappe.whitelist()
 def perform_zra_item_code_classification_search(request_data: str) -> None:
     data: dict = json.loads(request_data)
@@ -827,6 +826,8 @@ def perform_zra_item_code_classification_search(request_data: str) -> None:
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
+        print("The url used is:", url)
+
 
         # Include tpin and bhfId in the payload
         payload = build_common_payload(headers, last_req_date)
@@ -835,11 +836,11 @@ def perform_zra_item_code_classification_search(request_data: str) -> None:
         endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
-        endpoint_builder.success_callback = notices_search_on_success
+        endpoint_builder.success_callback = on_success_item_classification_search
         endpoint_builder.error_callback = on_error
 
-        endpoint_builder.perform_remote_calls(doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None))
-        
+        endpoint_builder.perform_remote_calls(doctype="ZRA Item Classification", document_name=data.get("name", None))
+        print("Hello world")
 
 
 

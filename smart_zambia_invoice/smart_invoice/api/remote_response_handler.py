@@ -420,22 +420,17 @@ def on_success_sales_information_submission(
 
 
 
-
 def on_success_item_classification_search(response: dict) -> None:
-    classification_codes = response["data"]["noticeList"]
-
+    classification_codes = response.get("data", {}).get("itemClsList", [])
     for classification_code in classification_codes:
-        doc = frappe.new_doc("ZRA Notice ")
-
-        doc.notice_number = notice["noticeNo"]
-        doc.notice_title = notice["title"]
-        doc.registration_name = notice["regrNm"]
-        doc.notice_url = notice["dtlUrl"]
-        doc.notice_registration_datetime = notice["regDt"]
-        doc.notice_contents = notice["cont"]
-
+        doc = frappe.new_doc("ZRA Item Classification")
+        doc.item_classification_code = classification_code.get("itemClsCd")
+        doc.item_classification_name = classification_code.get("itemClsNm")
+        doc.item_classification_level = classification_code.get("itemClsLvl")
+        doc.taxation_type_code = classification_code.get("taxTyCd")
+        doc.is_major_target = classification_code.get("mjrTgYn") == "Y"
+        doc.is_used = classification_code.get("useYn") == "Y"
         try:
-            doc.submit()
-
+            doc.insert(ignore_permissions=True)
         except frappe.exceptions.DuplicateEntryError:
-            frappe.log_error(title="Duplicate entries")
+            frappe.log_error(f"Duplicate entry: {classification_code}", "Duplicate Error")
