@@ -392,8 +392,7 @@ def on_success_sales_information_submission(
         qr_code_data = fetch_qr_code(encoded_url)
 
         # If qr_code_data is in BytesIO format, convert to base64
-        qr_code = convert_qr_code_to_base64(qr_code_data)
-        print("The response is :", response)
+        # qr_code = convert_qr_code_to_base64(qr_code_data)
 
         # Setting values in the database
         frappe.db.set_value(
@@ -409,6 +408,8 @@ def on_success_sales_information_submission(
                 # "custom_sales_qr": qr_code,
             },
         )
+        show_success_message("The Sales Invoice has been succesfully registered on the ZRA Portal")
+
 
     except KeyError as e:
         # Handle missing fields from the response data
