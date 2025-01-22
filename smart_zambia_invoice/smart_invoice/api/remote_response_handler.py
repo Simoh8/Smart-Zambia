@@ -1,8 +1,7 @@
 import datetime
 import frappe
-from smart_zambia_invoice.smart_invoice.utilities import fetch_qr_code, get_real_name, requote_current_url, show_success_message
+from smart_zambia_invoice.smart_invoice.utilities import duplicate, fetch_qr_code, get_real_name, requote_current_url, show_success_message, success
 from ..error_handlers import handle_errors
-
 
 
 
@@ -10,10 +9,11 @@ from ..error_handlers import handle_errors
 
 def notices_search_on_success(response: dict) -> None:
     notices_list = response["data"]["noticeList"]
+    success_codes = []  # To store successfully inserted notice numbers
+    duplicate_codes = []  # To store duplicate notice numbers
 
     for notice in notices_list:
-        doc = frappe.new_doc("ZRA Notice ")
-
+        doc = frappe.new_doc("ZRA Notice")
         doc.notice_number = notice["noticeNo"]
         doc.notice_title = notice["title"]
         doc.registration_name = notice["regrNm"]
@@ -23,9 +23,17 @@ def notices_search_on_success(response: dict) -> None:
 
         try:
             doc.submit()
-
+            success_codes.append(notice["noticeNo"])
         except frappe.exceptions.DuplicateEntryError:
-            frappe.log_error(title="Duplicate entries")
+            duplicate_codes.append(notice["noticeNo"])
+
+    # Use the success and duplicate functions to generate messages
+    success_message = success(success_codes)
+    duplicate_message = duplicate(duplicate_codes)
+
+    # Display the combined message
+    frappe.msgprint(f"{success_message}<br>{duplicate_message}", title="Notice Import Summary")
+
 
 
 
@@ -419,10 +427,13 @@ def on_success_sales_information_submission(
         frappe.throw(f"An error occurred while processing the submission: {str(e)}")
 
 
+
+
+
 def on_success_item_classification_search(response: dict) -> None:
     classification_codes = response.get("data", {}).get("itemClsList", [])
+    success_codes = []  # To store successfully inserted item codes
     duplicate_codes = []  # To store duplicate item codes
-    success_codes = []    # To store successfully inserted item codes
 
     for classification_code in classification_codes:
         doc = frappe.new_doc("ZRA Item Classification")
@@ -438,13 +449,96 @@ def on_success_item_classification_search(response: dict) -> None:
         except frappe.exceptions.DuplicateEntryError:
             duplicate_codes.append(classification_code.get("itemClsCd"))
 
-    # Create a summary message
-    message = []
-    if success_codes:
-        message.append(f"Successfully entered item codes: {', '.join(success_codes)}")
-    if duplicate_codes:
-        message.append(f"Duplicate item codes (not entered): {', '.join(duplicate_codes)}")
+    # Generate messages using the modular functions
+    success_message = success(success_codes)
+    duplicate_message = duplicate(duplicate_codes)
 
-    # Show the summary message
-    if message:
-        frappe.msgprint("<br>".join(message), title="Item Classification Import Summary")
+    # Display the combined message
+    frappe.msgprint(f"{success_message}<br>{duplicate_message}", title="ZRA Data Import Summary")
+
+
+
+
+def on_succesfull_purchase_search_zra(response: dict) -> None:
+    sales_list = response["data"]["saleList"]
+
+    for sale in sales_list:
+        created_record = create_purchase_from_search_details(sale)
+
+        for item in sale["itemList"]:
+            create_and_link_purchase_item(item, created_record)
+
+
+def create_purchase_from_search_details(fetched_purchase: dict) -> str:
+    existing_unique_id = check_duplicate_registered_purchase(fetched_purchase)
+    if existing_unique_id:
+        return existing_unique_id
+    doc = frappe.new_doc("ZRA Registered Purchases")
+
+    doc.supplier_name = fetched_purchase["spplrNm"]
+    doc.supplier_pin = fetched_purchase["spplrTin"]
+    doc.supplier_branch_id = fetched_purchase["spplrBhfId"]
+    doc.supplier_invoice_number = fetched_purchase["spplrInvcNo"]
+
+    doc.receipt_type_code = fetched_purchase["rcptTyCd"]
+    doc.payment_type_code = frappe.get_doc(
+        "ZRA Payment Method", {"code": fetched_purchase["pmtTyCd"]}, ["name"]
+    ).name
+    doc.remarks = fetched_purchase["remark"]
+    doc.validated_date = fetched_purchase["cfmDt"]
+    doc.sales_date = fetched_purchase["salesDt"]
+    doc.stock_released_date = fetched_purchase["stockRlsDt"]
+    doc.total_item_count = fetched_purchase["totItemCnt"]
+    doc.taxable_amount_a = fetched_purchase["taxblAmtA"]
+    doc.taxable_amount_b = fetched_purchase["taxblAmtB"]
+    doc.taxable_amount_c = fetched_purchase["taxblAmtC"]
+    doc.taxable_amount_d = fetched_purchase["taxblAmtD"]
+    doc.taxable_amount_e = fetched_purchase["taxblAmtE"]
+
+    doc.tax_rate_a = fetched_purchase["taxRtA"]
+    doc.tax_rate_b = fetched_purchase["taxRtB"]
+    doc.tax_rate_c = fetched_purchase["taxRtC"]
+    doc.tax_rate_d = fetched_purchase["taxRtD"]
+    doc.tax_rate_e = fetched_purchase["taxRtE"]
+
+    doc.tax_amount_a = fetched_purchase["taxAmtA"]
+    doc.tax_amount_b = fetched_purchase["taxAmtB"]
+    doc.tax_amount_c = fetched_purchase["taxAmtC"]
+    doc.tax_amount_d = fetched_purchase["taxAmtD"]
+    doc.tax_amount_e = fetched_purchase["taxAmtE"]
+
+    doc.total_taxable_amount = fetched_purchase["totTaxblAmt"]
+    doc.total_tax_amount = fetched_purchase["totTaxAmt"]
+    doc.total_amount = fetched_purchase["totAmt"]
+
+    try:
+        doc.submit()
+
+    except frappe.exceptions.DuplicateEntryError:
+        frappe.log_error(title="Duplicate entries")
+
+    return doc.name
+
+
+
+def check_duplicate_registered_purchase(fetched_purchase: dict) -> str:
+    """
+    Check if a Registered Purchase already exists based on a unique ID.
+
+    Args:
+        fetched_purchase (dict): The purchase details fetched from the source.
+
+    Returns:
+        str: The unique ID if the Registered Purchase exists, else None.
+    """
+   
+    unique_id = f"{fetched_purchase['spplrTin']}-{fetched_purchase['spplrInvcNo']}"
+
+    if frappe.db.exists("ZRA Registered Purchases", unique_id):
+        frappe.log_error(
+            title="Duplicate Registered Purchase",
+            message=f"Purchase with ID {unique_id} already exists. Skipping creation."
+        )
+        return unique_id
+    
+    return None

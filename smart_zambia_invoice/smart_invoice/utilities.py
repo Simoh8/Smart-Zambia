@@ -687,6 +687,30 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
     return items_list
 
 
+def success(success_codes: list) -> str:
+    """
+    Generates a success message for successfully inserted codes.
+
+    :param success_codes: List of successfully inserted codes.
+    :return: A formatted success message.
+    """
+    if success_codes:
+        return f"Successfully entered codes: {', '.join(success_codes)}"
+    return "No codes were successfully entered."
+
+def duplicate(duplicate_codes: list) -> str:
+    """
+    Generates a duplicate message for codes that could not be inserted.
+
+    :param duplicate_codes: List of duplicate codes.
+    :return: A formatted duplicate message.
+    """
+    if duplicate_codes:
+        return f"Duplicate codes (not entered): {', '.join(duplicate_codes)}"
+    return "No duplicate codes were found."
+
+
+
 
 
 
@@ -790,3 +814,5 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
 #     }
     
     # return payload
+
+    

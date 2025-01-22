@@ -13,7 +13,9 @@ frappe.listview_settings[doctypeName] = {
             company_name: companyName,
           },
         },
-        callback: (response) => {},
+        callback: (response) => {
+          frappe.msgprint("The request Has been Queued by the system please wait and refresh the tab")
+        },
         error: (error) => {
           // Error Handling is Defered to the Server
         },

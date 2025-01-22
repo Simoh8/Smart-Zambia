@@ -11,7 +11,7 @@ from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides impor
 from smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice import on_submit
 from .api_builder import EndpointConstructor
 
-from .remote_response_handler import on_success_item_classification_search, on_success_sales_information_submission,  on_success_customer_search, on_success_item_composition_submission, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_rrp_item_registration, on_success_user_details_submission, on_successful_fetch_latest_items
+from .remote_response_handler import on_succesfull_purchase_search_zra, on_success_item_classification_search, on_success_sales_information_submission,  on_success_customer_search, on_success_item_composition_submission, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_rrp_item_registration, on_success_user_details_submission, on_successful_fetch_latest_items
 from .. utilities import (build_request_headers,get_route_path, last_request_less_payload,make_get_request,split_user_mail,get_server_url,build_common_payload, truncate_user_id)
 
 endpoint_builder = EndpointConstructor()
@@ -826,7 +826,6 @@ def perform_zra_item_code_classification_search(request_data: str) -> None:
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
-        print("The url used is:", url)
 
 
         # Include tpin and bhfId in the payload
@@ -839,23 +838,40 @@ def perform_zra_item_code_classification_search(request_data: str) -> None:
         endpoint_builder.success_callback = on_success_item_classification_search
         endpoint_builder.error_callback = on_error
 
-        endpoint_builder.perform_remote_calls(doctype="ZRA Item Classification", document_name=data.get("name", None))
-        print("Hello world")
+        # endpoint_builder.perform_remote_calls(doctype="ZRA Item Classification", document_name=data.get("name", None))
+        frappe.enqueue(
+                endpoint_builder.perform_remote_calls,
+                is_async=True,
+                queue="default",
+                timeout=300,
+                doctype="ZRA Item Classification",
+                job_name=f"_register_item_calssification",
+            )
 
 
+@frappe.whitelist()
+def perform_purchases_search_on_zra(request_data: str) -> None:
+    data: dict = json.loads(request_data)
 
+    company_name = data["company_name"]
+    branch_id=data["branch_id"]
+    headers = build_request_headers(company_name, branch_id)
+    server_url = get_server_url(company_name, branch_id)
+    route_path, last_request_date = get_route_path("GET PURCHASES")
 
+    if headers and server_url and route_path:
+        request_date = last_request_date.strftime("%Y%m%d%H%M%S")
 
-# @frappe.whitelist()
-# def submit_bulk_sales_invoices(docs_list: str) -> None:
+        url = f"{server_url}{route_path}"
+        payload = {"lastReqDt": request_date}
+        endpoint_builder.headers = headers
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = on_succesfull_purchase_search_zra
+        endpoint_builder.error_callback = on_error
 
-#     data = json.loads(docs_list)
-#     all_sales_invoices = frappe.db.get_all(
-#         "Sales Invoice", {"docstatus": 1, "custom_successfully_submitted": 0}, ["name"]
-#     )
+     
+        endpoint_builder.perform_remote_calls( 
+            doctype="Purchase Invoice",
+        )
 
-#     for record in data:
-#         for invoice in all_sales_invoices:
-#             if record == invoice.name:
-#                 doc = frappe.get_doc("Sales Invoice", record, for_update=False)
-#                 on_submit(doc, method=None)
