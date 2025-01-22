@@ -19,12 +19,13 @@ fixtures = [
     # "ZRA Unit of Quantity",
     # "ZRA Packaging Unit",
     # "ZRA Transaction Progress",
-    "ZRA Smart Invoice Settings",
-    "ZRA Item Classification",
+    # "ZRA Smart Invoice Settings",
+    # "ZRA Item Classification",
     # "ZRA Import Item Status",
     # "ZRA Credit Note Reason",
     # "ZRA Purchase Receipt Type",
     # "ZRA Product Type",
+    "ZRA Registered Purchases",
     # "ZRA Registered Imported Item",
     {
         "doctype": "Custom Field",
@@ -200,12 +201,12 @@ override_doctype_class = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"Item": {
-# 		"validate": ["smart_zambia_invoice.smart_invoice.overrides.backend.item.validate"],
+doc_events = {
+	"Item": {
+		"validate": ["smart_zambia_invoice.smart_invoice.overrides.backend.item.validate"],
 
-# 	}
-# }
+	}
+}
 
 # Scheduled Tasks
 # ---------------

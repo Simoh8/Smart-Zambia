@@ -1,8 +1,24 @@
-// Copyright (c) 2024, simon muturi and contributors
-// For license information, please see license.txt
+const doctypeName = 'ZRA Notice';
 
-// frappe.ui.form.on("ZRA Registered Purchases Items", {
-// 	refresh(frm) {
+frappe.listview_settings[doctypeName] = {
+  onload: function (listview) {
+    const companyName = frappe.boot.sysdefaults.company;
 
-// 	},
-// });
+    listview.page.add_inner_button(__('Get Latest Notices'), function (listview) {
+      frappe.call({
+        method:
+          'smart_zambia_invoice.smart_invoice.api.zra_api.perform_zra_notice_search',
+        args: {
+          request_data: {
+            company_name: companyName,
+            
+          },
+        },
+        callback: (response) => {},
+        error: (error) => {
+          // Error Handling is Defered to the Server
+        },
+      });
+    });
+  },
+};

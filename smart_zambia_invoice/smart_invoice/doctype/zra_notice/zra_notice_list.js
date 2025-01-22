@@ -22,3 +22,11 @@ frappe.listview_settings[doctypeName] = {
     });
   },
 };
+
+
+
+
+
+
+
+

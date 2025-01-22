@@ -5,18 +5,513 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_tkwy"
+  "supplier_information_section",
+  "supplier_name",
+  "supplier_branch_id",
+  "column_break_sfll",
+  "supplier_tpin",
+  "supplier_invoice_number",
+  "transaction_meta_data_section",
+  "receipt_type_code",
+  "payment_type_code",
+  "transaction_remarks",
+  "column_break_lpte",
+  "validated_date",
+  "transaction_date",
+  "stock_release_date",
+  "items_section",
+  "table_pbzr",
+  "tax_details_section",
+  "total_item_count",
+  "total_taxable_amount",
+  "column_break_rgcy",
+  "total_tax_amount",
+  "total_amount",
+  "section_break_ewlc",
+  "taxable_amount_a",
+  "taxable_amount_b",
+  "taxable_amount_c1",
+  "taxable_amount_c2",
+  "taxable_amount_c3",
+  "taxable_amount_d",
+  "taxable_amount_e",
+  "taxable_amount_f",
+  "taxable_amount_defaulttax",
+  "taxable_amount_rvat",
+  "taxable_amount_tot",
+  "taxable_amount_exeeg",
+  "taxable_amount_ecm",
+  "taxable_amount_ipl1",
+  "taxable_amount_ipl2",
+  "taxable_amount_tl",
+  "column_break_ctmj",
+  "tax_rate_a",
+  "tax_rate_b",
+  "tax_rate_c1",
+  "tax_rate_c2",
+  "tax_rate_c3",
+  "tax_rate_d",
+  "tax_rate_e",
+  "tax_rate_f",
+  "tax_rate_defaulttax",
+  "tax_rate_rvat",
+  "tax_rate_tot",
+  "tax_rate_exeeg",
+  "tax_rate_ecm",
+  "tax_rate_ipl1",
+  "tax_rate_ipl2",
+  "tax_rate_tl",
+  "column_break_lprc",
+  "tax_amount_a",
+  "tax_amount_b",
+  "tax_amount_c1",
+  "tax_amount_c2",
+  "tax_amount_c3",
+  "tax_amount_d",
+  "tax_amount_e",
+  "tax_amount_f",
+  "tax_amount_defaulttax",
+  "tax_amount_rvat",
+  "tax_amount_tot",
+  "tax_amount_exeeg",
+  "tax_amount_ecm",
+  "tax_amount_ipl1",
+  "tax_amount_ipl2",
+  "tax_amount_tl"
  ],
  "fields": [
   {
-   "fieldname": "section_break_tkwy",
+   "fieldname": "supplier_information_section",
+   "fieldtype": "Section Break",
+   "label": "Supplier Information"
+  },
+  {
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "label": "Supplier Name"
+  },
+  {
+   "fieldname": "supplier_branch_id",
+   "fieldtype": "Data",
+   "label": "Supplier Branch ID"
+  },
+  {
+   "fieldname": "column_break_sfll",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "supplier_tpin",
+   "fieldtype": "Data",
+   "label": "Supplier TPIN"
+  },
+  {
+   "fieldname": "supplier_invoice_number",
+   "fieldtype": "Data",
+   "label": "Supplier Invoice Number"
+  },
+  {
+   "fieldname": "transaction_meta_data_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Meta Data"
+  },
+  {
+   "fieldname": "receipt_type_code",
+   "fieldtype": "Data",
+   "label": "Receipt Type Code"
+  },
+  {
+   "fieldname": "payment_type_code",
+   "fieldtype": "Link",
+   "label": "Payment Type Code",
+   "options": "ZRA Payment Method"
+  },
+  {
+   "fieldname": "transaction_remarks",
+   "fieldtype": "Data",
+   "label": "Transaction Remarks"
+  },
+  {
+   "fieldname": "column_break_lpte",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "validated_date",
+   "fieldtype": "Datetime",
+   "label": "Validated Date"
+  },
+  {
+   "fieldname": "transaction_date",
+   "fieldtype": "Date",
+   "label": "Transaction Date"
+  },
+  {
+   "fieldname": "stock_release_date",
+   "fieldtype": "Datetime",
+   "label": "Stock Release Date"
+  },
+  {
+   "fieldname": "items_section",
+   "fieldtype": "Section Break",
+   "label": "Items"
+  },
+  {
+   "fieldname": "table_pbzr",
+   "fieldtype": "Table",
+   "options": "ZRA Registered Purchases Items"
+  },
+  {
+   "fieldname": "tax_details_section",
+   "fieldtype": "Section Break",
+   "label": "Tax Details"
+  },
+  {
+   "fieldname": "total_item_count",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Total Item Count"
+  },
+  {
+   "fieldname": "total_taxable_amount",
+   "fieldtype": "Float",
+   "label": "Total Taxable Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_rgcy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_tax_amount",
+   "fieldtype": "Float",
+   "label": "Total Tax Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Float",
+   "label": "Total Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "section_break_ewlc",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "taxable_amount_a",
+   "fieldtype": "Data",
+   "label": "Taxable Amount A"
+  },
+  {
+   "fieldname": "taxable_amount_b",
+   "fieldtype": "Data",
+   "label": "Taxable Amount B"
+  },
+  {
+   "fieldname": "column_break_ctmj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tax_rate_a",
+   "fieldtype": "Float",
+   "label": "Tax Rate A",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_lprc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tax_amount_a",
+   "fieldtype": "Float",
+   "label": "Tax Amount A",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "taxable_amount_defaulttax",
+   "fieldtype": "Data",
+   "label": "Taxable Amount DefaultTax"
+  },
+  {
+   "fieldname": "taxable_amount_rvat",
+   "fieldtype": "Data",
+   "label": "Taxable Amount RVAT"
+  },
+  {
+   "fieldname": "taxable_amount_e",
+   "fieldtype": "Data",
+   "label": "Taxable Amount E"
+  },
+  {
+   "fieldname": "taxable_amount_d",
+   "fieldtype": "Data",
+   "label": "Taxable Amount D"
+  },
+  {
+   "fieldname": "taxable_amount_c3",
+   "fieldtype": "Data",
+   "label": "Taxable Amount C3"
+  },
+  {
+   "fieldname": "taxable_amount_c2",
+   "fieldtype": "Data",
+   "label": "Taxable Amount C2"
+  },
+  {
+   "fieldname": "taxable_amount_c1",
+   "fieldtype": "Data",
+   "label": "Taxable Amount C1"
+  },
+  {
+   "fieldname": "taxable_amount_tot",
+   "fieldtype": "Data",
+   "label": "Taxable Amount TOT"
+  },
+  {
+   "fieldname": "taxable_amount_exeeg",
+   "fieldtype": "Data",
+   "label": "Taxable Amount EXEEG"
+  },
+  {
+   "fieldname": "taxable_amount_ecm",
+   "fieldtype": "Data",
+   "label": "Taxable Amount ECM"
+  },
+  {
+   "fieldname": "taxable_amount_f",
+   "fieldtype": "Data",
+   "label": "Taxable Amount F"
+  },
+  {
+   "fieldname": "taxable_amount_ipl1",
+   "fieldtype": "Data",
+   "label": "Taxable Amount IPL1"
+  },
+  {
+   "fieldname": "taxable_amount_ipl2",
+   "fieldtype": "Data",
+   "label": "Taxable Amount IPL2"
+  },
+  {
+   "fieldname": "taxable_amount_tl",
+   "fieldtype": "Data",
+   "label": "Taxable Amount TL"
+  },
+  {
+   "fieldname": "tax_rate_b",
+   "fieldtype": "Float",
+   "label": "Tax Rate B",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_c1",
+   "fieldtype": "Float",
+   "label": "Tax Rate C1",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_c2",
+   "fieldtype": "Float",
+   "label": "Tax Rate C2",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_c3",
+   "fieldtype": "Float",
+   "label": "Tax Rate C3",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_d",
+   "fieldtype": "Float",
+   "label": "Tax Rate D",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_e",
+   "fieldtype": "Float",
+   "label": "Tax Rate E",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_f",
+   "fieldtype": "Float",
+   "label": "Tax Rate F",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_defaulttax",
+   "fieldtype": "Float",
+   "label": "Tax Rate DefaultTax",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_rvat",
+   "fieldtype": "Float",
+   "label": "Tax Rate RVAT",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_tot",
+   "fieldtype": "Float",
+   "label": "Tax Rate TOT",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_exeeg",
+   "fieldtype": "Float",
+   "label": "Tax Rate EXEEG",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_ecm",
+   "fieldtype": "Float",
+   "label": "Tax Rate ECM",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_ipl1",
+   "fieldtype": "Float",
+   "label": "Tax Rate IPL1",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_ipl2",
+   "fieldtype": "Float",
+   "label": "Tax Rate IPL2",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_rate_tl",
+   "fieldtype": "Float",
+   "label": "Tax Rate TL",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_b",
+   "fieldtype": "Float",
+   "label": "Tax Amount B",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_c1",
+   "fieldtype": "Float",
+   "label": "Tax Amount C1",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_c2",
+   "fieldtype": "Float",
+   "label": "Tax Amount C2",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_c3",
+   "fieldtype": "Float",
+   "label": "Tax Amount C3",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_d",
+   "fieldtype": "Float",
+   "label": "Tax Amount D",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_e",
+   "fieldtype": "Float",
+   "label": "Tax Amount E",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_f",
+   "fieldtype": "Float",
+   "label": "Tax Amount F",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_defaulttax",
+   "fieldtype": "Float",
+   "label": "Tax Amount DefaultTax",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_rvat",
+   "fieldtype": "Float",
+   "label": "Tax Amount RVAT",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_tot",
+   "fieldtype": "Float",
+   "label": "Tax Amount TOT",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_exeeg",
+   "fieldtype": "Float",
+   "label": "Tax Amount EXEEG",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_ecm",
+   "fieldtype": "Float",
+   "label": "Tax Amount ECM",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_ipl1",
+   "fieldtype": "Float",
+   "label": "Tax Amount IPL1",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_ipl2",
+   "fieldtype": "Float",
+   "label": "Tax Amount IPL2",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount_tl",
+   "fieldtype": "Float",
+   "label": "Tax Amount TL",
+   "non_negative": 1,
+   "precision": "2"
   }
  ],
- "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-22 08:40:52.305137",
+ "modified": "2025-01-22 11:44:04.546826",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA  Registered Purchases",

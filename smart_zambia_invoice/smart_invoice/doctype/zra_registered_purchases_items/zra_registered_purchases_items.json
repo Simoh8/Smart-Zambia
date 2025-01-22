@@ -1,25 +1,147 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "hash",
  "creation": "2024-11-21 14:56:04.432481",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "section_break_rbjk"
+  "item_name",
+  "item_code",
+  "item_sequence",
+  "item_classification_code",
+  "barcode",
+  "package",
+  "packaging_unit_code",
+  "quantity",
+  "quantity_unit_code",
+  "column_break_dxcr",
+  "unit_price",
+  "supply_amount",
+  "discount_rate",
+  "discount_amount",
+  "tax_type_code",
+  "taxable_amount",
+  "tax_amount",
+  "total_amount"
  ],
  "fields": [
   {
-   "fieldname": "section_break_rbjk",
-   "fieldtype": "Section Break"
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Code"
+  },
+  {
+   "fieldname": "item_sequence",
+   "fieldtype": "Int",
+   "label": "Item Sequence"
+  },
+  {
+   "fieldname": "item_classification_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Classification Code",
+   "options": "ZRA Item Classification"
+  },
+  {
+   "fieldname": "barcode",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "BarCode"
+  },
+  {
+   "fieldname": "package",
+   "fieldtype": "Data",
+   "label": "Package"
+  },
+  {
+   "fieldname": "packaging_unit_code",
+   "fieldtype": "Link",
+   "label": "Packaging Unit Code",
+   "options": "ZRA Packaging Unit"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "quantity_unit_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Quantity Unit Code",
+   "options": "ZRA Unit of Quantity"
+  },
+  {
+   "fieldname": "column_break_dxcr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "unit_price",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Unit Price",
+   "precision": "2"
+  },
+  {
+   "fieldname": "supply_amount",
+   "fieldtype": "Float",
+   "label": "Supply Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "discount_rate",
+   "fieldtype": "Float",
+   "label": "Discount Rate",
+   "precision": "2"
+  },
+  {
+   "fieldname": "discount_amount",
+   "fieldtype": "Float",
+   "label": "Discount Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_type_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Tax Type Code",
+   "options": "ZRA Tax Type"
+  },
+  {
+   "fieldname": "taxable_amount",
+   "fieldtype": "Float",
+   "label": "Taxable Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "tax_amount",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Tax Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Amount",
+   "precision": "2"
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-22 08:40:50.712527",
+ "modified": "2025-01-22 10:53:27.983939",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Registered Purchases Items",

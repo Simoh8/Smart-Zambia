@@ -849,19 +849,19 @@ def perform_zra_item_code_classification_search(request_data: str) -> None:
             )
 
 
+
+
+
 @frappe.whitelist()
 def perform_purchases_search_on_zra(request_data: str) -> None:
     data: dict = json.loads(request_data)
-
     company_name = data["company_name"]
     branch_id=data["branch_id"]
     headers = build_request_headers(company_name, branch_id)
     server_url = get_server_url(company_name, branch_id)
     route_path, last_request_date = get_route_path("GET PURCHASES")
-
     if headers and server_url and route_path:
         request_date = last_request_date.strftime("%Y%m%d%H%M%S")
-
         url = f"{server_url}{route_path}"
         payload = {"lastReqDt": request_date}
         endpoint_builder.headers = headers
@@ -869,8 +869,6 @@ def perform_purchases_search_on_zra(request_data: str) -> None:
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = on_succesfull_purchase_search_zra
         endpoint_builder.error_callback = on_error
-
-     
         endpoint_builder.perform_remote_calls( 
             doctype="Purchase Invoice",
         )

@@ -469,6 +469,54 @@ def on_succesfull_purchase_search_zra(response: dict) -> None:
             create_and_link_purchase_item(item, created_record)
 
 
+
+
+def create_and_link_purchase_item(item: dict, parent_record: str) -> None:
+    '''There is an issue with the way its creating items from fetched purchases. Need some fix.
+    KRA is down and am very annoyed because its really wasting my whole time.'''
+    item_cls_code = item["itemClsCd"]
+
+    if not frappe.db.exists("ZRA Item Classification", item_cls_code):
+        doc = frappe.new_doc("ZRA Item Classification")
+        doc.itemclscd = item_cls_code
+        doc.taxtycd = item["taxTyCd"]
+        doc.save()
+
+        item_cls_code = doc.name
+
+    registered_item = frappe.new_doc("ZRA Registered Purchases")
+
+    registered_item.parent = parent_record
+    registered_item.parentfield = "items"
+    registered_item.parenttype = "ZRA Registered Purchases"
+
+    registered_item.item_name = item["itemNm"]
+    registered_item.item_code = item["itemCd"]
+    registered_item.item_sequence = item["itemSeq"]
+    registered_item.item_classification_code = item_cls_code
+    registered_item.barcode = item["bcd"]
+    registered_item.package = item["pkg"]
+    registered_item.packaging_unit_code = item["pkgUnitCd"]
+    registered_item.quantity = item["qty"]
+    registered_item.quantity_unit_code = item["qtyUnitCd"]
+    registered_item.unit_price = item["prc"]
+    registered_item.supply_amount = item["splyAmt"]
+    registered_item.discount_rate = item["dcRt"]
+    registered_item.discount_amount = item["dcAmt"]
+    registered_item.taxation_type_code = item["taxTyCd"]
+    registered_item.taxable_amount = item["taxblAmt"]
+    registered_item.tax_amount = item["taxAmt"]
+    registered_item.total_amount = item["totAmt"]
+
+    registered_item.save()
+
+
+
+
+
+
+
+
 def create_purchase_from_search_details(fetched_purchase: dict) -> str:
     existing_unique_id = check_duplicate_registered_purchase(fetched_purchase)
     if existing_unique_id:
