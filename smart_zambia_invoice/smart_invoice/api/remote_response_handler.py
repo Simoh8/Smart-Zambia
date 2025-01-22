@@ -421,6 +421,9 @@ def on_success_sales_information_submission(
 
 def on_success_item_classification_search(response: dict) -> None:
     classification_codes = response.get("data", {}).get("itemClsList", [])
+    duplicate_codes = []  # To store duplicate item codes
+    success_codes = []    # To store successfully inserted item codes
+
     for classification_code in classification_codes:
         doc = frappe.new_doc("ZRA Item Classification")
         doc.item_classification_code = classification_code.get("itemClsCd")
@@ -431,8 +434,17 @@ def on_success_item_classification_search(response: dict) -> None:
         doc.is_used = classification_code.get("useYn") == "Y"
         try:
             doc.insert(ignore_permissions=True)
+            success_codes.append(classification_code.get("itemClsCd"))
         except frappe.exceptions.DuplicateEntryError:
-            frappe.throw(
-                f"Duplicate entry detected for Item Code: {classification_code.get('itemClsCd')}. "
-                f"Please check and resolve the duplication."
-            )
+            duplicate_codes.append(classification_code.get("itemClsCd"))
+
+    # Create a summary message
+    message = []
+    if success_codes:
+        message.append(f"Successfully entered item codes: {', '.join(success_codes)}")
+    if duplicate_codes:
+        message.append(f"Duplicate item codes (not entered): {', '.join(duplicate_codes)}")
+
+    # Show the summary message
+    if message:
+        frappe.msgprint("<br>".join(message), title="Item Classification Import Summary")
