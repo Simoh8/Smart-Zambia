@@ -413,7 +413,7 @@ def on_success_sales_information_submission(
                 "custom_zra_control_unit_time": control_unit_time,
                 "custom_has_it_been_successfully_submitted": 1,
                 "custom_zra_submission_sequence_number": invoice_number,
-                "custom_zra_sales_invoice_qr_code": qr_code_data,
+                # "custom_zra_sales_invoice_qr_code": qr_code_data,
             },
         )
         show_success_message("The Sales Invoice has been succesfully registered on the ZRA Portal")
@@ -590,3 +590,14 @@ def check_duplicate_registered_purchase(fetched_purchase: dict) -> str:
         return unique_id
     
     return None
+
+
+
+
+
+def on_success_submit_inventory(response: dict, document_name: str) -> None:
+    frappe.db.set_value(
+        "Stock Ledger Entry",
+        document_name,
+        {"custom_inventory_submitted_successfully": 1},
+    )

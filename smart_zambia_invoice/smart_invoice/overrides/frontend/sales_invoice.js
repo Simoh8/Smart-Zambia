@@ -16,7 +16,7 @@ frappe.ui.form.on(parentDoctype, {
     }
 
     // Add "Submit Invoice" button
-    if (!frm.is_new() && frm.doc.docstatus === 1) {
+    if (!frm.is_new() && frm.doc.docstatus === 1 && !frm.doc.custom_has_it_been_successfully_submitted) {
       frm.add_custom_button(__('ZRA Submit Invoice'), function () {
         // Call the custom method to handle invoice submission
         frappe.call({
