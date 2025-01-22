@@ -13,6 +13,8 @@ require_app =["frappe/erpnext"]
 fixtures = [
     "ZRA Tax Type",
     "ZRA VSDC Routes",
+    "ZRA  Registered Purchase",
+    "ZRA Registered Purchases Items",
     # "Smart Zambia Country",
     # "ZRA Transaction Type",
     # "ZRA Payment Method",
@@ -25,7 +27,7 @@ fixtures = [
     # "ZRA Credit Note Reason",
     # "ZRA Purchase Receipt Type",
     # "ZRA Product Type",
-    "ZRA Registered Purchases",
+    # "ZRA Registered Purchases",
     # "ZRA Registered Imported Item",
     {
         "doctype": "Custom Field",

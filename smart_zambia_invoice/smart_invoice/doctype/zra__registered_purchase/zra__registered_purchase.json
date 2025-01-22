@@ -511,10 +511,10 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-22 11:44:04.546826",
+ "modified": "2025-01-22 12:03:28.823474",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
- "name": "ZRA  Registered Purchases",
+ "name": "ZRA  Registered Purchase",
  "owner": "Administrator",
  "permissions": [
   {
@@ -530,6 +530,7 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

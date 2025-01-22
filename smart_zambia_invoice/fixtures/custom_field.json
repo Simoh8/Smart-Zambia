@@ -10469,7 +10469,7 @@
   "name": "Purchase Invoice-custom_zra_source_registered_purchase",
   "no_copy": 1,
   "non_negative": 0,
-  "options": "ZRA  Registered Purchases",
+  "options": "ZRA  Registered Purchase",
   "permlevel": 0,
   "placeholder": null,
   "precision": "",
