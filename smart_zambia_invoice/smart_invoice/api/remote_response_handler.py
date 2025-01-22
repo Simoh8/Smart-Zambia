@@ -419,7 +419,6 @@ def on_success_sales_information_submission(
         frappe.throw(f"An error occurred while processing the submission: {str(e)}")
 
 
-
 def on_success_item_classification_search(response: dict) -> None:
     classification_codes = response.get("data", {}).get("itemClsList", [])
     for classification_code in classification_codes:
@@ -433,4 +432,7 @@ def on_success_item_classification_search(response: dict) -> None:
         try:
             doc.insert(ignore_permissions=True)
         except frappe.exceptions.DuplicateEntryError:
-            frappe.log_error(f"Duplicate entry: {classification_code}", "Duplicate Error")
+            frappe.throw(
+                f"Duplicate entry detected for Item Code: {classification_code.get('itemClsCd')}. "
+                f"Please check and resolve the duplication."
+            )
