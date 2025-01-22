@@ -856,14 +856,16 @@ def perform_zra_item_code_classification_search(request_data: str) -> None:
 def perform_purchases_search_on_zra(request_data: str) -> None:
     data: dict = json.loads(request_data)
     company_name = data["company_name"]
-    branch_id=data["branch_id"]
-    headers = build_request_headers(company_name, branch_id)
-    server_url = get_server_url(company_name, branch_id)
-    route_path, last_request_date = get_route_path("GET PURCHASES")
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_req_date = get_route_path("GET PURCHASES")
     if headers and server_url and route_path:
-        request_date = last_request_date.strftime("%Y%m%d%H%M%S")
+        request_date = last_req_date.strftime("%Y%m%d%H%M%S")
         url = f"{server_url}{route_path}"
-        payload = {"lastReqDt": request_date}
+
+        payload = build_common_payload(headers, last_req_date)
+
+
         endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
