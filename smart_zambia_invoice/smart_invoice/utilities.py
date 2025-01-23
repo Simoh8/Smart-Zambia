@@ -465,7 +465,7 @@ def get_environment_settings(
         vsdc_device_serial_number,
         branch_id,
         company_name,
-        zra_sales_control_unit_id
+        custom_sales_control_unit_id
     FROM `tab{doctype}`
     WHERE company_name = '{company_name}'
         AND environment = '{cur_environment}'

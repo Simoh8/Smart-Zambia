@@ -188,34 +188,7 @@ frappe.ui.form.on(parentDoctype, {
       }).addClass('btn-primary'); // Add a primary button style
     }
   },
-  validate: function (frm) {
-    frappe.db.get_value(
-      settingsDoctypeName,
-      {
-        is_active: 1,
-        bhfid: frm.doc.branch,
-        company: frappe.defaults.get_user_default('Company'),
-      },
-      [
-        'name',
-        'company',
-        'bhfid',
-        'sales_payment_type',
-        'sales_transaction_progress',
-      ],
-      (response) => {
-        if (!frm.doc.custom_payment_type) {
-          frm.set_value('custom_zra_payment_type', response.sales_payment_type);
-        }
-        if (!frm.doc.custom_zra_transaction_progress_status) {
-          frm.set_value(
-            'custom_zra_transaction_progress_status',
-            response.sales_transaction_progress,
-          );
-        }
-      },
-    );
-  },
+
 });
 
 frappe.ui.form.on(childDoctype, {
