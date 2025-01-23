@@ -19,6 +19,9 @@ frappe.ui.form.on(parentDoctype, {
     if (!frm.is_new() && frm.doc.docstatus === 1 && !frm.doc.custom_has_it_been_successfully_submitted) {
       frm.add_custom_button(__('ZRA Submit Invoice'), function () {
         // Call the custom method to handle invoice submission
+        let sales_trans_code = frm.doc.is_return;
+        let debit_note_code = frm.doc.is_debit_note;
+        let is_refund=frm.doc.custom_funds_refunded_
         frappe.call({
           method: 'smart_zambia_invoice.smart_invoice.api.zra_api.perform_sales_invoice_registration',
           args: {
@@ -29,18 +32,18 @@ frappe.ui.form.on(parentDoctype, {
               company_name: companyName,
               cisInvcNo: frm.doc.name,
               custTpin: frm.doc.tax_id,
-              "custNm": "Smart Customer",
-              "salesTyCd": "N",
-              "rcptTyCd": "S",
-              "pmtTyCd": "01",
-              "salesSttsCd": "02",
-              "cfmDt": "20240508102010",
-              "salesDt": "20240728",
+              custNm: frm.doc.customer,
+              salesTyCd: "N",
+              rcptTyCd: debit_note_code ? "D" : sales_trans_code ? "R" : "S",
+              pmtTyCd: frm.doc.custom_zra_payment_code,
+              salesSttsCd: frm.doc.custom_progress_status_code,
+              cfmDt: frm.doc.status === "Cancelled" ? frappe.datetime.get_today() : "",  
+              "salesDt": frm.doc.posting_time,
               "stockRlsDt": null,
-              "cnclReqDt": null,
-              "cnclDt": null,
-              "rfdDt": null,
-              "rfdRsnCd": null,
+              "cnclReqDt": frm.doc.status === "Cancelled" ? frappe.datetime.get_today() : "",
+              "cnclDt": frm.doc.status === "Cancelled" ? frappe.datetime.get_today() : "",
+              "rfdDt": is_refund ? frappe.datetime.get_today() : "",
+              "rfdRsnCd": frm.doc.custom_zra_credit_note_reason,
               "totItemCnt": 2,
               "taxblAmtA": 86.2069,
               "taxblAmtB": 0.0,

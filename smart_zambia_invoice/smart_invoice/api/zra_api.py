@@ -611,7 +611,6 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
 @frappe.whitelist()
 def submit_sales_invoice(record:str) -> None:
 
-
     sales_invoice= frappe.get_doc("Sales Invoice", record, for_update=False)
 
 

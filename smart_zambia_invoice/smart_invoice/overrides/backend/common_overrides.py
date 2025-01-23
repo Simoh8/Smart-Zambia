@@ -14,6 +14,8 @@ from ...api. remote_response_handler import (
 from ...utilities import (
     build_request_headers,
     get_server_url,
+    build_invoice_payload,
+
     get_route_path,
     get_current_env_settings
 )
@@ -40,7 +42,7 @@ def on_submit_override_generic_invoices(
         url = f"{server_url}{route_path}"
 
         invoice_identifier = "C" if doc.is_return else "S"
-        payload = build_request_headers(doc, invoice_identifier, company_name)
+        payload = build_invoice_payload(doc, invoice_identifier, company_name)
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -72,7 +74,7 @@ def validate(doc: Document, method: str) -> None:
         frappe.defaults.get_user_default("Company"), doc.branch
     ).scu_id
     if not doc.branch:
-        frappe.throw("Please ensure the branch is set before saving the documents")
+        frappe.throbuild_request_headersw("Please ensure the branch is set before saving the documents")
     # item_taxes = get_itemised_tax_breakup_data(doc)
 
     # taxes_breakdown = defaultdict(list)
