@@ -372,6 +372,11 @@ def convert_qr_code_to_base64(qr_code_data):
         qr_code_data = qr_code_data.read()  # Read the content from BytesIO
     return base64.b64encode(qr_code_data).decode('utf-8')
 
+
+
+
+
+
 def on_success_sales_information_submission(
     response: dict,
     invoice_type: str,
@@ -459,6 +464,9 @@ def on_success_item_classification_search(response: dict) -> None:
 
 
 
+
+
+
 def on_succesfull_purchase_search_zra(response: dict) -> None:
     sales_list = response["data"]["saleList"]
 
@@ -467,6 +475,9 @@ def on_succesfull_purchase_search_zra(response: dict) -> None:
 
         for item in sale["itemList"]:
             create_and_link_purchase_item(item, created_record)
+
+
+
 
 
 

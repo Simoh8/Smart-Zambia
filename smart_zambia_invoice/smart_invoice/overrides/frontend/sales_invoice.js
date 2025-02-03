@@ -22,6 +22,22 @@ frappe.ui.form.on(parentDoctype, {
         let sales_trans_code = frm.doc.is_return;
         let debit_note_code = frm.doc.is_debit_note;
         let is_refund=frm.doc.custom_funds_refunded_
+        let postingDateTime = frappe.datetime.str_to_user(frm.doc.posting_date); // Convert to user format
+        let formattedPostingDate = formatToDateOnly(postingDateTime); // "yyyyMMdd"
+        let formattedPostingDateTime = formatToFullTimestamp(postingDateTime); // "
+
+        // Convert to required formats
+        function formatToFullTimestamp(dateStr) {
+            return dateStr.replace(/[-:\s]/g, ""); // Converts "2024-02-03 15:30:45" → "20240203153045"
+        }
+        function formatToDateOnly(dateStr) {
+            return dateStr.replace(/[-]/g, "");    // Converts "2024-02-03" → "20240203"
+        }
+
+        let formattedNow = formatToFullTimestamp(now);
+        let formattedToday = formatToDateOnly(today);
+
+
         frappe.call({
           method: 'smart_zambia_invoice.smart_invoice.api.zra_api.perform_sales_invoice_registration',
           args: {
@@ -34,17 +50,18 @@ frappe.ui.form.on(parentDoctype, {
               custTpin: frm.doc.tax_id,
               custNm: frm.doc.customer,
               salesTyCd: "N",
+              
               rcptTyCd: debit_note_code ? "D" : sales_trans_code ? "R" : "S",
               pmtTyCd: frm.doc.custom_zra_payment_code,
               salesSttsCd: frm.doc.custom_progress_status_code,
-              cfmDt: frm.doc.status === "Cancelled" ? frappe.datetime.get_today() : "",  
-              salesDt: frm.doc.posting_time,
-              stockRlsDt: null,
-              cnclReqDt: frm.doc.status === "Cancelled" ? frappe.datetime.get_today() : "",
-              cnclDt: frm.doc.status === "Cancelled" ? frappe.datetime.get_today() : "",
-              rfdDt: is_refund ? frappe.datetime.get_today() : "",
+              cfmDt: frm.doc.status === "Cancelled" ? frm.doc.posting_date : formattedNow,
+              salesDt: formattedPostingDate,
+              stockRlsDt: formattedPostingDateTime,
+              cnclReqDt: frm.doc.status === "Cancelled" ? formattedNow : formattedNow,
+              cnclDt: frm.doc.status === "Cancelled" ? formattedNow : formattedNow,
+              rfdDt: is_refund ? formattedNow : formattedNow,
               rfdRsnCd: frm.doc.custom_zra_credit_note_reason,
-              "totItemCnt": 2,
+              totItemCnt: frm.doc.items.length,
               "taxblAmtA": 86.2069,
               "taxblAmtB": 0.0,
               "taxblAmtC1": 0.0,
@@ -109,72 +126,38 @@ frappe.ui.form.on(parentDoctype, {
               "destnCountryCd": "",
               "dbtRsnCd": "",
               "invcAdjustReason": "",
-              "itemList": [
-                {
-                  "itemSeq": 1,
-                  "itemCd": "20056",
-                  "itemClsCd": "50102518",
-                  "itemNm": "Bread",
-                  "bcd": "",
-                  "pkgUnitCd": "BA",
-                  "pkg": 0.0,
-                  "qtyUnitCd": "BE",
-                  "qty": 1.0,
-                  "prc": 125,
-                  "splyAmt": 125,
-                  "dcRt": 20,
-                  "dcAmt": 25,
-                  "isrccCd": "",
-                  "isrccNm": "",
-                  "isrcRt": 0.0,
-                  "isrcAmt": 0.0,
-                  "vatCatCd": "A",
-                  "exciseTxCatCd": null,
-                  "tlCatCd": null,
-                  "iplCatCd": null,
-                  "vatTaxblAmt": 86.2069,
-                  "vatAmt": 13.7931,
-                  "exciseTaxblAmt": 0,
-                  "tlTaxblAmt": 0.0,
-                  "iplTaxblAmt": 0.0,
-                  "iplAmt": 0.0,
-                  "tlAmt": 0.0,
-                  "exciseTxAmt": 0,
-                  "totAmt": 100
-                },
-                {
-                  "itemSeq": 2,
-                  "itemCd": "20056",
-                  "itemClsCd": "50102518",
-                  "itemNm": "Reinsurance",
-                  "bcd": "",
-                  "pkgUnitCd": "BA",
-                  "pkg": 0.0,
-                  "qtyUnitCd": "BE",
-                  "qty": 1.0,
-                  "prc": 100,
-                  "splyAmt": 100,
-                  "dcRt": 0.0,
-                  "dcAmt": 0.0,
-                  "isrccCd": "",
-                  "isrccNm": "",
-                  "isrcRt": 0.0,
-                  "isrcAmt": 0.0,
-                  "vatCatCd": null,
-                  "exciseTxCatCd": null,
-                  "vatTaxblAmt": 0.0,
-                  "exciseTaxblAmt": 0,
-                  "tlTaxblAmt": 0.0,
-                  "tlCatCd": null,
-                  "tlAmt": 0.0,
-                  "iplCatCd": "IPL2",
-                  "iplAmt": 0.0,
-                  "iplTaxblAmt": 100,
-                  "vatAmt": 0.0,
-                  "exciseTxAmt": 0,
-                  "totAmt": 100
-                }
-              ]
+              itemList: frm.doc.items.map(item => ({
+                itemSeq: item.idx,
+                itemCd: item.item_code,
+                itemClsCd: item.item_class_code,
+                itemNm: item.item_name,
+                bcd: item.barcode || "",
+                pkgUnitCd: item.pkg_unit_code,
+                pkg: item.pkg || 0.0,
+                qtyUnitCd: item.qty_unit_code,
+                qty: item.qty || 1.0,
+                prc: item.price || 0.0,
+                splyAmt: item.supply_amount || 0.0,
+                dcRt: item.discount_rate || 0.0,
+                dcAmt: item.discount_amount || 0.0,
+                isrccCd: item.isrc_code || "",
+                isrccNm: item.isrc_name || "",
+                isrcRt: item.isrc_rate || 0.0,
+                isrcAmt: item.isrc_amount || 0.0,
+                vatCatCd: item.vat_category_code || "A",
+                exciseTxCatCd: item.excise_tx_category_code || null,
+                tlCatCd: item.tl_category_code || null,
+                iplCatCd: item.ipl_category_code || null,
+                vatTaxblAmt: item.vat_taxable_amount || 0.0,
+                vatAmt: item.vat_amount || 0.0,
+                exciseTaxblAmt: item.excise_taxable_amount || 0.0,
+                tlTaxblAmt: item.tl_taxable_amount || 0.0,
+                iplTaxblAmt: item.ipl_taxable_amount || 0.0,
+                iplAmt: item.ipl_amount || 0.0,
+                tlAmt: item.tl_amount || 0.0,
+                exciseTxAmt: item.excise_tax_amount || 0.0,
+                totAmt: item.total_amount || 0.0
+            }))
             }
           },
           callback: function (response) {
@@ -188,6 +171,8 @@ frappe.ui.form.on(parentDoctype, {
             console.error(error);
           },
         });
+
+
       }).addClass('btn-primary'); // Add a primary button style
     }
   },
