@@ -8,7 +8,7 @@ from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
 
 from ...api.api_builder import EndpointConstructor
 from ...api. remote_response_handler import (on_error,on_success_sales_information_submission)
-from ...utilities import (build_request_headers,get_server_url,build_invoice_payload,get_route_path,get_current_env_settings
+from ...utilities import (build_common_payload, build_request_headers,get_server_url,build_invoice_payload,get_route_path,get_current_env_settings, last_request_less_payload
 )
 
 endpoint_builder = EndpointConstructor()
@@ -32,8 +32,13 @@ def on_submit_override_generic_invoices(
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
+
         invoice_identifier = "C" if doc.is_return else "S"
-        payload = build_invoice_payload(doc, invoice_identifier, company_name)
+
+        invoice_payload = build_invoice_payload(doc, invoice_identifier, company_name)
+        common_payload = last_request_less_payload(headers)
+        payload = {**common_payload, **invoice_payload}
+
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -43,21 +48,21 @@ def on_submit_override_generic_invoices(
             document_name=doc.name,
             invoice_type=invoice_type,
             company_name=company_name,
-            invoice_number=payload["invcNo"],
             pin=headers.get("tpin"),
             branch_id=headers.get("bhfId"),
         )
         endpoint_builder.error_callback = on_error
+        endpoint_builder.perform_remote_calls()
 
-        frappe.enqueue(
-            endpoint_builder.perform_remote_calls,
-            is_async=True,
-            queue="default",
-            timeout=300,
-            job_name=f"{doc.name}_send_sales_request",
-            doctype=invoice_type,
-            document_name=doc.name,
-        )
+        # frappe.enqueue(
+        #     endpoint_builder.perform_remote_calls,
+        #     is_async=True,
+        #     queue="default",
+        #     timeout=300,
+        #     job_name=f"{doc.name}_send_sales_request",
+        #     doctype=invoice_type,
+        #     document_name=doc.name,
+        # )
 
 
 def validate(doc: Document, method: str) -> None:

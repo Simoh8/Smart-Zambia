@@ -142,7 +142,7 @@ class EndpointConstructor(BaseEndpointConstructor):
         try:
             response = asyncio.run(make_post_request(self._url, self._payload, self._headers))
             print("The payload used is ",self._payload)
-            # print("The response got is :",response)
+            print("The response got is :",response)
 
 
             if response["resultCd"] == "000":
