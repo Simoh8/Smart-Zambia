@@ -11,7 +11,7 @@ function bulkSubmitInvoices(listview, doctype) {
 
   frappe.call({
     method:
-      "smart_zambia_invoice.smart_invoice.api.api_zra.submit_bulk_sales_invoices",
+      "smart_zambia_invoice.smart_invoice.api.zra_api.submit_bulk_sales_invoices",
     args: {
       docs_list: itemsToSubmit,
     },

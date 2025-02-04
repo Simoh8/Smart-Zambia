@@ -425,10 +425,6 @@ A classic example usecase is Apex tevin typecase where the tax rate is fetched f
 
 
 
-def before_save_(doc: "Document", method: str | None = None) -> None:
-    calculate_tax(doc)
-
-
 
 
 def get_invoice_number(invoice_name):
@@ -515,36 +511,8 @@ def get_current_env_settings(company_name: str, branch_id: str = "001") -> Docum
         return settings
 
 
-def clean_invc_no(invoice_name):
-    if "-" in invoice_name:
-        invoice_name = "-".join(invoice_name.split("-")[:-1])
-    return invoice_name
 
 
-
-def get_taxation_types(doc):
-    taxation_totals = {}
-
-    # Loop through each item in the Sales Invoice
-    for item in doc.items:
-        taxation_type = item.custom_zra_tax_type
-        taxable_amount = item.net_amount  
-        tax_amount = item.custom_tax_amount  
-
-        # Fetch the tax rate for the current taxation type from the specified doctype
-        tax_rate = frappe.db.get_value("ZRA Tax Type", taxation_type, "userdfncd1")
-        # If the taxation type already exists in the dictionary, update the totals
-        if taxation_type in taxation_totals:
-            taxation_totals[taxation_type]["taxable_amount"] += taxable_amount
-            taxation_totals[taxation_type]["tax_amount"] += tax_amount
-
-        else:
-            taxation_totals[taxation_type] = {
-                "tax_rate": tax_rate,
-                "tax_amount": tax_amount,
-                "taxable_amount": taxable_amount
-            }
-    return taxation_totals
 
 
 
@@ -709,6 +677,44 @@ def duplicate(duplicate_codes: list) -> str:
         return f"Duplicate codes (not entered): {', '.join(duplicate_codes)}"
     return "No duplicate codes were found."
 
+
+
+
+def before_save_(doc: "Document", method: str | None = None) -> None:
+    calculate_tax(doc)
+
+
+
+def clean_invc_no(invoice_name):
+    if "-" in invoice_name:
+        invoice_name = "-".join(invoice_name.split("-")[:-1])
+    return invoice_name
+
+
+
+def get_taxation_types(doc):
+    taxation_totals = {}
+
+    # Loop through each item in the Sales Invoice
+    for item in doc.items:
+        taxation_type = item.custom_zra_taxation_type
+        taxable_amount = item.net_amount  
+        tax_amount = item.custom_tax_amount  
+
+        # Fetch the tax rate for the current taxation type from the specified doctype
+        tax_rate = frappe.db.get_value("ZRA Tax Type", taxation_type, "userdfncd1")
+        # If the taxation type already exists in the dictionary, update the totals
+        if taxation_type in taxation_totals:
+            taxation_totals[taxation_type]["taxable_amount"] += taxable_amount
+            taxation_totals[taxation_type]["tax_amount"] += tax_amount
+
+        else:
+            taxation_totals[taxation_type] = {
+                "tax_rate": tax_rate,
+                "tax_amount": tax_amount,
+                "taxable_amount": taxable_amount
+            }
+    return taxation_totals
 
 
 

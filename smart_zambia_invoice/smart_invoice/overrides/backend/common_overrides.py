@@ -7,17 +7,8 @@ from frappe.model.document import Document
 from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
 
 from ...api.api_builder import EndpointConstructor
-from ...api. remote_response_handler import (
-    on_error,
-    on_success_sales_information_submission,
-)
-from ...utilities import (
-    build_request_headers,
-    get_server_url,
-    build_invoice_payload,
-
-    get_route_path,
-    get_current_env_settings
+from ...api. remote_response_handler import (on_error,on_success_sales_information_submission)
+from ...utilities import (build_request_headers,get_server_url,build_invoice_payload,get_route_path,get_current_env_settings
 )
 
 endpoint_builder = EndpointConstructor()
@@ -34,8 +25,8 @@ def on_submit_override_generic_invoices(
         The Type of the invoice. Either Sales, or POS
     """
     company_name = doc.company
-    headers = build_request_headers(company_name, doc.branch)
-    server_url = get_server_url(company_name, doc.branch)
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
     route_path, last_req_date = get_route_path("SAVE SALES")
 
     if headers and server_url and route_path:

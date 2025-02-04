@@ -923,3 +923,18 @@ def perform_sales_invoice_registration(request_data: str) -> dict | None:
 
         endpoint_builder.perform_remote_calls()
 
+@frappe.whitelist()
+def submit_bulk_sales_invoices(docs_list: str) -> None:
+
+
+    data = json.loads(docs_list)
+    all_sales_invoices = frappe.db.get_all(
+        "Sales Invoice", {"docstatus": 1, "custom_has_it_been_successfully_submitted": 0}, ["name"]
+    )
+
+    for record in data:
+        for invoice in all_sales_invoices:
+            if record == invoice.name:
+                doc = frappe.get_doc("Sales Invoice", record, for_update=False)
+                on_submit(doc, method=None)
+
