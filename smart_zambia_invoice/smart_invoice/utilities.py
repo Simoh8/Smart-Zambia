@@ -645,7 +645,6 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
                 "isrcAmt": None,
                 "taxTyCd": item.custom_zra_taxation_type_code,
                 "taxblAmt": round(item.net_amount, 2), #taxable_amount,
-                # "taxAmt": tax_amount,
                 "taxAmt": round(item.custom_tax_amount, 2),
                 "totAmt": round(item.net_amount + item.custom_tax_amount, 2),
                 # "totAmt": (taxable_amount + tax_amount),
@@ -754,6 +753,7 @@ def build_invoice_payload(
 
     # Fetch list of invoice items
     items_list = get_invoice_items_list(invoice)
+    print("the items are ",items_list)
 
     # Determine the invoice number format
     invoice_name = invoice.name
@@ -766,9 +766,9 @@ def build_invoice_payload(
             else frappe.get_doc("Sales Invoice", invoice.return_against).custom_submission_sequence_number
         ),
         "cisInvcNo": invoice_name,
-        "trdInvcNo": invoice_name,
         "custTpin": invoice.tax_id if invoice.tax_id else None,
         "custNm": None,
+        "salesTyCd": "N",
         "rcptTyCd": invoice_type_identifier if invoice_type_identifier == "S" else "R",
         "pmtTyCd": invoice.custom_zra_payment_code,
         "salesSttsCd": invoice.custom_progress_status_code,
@@ -780,6 +780,22 @@ def build_invoice_payload(
         "rfdDt": None,
         "rfdRsnCd": None,
         "totItemCnt": len(items_list),
+
+        "taxblAmtA": taxation_type.get("A", {}).get("taxable_amount", 0),
+        "taxblAmtB": taxation_type.get("B", {}).get("taxable_amount", 0),
+        "taxblAmtC1": taxation_type.get("C1", {}).get("taxable_amount", 0),
+        "taxblAmtC2": taxation_type.get("C2", {}).get("taxable_amount", 0),
+        "taxblAmtC3": taxation_type.get("C3", {}).get("taxable_amount", 0),
+        "taxblAmtD": taxation_type.get("D", {}).get("taxable_amount", 0),
+        "taxblAmtRVAT": taxation_type.get("RVAT", {}).get("taxable_amount", 0),
+        "taxblAmtE": taxation_type.get("E", {}).get("taxable_amount", 0),
+        "taxblAmtF": taxation_type.get("F", {}).get("taxable_amount", 0),
+        "taxblAmtIpl1": taxation_type.get("IPL1", {}).get("taxable_amount", 0),
+        "taxblAmtIpl2": taxation_type.get("IPL2", {}).get("taxable_amount", 0),
+        "taxblAmtTl": taxation_type.get("TL", {}).get("taxable_amount", 0),
+        "taxblAmtEcm": taxation_type.get("ECM", {}).get("taxable_amount", 0),
+        "taxblAmtExeeg": taxation_type.get("EXEEG", {}).get("taxable_amount", 0),
+        "taxblAmtTot": taxation_type.get("TOT", {}).get("taxable_amount", 0),
         
         "taxRtA": taxation_type.get("A", {}).get("tax_rate", 0),
         "taxRtB": taxation_type.get("B", {}).get("tax_rate", 0),
@@ -813,28 +829,21 @@ def build_invoice_payload(
         "taxAmtExeeg": taxation_type.get("EXEEG", {}).get("tax_amount", 0),
         "taxAmtTot": taxation_type.get("TOT", {}).get("tax_amount", 0),
 
-        "taxblAmtA": taxation_type.get("A", {}).get("taxable_amount", 0),
-        "taxblAmtB": taxation_type.get("B", {}).get("taxable_amount", 0),
-        "taxblAmtC1": taxation_type.get("C1", {}).get("taxable_amount", 0),
-        "taxblAmtC2": taxation_type.get("C2", {}).get("taxable_amount", 0),
-        "taxblAmtC3": taxation_type.get("C3", {}).get("taxable_amount", 0),
-        "taxblAmtD": taxation_type.get("D", {}).get("taxable_amount", 0),
-        "taxblAmtRVAT": taxation_type.get("RVAT", {}).get("taxable_amount", 0),
-        "taxblAmtE": taxation_type.get("E", {}).get("taxable_amount", 0),
-        "taxblAmtF": taxation_type.get("F", {}).get("taxable_amount", 0),
-        "taxblAmtIpl1": taxation_type.get("IPL1", {}).get("taxable_amount", 0),
-        "taxblAmtIpl2": taxation_type.get("IPL2", {}).get("taxable_amount", 0),
-        "taxblAmtTl": taxation_type.get("TL", {}).get("taxable_amount", 0),
-        "taxblAmtEcm": taxation_type.get("ECM", {}).get("taxable_amount", 0),
-        "taxblAmtExeeg": taxation_type.get("EXEEG", {}).get("taxable_amount", 0),
-        "taxblAmtTot": taxation_type.get("TOT", {}).get("taxable_amount", 0),
         "totTaxblAmt": round(invoice.base_net_total, 2),
         "totTaxAmt": round(invoice.total_taxes_and_charges, 2),
+        "cashDcRt": 25,
+        "cashDcAmt": 50,
+        
         "totAmt": round(invoice.grand_total, 2),
         "prchrAcptcYn": "Y",
         "remark": None,
-        "salesTyCd": 2,
         "regrId": split_user_mail(invoice.owner),
+        "lpoNumber": None,
+        "currencyTyCd": "ZMW",
+        "exchangeRt": "1",
+        "destnCountryCd": "",
+        "dbtRsnCd": "",
+        "invcAdjustReason": "",
         "regrNm": invoice.owner,
         "modrId": split_user_mail(invoice.modified_by),
         "modrNm": invoice.modified_by,
