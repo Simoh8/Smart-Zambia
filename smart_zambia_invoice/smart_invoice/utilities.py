@@ -627,13 +627,13 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
         items_list.append(
             {
                 "itemSeq": item.idx,
-                "itemCd": item.custom_item_code_etims,
-                "itemClsCd": item.custom_item_classification,
+                "itemCd": item.custom_zra_item_code,
+                "itemClsCd": item.custom_zra_item_classification_code,
                 "itemNm": item.item_name,
                 "bcd": item.barcode,
-                "pkgUnitCd": item.custom_packaging_unit_code,
+                "pkgUnitCd": item.custom_zra_packaging_unit_code,
                 "pkg": 1,
-                "qtyUnitCd": item.custom_unit_of_quantity_code,
+                "qtyUnitCd": item.custom_zra_unit_of_quantity_code,
                 "qty": abs(item.qty),
                 "prc": round(item.base_rate, 2),
                 "splyAmt": round(item.base_amount, 2),
@@ -643,7 +643,7 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
                 "isrccNm": None,
                 "isrcRt": None,
                 "isrcAmt": None,
-                "taxTyCd": item.custom_taxation_type_code,
+                "taxTyCd": item.custom_zra_taxation_type_code,
                 "taxblAmt": round(item.net_amount, 2), #taxable_amount,
                 # "taxAmt": tax_amount,
                 "taxAmt": round(item.custom_tax_amount, 2),
@@ -702,7 +702,7 @@ def get_taxation_types(doc):
         tax_amount = item.custom_tax_amount  
 
         # Fetch the tax rate for the current taxation type from the specified doctype
-        tax_rate = frappe.db.get_value("ZRA Tax Type", taxation_type, "userdfncd1")
+        tax_rate = frappe.db.get_value("ZRA Tax Type", taxation_type, "code")
         # If the taxation type already exists in the dictionary, update the totals
         if taxation_type in taxation_totals:
             taxation_totals[taxation_type]["taxable_amount"] += taxable_amount
