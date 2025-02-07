@@ -18,42 +18,62 @@ from ...utilities import split_user_mail
     details="Use the Register Item button in Item record",
 )
 
-
 def before_insert(doc: Document, method: str) -> None:
     """Item doctype before insertion hook"""
+    
+    # Default values for tax categories
+    vatCatCd = None
+    iplCatCd = None
+    tlCatCd = None
+    exciseTxCatCd = None
+
+    # Check tax type and assign the appropriate category
+    tax_type = doc.custom_zra_tax_type
+
+    if tax_type in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"]:
+        vatCatCd = tax_type
+
+    if tax_type in ["IPL1", "IPL2"]:
+        iplCatCd = tax_type
+
+    if tax_type == "TL":
+        tlCatCd = tax_type
+
+    if tax_type in ["ECM", "EXEEG"]:
+        exciseTxCatCd = tax_type
+
     # Prepare the registration data
     item_registration_data = {
-            "name": doc.name,
-            "company_name": frappe.defaults.get_user_default("Company"),
-            "itemCd": doc.custom_zra_item_code,
-            "itemClsCd": doc.custom_zra_item_classification_code,
-            "itemTyCd": doc.custom_product_code,
-            "itemNm": doc.item_name,
-            "temStdNm": None,
-            "orgnNatCd": doc.custom_zra_country_origin_code,
-            "pkgUnitCd": doc.custom_zra_packaging_unit_code,
-            "qtyUnitCd": doc.custom_zra_unit_quantity_code,
-            "vatCatCd": "A",
-            "iplCatCd": "IPL1",
-            "tlCatCd": None,
-            "exciseTxCatCd": None,
-            "btchNo": None,
-            "bcd": None,
-            "dftPrc": f"{doc.valuation_rate:.2f}" if doc.valuation_rate else "0.00",
-            "addInfo": None,
-            "sftyQty": None,
-            "manufactuterTpin": None,
-            "manufacturerItemCd": None,
-            "rrp": 1000.00,
-            "svcChargeYn": "Y",
-            "rentalYn": "N",
-            "useYn": "Y",
-            "regrId": split_user_mail(doc.owner),
-            "regrNm": doc.owner,
-            "modrId": split_user_mail(doc.modified_by),
-            "modrNm": doc.modified_by,
+        "name": doc.name,
+        "company_name": frappe.defaults.get_user_default("Company"),
+        "itemCd": doc.custom_zra_item_code,
+        "itemClsCd": doc.custom_zra_item_classification_code,
+        "itemTyCd": doc.custom_product_code,
+        "itemNm": doc.item_name,
+        "temStdNm": None,
+        "orgnNatCd": doc.custom_zra_country_origin_code,
+        "pkgUnitCd": doc.custom_zra_packaging_unit_code,
+        "qtyUnitCd": doc.custom_zra_unit_quantity_code,
+        "vatCatCd": vatCatCd,
+        "iplCatCd": iplCatCd,
+        "tlCatCd": tlCatCd,
+        "exciseTxCatCd": exciseTxCatCd,
+        "btchNo": None,
+        "bcd": None,
+        "dftPrc": f"{doc.valuation_rate:.2f}" if doc.valuation_rate else "0.00",
+        "addInfo": None,
+        "sftyQty": None,
+        "manufactuterTpin": None,
+        "manufacturerItemCd": None,
+        "rrp": doc.custom_recommended_retail_price or 1000.00,  # Use field if set, else default
+        "svcChargeYn": "Y",
+        "rentalYn": "N",
+        "useYn": "Y",
+        "regrId": split_user_mail(doc.owner),
+        "regrNm": doc.owner,
+        "modrId": split_user_mail(doc.modified_by),
+        "modrNm": doc.modified_by,
     }
-
 
     # Make the ZRA item registration request
     make_zra_item_registration(json.dumps(item_registration_data))
