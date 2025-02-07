@@ -419,18 +419,17 @@ def make_zra_item_registration(request_data: str) -> dict | None:
                 on_success_item_registration, document_name=data.get("name")
             )
             endpoint_builder.error_callback = on_error
-            endpoint_builder.perform_remote_calls()
 
             # Enqueue the task for asynchronous execution
-            # frappe.enqueue(
-            #     endpoint_builder.perform_remote_calls,
-            #     is_async=True,
-            #     queue="default",
-            #     timeout=300,
-            #     doctype="Item",
-            #     document_name=data["name"],
-            #     job_name=f"{data['name']}_register_item",
-            # )
+            frappe.enqueue(
+                endpoint_builder.perform_remote_calls,
+                is_async=True,
+                queue="default",
+                timeout=300,
+                doctype="Item",
+                document_name=data["name"],
+                job_name=f"{data['name']}_register_item",
+            )
 
 
 
