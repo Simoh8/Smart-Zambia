@@ -627,6 +627,8 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
 
     for index, item in enumerate(invoice.items):
 
+        vatcatcode=item.custom_vat_category_code
+        print("The vat code is ", vatcatcode)
         items_list.append(
             {
                 "itemSeq": item.idx,
@@ -760,6 +762,7 @@ def build_invoice_payload(
 
     # Fetch list of invoice items
     items_list = get_invoice_items_list(invoice)
+    print("The items are ",items_list)
 
     # Determine the invoice number format
     invoice_name = invoice.name
@@ -838,8 +841,8 @@ def build_invoice_payload(
 
         "totTaxblAmt": round(invoice.base_net_total, 2),
         "totTaxAmt": round(invoice.total_taxes_and_charges, 2),
-        "cashDcRt": 25,
-        "cashDcAmt": 50,
+        "cashDcRt": 0,
+        "cashDcAmt": 0,
         
         "totAmt": round(invoice.grand_total, 2),
         "prchrAcptcYn": "Y",
