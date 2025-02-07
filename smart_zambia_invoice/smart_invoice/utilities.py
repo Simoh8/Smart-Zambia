@@ -725,7 +725,7 @@ def get_taxation_types(doc):
         tax_amount = item.custom_tax_amount  
 
         # Fetch the tax rate for the current taxation type from the specified doctype
-        tax_rate = frappe.db.get_value("ZRA Tax Type", taxation_type, "code")
+        tax_rate = frappe.db.get_value("ZRA Tax Type", taxation_type, "tax_rate_")
         # If the taxation type already exists in the dictionary, update the totals
         if taxation_type in taxation_totals:
             taxation_totals[taxation_type]["taxable_amount"] += taxable_amount
