@@ -190,13 +190,13 @@ frappe.ui.form.on(parentDoctype, {
     frappe.db.get_value(
       settingsDoctypeName,
       {
-        is_active: 1,
+        is_active_: 1,
         bhfid: frm.doc.branch,
-        company: frappe.defaults.get_user_default('Company'),
+        company_name: frappe.defaults.get_user_default('Company'),
       },
       [
         'name',
-        'company',
+        'company_name',
         'branch_id',
       ],
       (response) => {

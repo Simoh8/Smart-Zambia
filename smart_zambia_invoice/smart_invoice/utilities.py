@@ -620,6 +620,9 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
     """
     # FIXME: Handle cases where same item can appear on different lines with different rates etc.
     # item_taxes = get_itemised_tax_breakup_data(invoice)
+    taxation_type = get_taxation_types(invoice)
+    print("The taxation type is ",taxation_type)
+
     items_list = []
 
     for index, item in enumerate(invoice.items):
@@ -639,15 +642,19 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
                 "splyAmt": round(item.base_amount, 2),
                 "dcRt": round(item.discount_percentage, 2) or 0,
                 "dcAmt": round(item.discount_amount, 2) or 0,
-                "isrccCd": None,
-                "isrccNm": None,
-                "isrcRt": None,
-                "isrcAmt": None,
+                "tlTaxblAmt": round(item.custom_tourism_levy_taxable_amoun or 0, 2),
+                "vatCatCd": item.custom_vat_category_code,
+                "iplTaxblAmt": round(item.custom_insurance_premium_levy_taxable_amount or 0,2),
+                "exciseTaxblAmt": round(item.custom_excise_tax_amount or 0, 2),
+                "exciseTxCatCd": item.custom_zra_taxation_type if item.custom_zra_taxation_type in ["ECM", "EXEEG"] else None,
+                "vatTaxblAmt": round(item.custom_vat_taxable_amount or 0, 2) ,
+                "exciseTxAmt": round(item.custom_excise_tax_amount or 0, 2) ,
+                "vatAmt": round(item.custom_tax_amount or 0,2),
+                "iplCatCd": item.custom_zra_taxation_type if item.custom_zra_taxation_type in ["IPL1", "IPL2"] else None,
                 "taxTyCd": item.custom_zra_taxation_type_code,
-                "taxblAmt": round(item.net_amount, 2), #taxable_amount,
-                "taxAmt": round(item.custom_tax_amount, 2),
-                "totAmt": round(item.net_amount + item.custom_tax_amount, 2),
-                # "totAmt": (taxable_amount + tax_amount),
+                "taxblAmt": round(item.net_amount or 0, 2) , #taxable_amount,
+                "taxAmt": round(item.custom_tax_amount or 0, 2),
+                "totAmt": round(item.net_amount + item.custom_tax_amount or 0, 2) ,
             }
         )
 
@@ -753,10 +760,10 @@ def build_invoice_payload(
 
     # Fetch list of invoice items
     items_list = get_invoice_items_list(invoice)
-    print("the items are ",items_list)
 
     # Determine the invoice number format
     invoice_name = invoice.name
+    
     if invoice.amended_from:
         invoice_name = clean_invc_no(invoice_name)
         
@@ -767,7 +774,7 @@ def build_invoice_payload(
         ),
         "cisInvcNo": invoice_name,
         "custTpin": invoice.tax_id if invoice.tax_id else None,
-        "custNm": None,
+        "custNm": invoice.customer,
         "salesTyCd": "N",
         "rcptTyCd": invoice_type_identifier if invoice_type_identifier == "S" else "R",
         "pmtTyCd": invoice.custom_zra_payment_code,

@@ -26,10 +26,38 @@ frappe.ui.form.on(itemDoctypName, {
         frm.add_custom_button(
           __("Register/Update Item"),
           function () {
-            // call with all options
+            let taxType = frm.doc.custom_zra_tax_type || null;
+            let vatCatCd = null;
+            let iplCatCd = null;
+            let tlCatCd = null;
+            let exciseTxCatCd = null;
+        
+            // VAT Category Mapping
+            if (["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"].includes(taxType)) {
+              vatCatCd = taxType;
+            }
+        
+            // Insurance Premium Levy Mapping
+            if (["IPL1", "IPL2"].includes(taxType)) {
+              iplCatCd = taxType;
+            }
+            
+            if (taxType === "TOT") {
+              tlCatCd = taxType;
+            }
+        
+            // Tourism Levy Mapping
+            if (["TL", "F"].includes(taxType)) {
+              tlCatCd = taxType;
+            }
+        
+            // Excise Tax Mapping
+            if (["ECM", "EXEEG"].includes(taxType)) {
+              exciseTxCatCd = taxType;
+            }
+        
             frappe.call({
-              method:
-                "smart_zambia_invoice.smart_invoice.api.zra_api.make_zra_item_registration",
+              method: "smart_zambia_invoice.smart_invoice.api.zra_api.make_zra_item_registration",
               args: {
                 request_data: {
                   name: frm.doc.name,
@@ -42,10 +70,10 @@ frappe.ui.form.on(itemDoctypName, {
                   orgnNatCd: frm.doc.custom_zra_country_origin_code,
                   pkgUnitCd: frm.doc.custom_zra_packaging_unit_code,
                   qtyUnitCd: frm.doc.custom_zra_unit_quantity_code,
-                  vatCatCd: frm.doc.custom_zra_tax_type,
-                  iplCatCd: null,
-                  tlCatCd: null,
-                  exciseTxCatCd: null,
+                  vatCatCd: vatCatCd,
+                  iplCatCd: iplCatCd,
+                  tlCatCd: tlCatCd,
+                  exciseTxCatCd: exciseTxCatCd,
                   btchNo: null,
                   bcd: null,
                   dftPrc: frm.doc.valuation_rate.toFixed(2),
@@ -64,17 +92,17 @@ frappe.ui.form.on(itemDoctypName, {
                 },
               },
               callback: (response) => {
-                frappe.msgprint(
-                  "Item Registration Queued. Please refresh the browser tab."
-                );
+                frappe.msgprint("Item Registration Queued. Please refresh the browser tab.");
               },
               error: (error) => {
-                // Error Handling is Defered to the Server
+                // Error Handling is Deferred to the Server
               },
             });
           },
           __("ZRA Actions")
         );
+        
+        
       }
       // if (frm.doc.is_stock_item) {
       //   frm.add_custom_button(
