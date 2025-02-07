@@ -618,17 +618,32 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
     Returns:
         list[dict[str, str | int | None]]: The parsed data as a list of dictionaries
     """
-    # FIXME: Handle cases where same item can appear on different lines with different rates etc.
-    # item_taxes = get_itemised_tax_breakup_data(invoice)
+    
     taxation_type = get_taxation_types(invoice)
-    print("The taxation type is ",taxation_type)
+    print("The taxation type is ", taxation_type)
 
     items_list = []
 
     for index, item in enumerate(invoice.items):
 
-        vatcatcode=item.custom_vat_category_code
-        print("The vat code is ", vatcatcode)
+        vat_cat_code = item.custom_vat_category_code
+        vatCatCd = None
+        iplCatCd = None
+        tlCatCd = None
+        exciseTxCatCd = None
+
+        # Assigning tax categories based on VAT category codes
+        if vat_cat_code in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"]:
+            vatCatCd = vat_cat_code  # Set VAT category
+        elif vat_cat_code in ["IPL1", "IPL2"]:
+            iplCatCd = vat_cat_code  # Set Insurance Premium Levy
+        elif vat_cat_code == "TL":
+            tlCatCd = "TL"  # Set Tourism Levy
+        elif vat_cat_code in ["ECM", "EXEEG"]:
+            exciseTxCatCd = vat_cat_code  # Set Excise Tax Category
+
+        print(f"VAT Code: {vat_cat_code}, VAT Cat: {vatCatCd}, IPL Cat: {iplCatCd}, TL Cat: {tlCatCd}, Excise Cat: {exciseTxCatCd}")
+
         items_list.append(
             {
                 "itemSeq": item.idx,
@@ -645,23 +660,23 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
                 "dcRt": round(item.discount_percentage, 2) or 0,
                 "dcAmt": round(item.discount_amount, 2) or 0,
                 "tlTaxblAmt": round(item.custom_tourism_levy_taxable_amoun or 0, 2),
-                "vatCatCd": item.custom_vat_category_code,
-                "iplTaxblAmt": round(item.custom_insurance_premium_levy_taxable_amount or 0,2),
+                "vatCatCd": vatCatCd,  # Dynamically set
+                "iplTaxblAmt": round(item.custom_insurance_premium_levy_taxable_amount or 0, 2),
                 "exciseTaxblAmt": round(item.custom_excise_tax_amount or 0, 2),
-                "exciseTxCatCd": item.custom_zra_taxation_type if item.custom_zra_taxation_type in ["ECM", "EXEEG"] else None,
-                "vatTaxblAmt": round(item.custom_vat_taxable_amount or 0, 2) ,
-                "exciseTxAmt": round(item.custom_excise_tax_amount or 0, 2) ,
-                "vatAmt": round(item.custom_tax_amount or 0,2),
-                "iplCatCd": item.custom_zra_taxation_type if item.custom_zra_taxation_type in ["IPL1", "IPL2"] else None,
+                "exciseTxCatCd": exciseTxCatCd,  # Dynamically set
+                "vatTaxblAmt": round(item.custom_vat_taxable_amount or 0, 2),
+                "exciseTxAmt": round(item.custom_excise_tax_amount or 0, 2),
+                "vatAmt": round(item.custom_tax_amount or 0, 2),
+                "iplCatCd": iplCatCd,  # Dynamically set
+                "tlCatCd": tlCatCd,  # Dynamically set
                 "taxTyCd": item.custom_zra_taxation_type_code,
-                "taxblAmt": round(item.net_amount or 0, 2) , #taxable_amount,
+                "taxblAmt": round(item.net_amount or 0, 2),
                 "taxAmt": round(item.custom_tax_amount or 0, 2),
-                "totAmt": round(item.net_amount + item.custom_tax_amount or 0, 2) ,
+                "totAmt": round(item.net_amount + item.custom_tax_amount or 0, 2),
             }
         )
 
     return items_list
-
 
 def success(success_codes: list) -> str:
     """
