@@ -12,7 +12,7 @@ import asyncio
 from base64 import b64encode
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Literal, Optional, Union
+from typing import Dict, List, Literal, Optional, Union
 from aiohttp import ClientTimeout, InvalidURL
 from frappe.model.document import Document
 from frappe.utils import cint
@@ -609,14 +609,14 @@ def get_real_name(doctype, field_name, value, target_field):
 
 
 
-def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None]]:
+def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, float, None]]]:
     """Iterates over the invoice items and extracts relevant data
 
     Args:
         invoice (Document): The invoice
 
     Returns:
-        list[dict[str, str | int | None]]: The parsed data as a list of dictionaries
+        List[Dict[str, Union[str, int, float, None]]]: The parsed data as a list of dictionaries
     """
     
     taxation_type = get_taxation_types(invoice)
@@ -625,7 +625,6 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
     items_list = []
 
     for index, item in enumerate(invoice.items):
-
         vat_cat_code = item.custom_vat_category_code
         vatCatCd = None
         iplCatCd = None
@@ -634,15 +633,34 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
 
         # Assigning tax categories based on VAT category codes
         if vat_cat_code in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"]:
-            vatCatCd = vat_cat_code  # Set VAT category
+            vatCatCd = vat_cat_code
         elif vat_cat_code in ["IPL1", "IPL2"]:
-            iplCatCd = vat_cat_code  # Set Insurance Premium Levy
+            iplCatCd = vat_cat_code
         elif vat_cat_code == "TL":
-            tlCatCd = "TL"  # Set Tourism Levy
+            tlCatCd = "TL"
         elif vat_cat_code in ["ECM", "EXEEG"]:
-            exciseTxCatCd = vat_cat_code  # Set Excise Tax Category
+            exciseTxCatCd = vat_cat_code
 
         print(f"VAT Code: {vat_cat_code}, VAT Cat: {vatCatCd}, IPL Cat: {iplCatCd}, TL Cat: {tlCatCd}, Excise Cat: {exciseTxCatCd}")
+
+        # Compute values, ensuring default values and rounding to 2 decimal places
+        qty = abs(item.qty) or 0
+        prc = round(item.base_rate or 0, 2)
+        splyAmt = round(item.base_amount or 0, 2)  # Supply Amount
+        dcRt = round(item.discount_percentage or 0, 2)
+        dcAmt = round(item.discount_amount or 0, 2)
+
+        # Taxable amounts and tax rates
+        vatTaxblAmt = splyAmt if vatCatCd else 0  # VAT taxable amount
+        vatRt = float(item.custom_tax_rate or 0)  # VAT rate as a float
+        vatAmt = round((vatTaxblAmt * vatRt) / 100, 2)  # VAT amount
+
+        # Ensure total taxable amount is correctly assigned
+        taxblAmt = vatTaxblAmt if vatCatCd == "A" else 0
+        taxAmt = vatAmt if vatCatCd == "A" else 0
+
+        # Total amount including tax
+        totAmt = round(splyAmt + taxAmt, 2)
 
         items_list.append(
             {
@@ -654,29 +672,31 @@ def get_invoice_items_list(invoice: Document) -> list[dict[str, str | int | None
                 "pkgUnitCd": item.custom_zra_packaging_unit_code,
                 "pkg": 1,
                 "qtyUnitCd": item.custom_zra_unit_of_quantity_code,
-                "qty": abs(item.qty),
-                "prc": round(item.base_rate, 2),
-                "splyAmt": round(item.base_amount, 2),
-                "dcRt": round(item.discount_percentage, 2) or 0,
-                "dcAmt": round(item.discount_amount, 2) or 0,
+                "qty": qty,
+                "prc": prc,
+                "splyAmt": splyAmt,
+                "dcRt": dcRt,
+                "dcAmt": dcAmt,
                 "tlTaxblAmt": round(item.custom_tourism_levy_taxable_amoun or 0, 2),
-                "vatCatCd": vatCatCd,  # Dynamically set
+                "vatCatCd": vatCatCd,
                 "iplTaxblAmt": round(item.custom_insurance_premium_levy_taxable_amount or 0, 2),
                 "exciseTaxblAmt": round(item.custom_excise_tax_amount or 0, 2),
-                "exciseTxCatCd": exciseTxCatCd,  # Dynamically set
-                "vatTaxblAmt": round(item.custom_vat_taxable_amount or 0, 2),
+                "exciseTxCatCd": exciseTxCatCd,
+                "vatTaxblAmt": vatTaxblAmt,
                 "exciseTxAmt": round(item.custom_excise_tax_amount or 0, 2),
-                "vatAmt": round(item.custom_tax_amount or 0, 2),
-                "iplCatCd": iplCatCd,  # Dynamically set
-                "tlCatCd": tlCatCd,  # Dynamically set
+                "vatAmt": vatAmt,
+                "iplCatCd": iplCatCd,
+                "tlCatCd": tlCatCd,
                 "taxTyCd": item.custom_zra_taxation_type_code,
-                "taxblAmt": round(item.net_amount or 0, 2),
-                "taxAmt": round(item.custom_tax_amount or 0, 2),
-                "totAmt": round(item.net_amount + item.custom_tax_amount or 0, 2),
+                "taxblAmt": taxblAmt,
+                "taxAmt": taxAmt,
+                "totAmt": totAmt,
             }
         )
 
     return items_list
+
+
 
 def success(success_codes: list) -> str:
     """

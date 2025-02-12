@@ -302,6 +302,7 @@ def send_customer_insurance_details(request_data: str) -> None:
 
 
 
+
 @frappe.whitelist()
 def submit_zra_branch_user_details(request_data: str) -> None:
     data: dict = json.loads(request_data)
@@ -349,6 +350,9 @@ def submit_zra_branch_user_details(request_data: str) -> None:
 
 
 
+
+
+
 @frappe.whitelist()
 def fetch_customer_info(request_data: str) -> None:
     """Search customer details in the ZRA Server
@@ -389,6 +393,8 @@ def fetch_customer_info(request_data: str) -> None:
             document_name=data["name"],
             job_name=f"{data['name']}_customer_search",
         )
+
+
 
 
 
@@ -460,6 +466,11 @@ def fetch_latest_items(request_data: str, frm: dict = None) -> None:  # Default 
         endpoint_builder.perform_remote_calls(doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None))
 
 
+
+
+
+
+
 @frappe.whitelist()
 def fetch_rrp_latest_items(request_data: str, frm: dict = None) -> None:  # Default to None if frm is not passed
     data: dict = json.loads(request_data)
@@ -482,6 +493,10 @@ def fetch_rrp_latest_items(request_data: str, frm: dict = None) -> None:  # Defa
         endpoint_builder.error_callback = on_error
 
         endpoint_builder.perform_remote_calls(doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None))
+
+
+
+
 
 
 
@@ -557,6 +572,8 @@ def save_item_composition(request_data: str) -> None:
                             <b>Ensure ALL Items are registered first to submit this composition</b>""",
                             title="Integration Error",
                         )
+
+
 
 
 
