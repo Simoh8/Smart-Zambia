@@ -610,7 +610,7 @@ def get_real_name(doctype, field_name, value, target_field):
 
 
 def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, float, None]]]:
-    """Iterates over the invoice items and extracts relevant data from the taxation dictionary.
+    """Iterates over the invoice items and correctly assigns tax amounts based on tax type codes.
 
     Args:
         invoice (Document): The invoice
@@ -618,80 +618,85 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
     Returns:
         List[Dict[str, Union[str, int, float, None]]]: The parsed data as a list of dictionaries
     """
-    
+
     taxation_types = get_taxation_types(invoice)  # Get taxation details
-    print("The taxation type is ", taxation_types)
 
     items_list = []
 
     for index, item in enumerate(invoice.items):
-        vat_cat_code = getattr(item, "custom_vat_category_code", None)
         vatCatCd = None
         iplCatCd = None
         tlCatCd = None
         exciseTxCatCd = None
 
-        if vat_cat_code in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"]:
-            vatCatCd = vat_cat_code
-        elif vat_cat_code in ["IPL1", "IPL2"]:
-            iplCatCd = vat_cat_code
-        elif vat_cat_code == "TL":
-            tlCatCd = "TL"
-        elif vat_cat_code in ["ECM", "EXEEG"]:
-            exciseTxCatCd = vat_cat_code
+        taxTyCd = getattr(item, "custom_zra_taxation_type_code", None)
 
+        if taxTyCd in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"]:
+            vatCatCd = taxTyCd
+        elif taxTyCd in ["IPL1", "IPL2"]:
+            iplCatCd = taxTyCd
+        elif taxTyCd == "TL":
+            tlCatCd = "TL"
+        elif taxTyCd in ["ECM", "EXEEG"]:
+            exciseTxCatCd = taxTyCd
 
         qty = abs(getattr(item, "qty", 0))
         prc = round(getattr(item, "base_rate", 0), 2)
-        splyAmt = round(getattr(item, "base_amount", 0), 2)  # Supply Amount
+        splyAmt = round(getattr(item, "base_amount", 0), 2)
         dcRt = round(getattr(item, "discount_percentage", 0), 2)
         dcAmt = round(getattr(item, "discount_amount", 0), 2)
 
-        # Fetch the taxation type from the item
         taxation_type = getattr(item, "custom_zra_taxation_type", None)
-        tax_data = taxation_types.get(taxation_type, {})  # Fetch pre-calculated tax data
-        print("This data is ", taxation_types)
-        tax_rate = tax_data.get("tax_rate", 0)
-        taxblAmt = tax_data.get("taxable_amount", 0)
-        taxAmt = tax_data.get("tax_amount", 0)  # Use precomputed tax amount directly
+        tax_data = taxation_types.get(taxation_type, {})  # Fetch tax data
+        taxblAmt = round(tax_data.get("taxable_amount", 0), 2)
+        taxAmt = round(tax_data.get("tax_amount", 0), 2)
 
-        # Total amount including tax
-        totAmt = round( taxblAmt + taxAmt)
+        # Correct allocation based on tax type code
+        vatTaxblAmt = taxblAmt if taxTyCd in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"] else 0
+        iplTaxblAmt = taxblAmt if taxTyCd in ["IPL1", "IPL2"] else 0
+        exciseTaxblAmt = taxblAmt if taxTyCd in ["EXEEG", "ECM"] else 0
+        tlTaxblAmt = taxblAmt if taxTyCd == "TL" else 0
 
-        items_list.append(
-            {
-                "itemSeq": item.idx,
-                "itemCd": getattr(item, "custom_zra_item_code", ""),
-                "itemClsCd": getattr(item, "custom_zra_item_classification_code", ""),
-                "itemNm": getattr(item, "item_name", ""),
-                "bcd": getattr(item, "barcode", None),
-                "pkgUnitCd": getattr(item, "custom_zra_packaging_unit_code", ""),
-                "pkg": 1,
-                "qtyUnitCd": getattr(item, "custom_zra_unit_of_quantity_code", ""),
-                "qty": qty,
-                "prc": prc,
-                "splyAmt": splyAmt,
-                "dcRt": dcRt,
-                "dcAmt": dcAmt,
-                "tlTaxblAmt": 0 ,
-                "vatCatCd": vatCatCd,
-                "iplTaxblAmt": round(getattr(item, "custom_insurance_premium_levy_taxable_amount", 0) or 0, 2),
-                "exciseTaxblAmt": round(getattr(item, "custom_excise_tax_amount", 0) or 0, 2),
-                "exciseTxCatCd": exciseTxCatCd,
-                "vatTaxblAmt": taxblAmt,  # Now fetched from taxation_types
-                "exciseTxAmt": round(getattr(item, "custom_excise_tax_amount", 0) or 0, 2),
-                "vatAmt": taxAmt,  # Now using precomputed tax amount
-                "iplCatCd": iplCatCd,
-                "tlCatCd": tlCatCd,
-                "taxTyCd": getattr(item, "custom_zra_taxation_type_code", ""),
-                "taxblAmt": taxblAmt,
-                "taxAmt": taxAmt,  # Directly from taxation_types
-                "totAmt": totAmt,
-            }
-        )
+        vatAmt = taxAmt if vatTaxblAmt > 0 else 0
+        iplAmt = taxAmt if iplTaxblAmt > 0 else 0
+        exciseTxAmt = taxAmt if exciseTaxblAmt > 0 else 0
+        tlAmt = taxAmt if tlTaxblAmt > 0 else 0
+
+        totAmt = round(taxblAmt + taxAmt, 2)
+
+        items_list.append({
+            "itemSeq": item.idx,
+            "itemCd": getattr(item, "custom_zra_item_code", ""),
+            "itemClsCd": getattr(item, "custom_zra_item_classification_code", ""),
+            "itemNm": getattr(item, "item_name", ""),
+            "bcd": getattr(item, "barcode", None),
+            "pkgUnitCd": getattr(item, "custom_zra_packaging_unit_code", ""),
+            "pkg": 1,
+            "qtyUnitCd": getattr(item, "custom_zra_unit_of_quantity_code", ""),
+            "qty": qty,
+            "prc": prc,
+            "splyAmt": splyAmt,
+            "dcRt": dcRt,
+            "dcAmt": dcAmt,
+            "tlTaxblAmt": tlTaxblAmt,
+            "vatCatCd": vatCatCd,
+            "iplTaxblAmt": iplTaxblAmt,
+            "exciseTaxblAmt": exciseTaxblAmt,
+            "exciseTxCatCd": exciseTxCatCd,
+            "vatTaxblAmt": vatTaxblAmt,
+            "exciseTxAmt": exciseTxAmt,
+            "vatAmt": vatAmt,
+            "tlAmt":tlAmt,
+            "iplAmt":iplAmt,
+            "iplCatCd": iplCatCd,
+            "tlCatCd": tlCatCd,
+            "taxTyCd": taxTyCd,
+            "taxblAmt": taxblAmt,
+            "taxAmt": taxAmt,
+            "totAmt": totAmt
+        })
 
     return items_list
-
 
 def success(success_codes: list) -> str:
     """
@@ -805,7 +810,6 @@ def build_invoice_payload(
 
     # Fetch list of invoice items
     items_list = get_invoice_items_list(invoice)
-    print("The items are ",items_list)
 
     # Determine the invoice number format
     invoice_name = invoice.name

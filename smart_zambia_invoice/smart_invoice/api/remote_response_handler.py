@@ -294,6 +294,7 @@ def on_successful_fetch_latest_items(frm, response):
         frm = {} 
 
     for item in response.get('data', {}).get('itemList', []):
+        # frappe.throw(str(item))
 
         item_code = item.get("itemCd") or item.get("itemNm") or frm.get("custom_zra_item_code") or "DEFAULT_ITEM_CODE"
 
