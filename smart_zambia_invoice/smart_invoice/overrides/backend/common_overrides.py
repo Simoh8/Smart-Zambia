@@ -47,8 +47,9 @@ def on_submit_override_generic_invoices(
             on_success_sales_information_submission,
             document_name=doc.name,
             invoice_type=invoice_type,
+            invoice_number=doc.name,  
             company_name=company_name,
-            pin=headers.get("tpin"),
+            tpin=headers.get("tpin"),
             branch_id=headers.get("bhfId"),
         )
         endpoint_builder.error_callback = on_error

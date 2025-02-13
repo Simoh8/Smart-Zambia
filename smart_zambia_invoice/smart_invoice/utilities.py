@@ -656,7 +656,7 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
         taxAmt = tax_data.get("tax_amount", 0)  # Use precomputed tax amount directly
 
         # Total amount including tax
-        totAmt = round(splyAmt + taxAmt, 2)
+        totAmt = round( taxblAmt + taxAmt)
 
         items_list.append(
             {
@@ -812,6 +812,9 @@ def build_invoice_payload(
     
     if invoice.amended_from:
         invoice_name = clean_invc_no(invoice_name)
+
+    tot_taxable_amt = sum(item.get("taxblAmt", 0) for item in items_list)
+    tot_tax_amt = sum(item.get("taxAmt", 0) for item in items_list)
         
     payload = {
         "orgInvcNo": (
@@ -882,8 +885,8 @@ def build_invoice_payload(
         "taxAmtExeeg": taxation_type.get("EXEEG", {}).get("tax_amount", 0),
         "taxAmtTot": taxation_type.get("TOT", {}).get("tax_amount", 0),
 
-        "totTaxblAmt": round(invoice.base_net_total, 2),
-        "totTaxAmt": round(invoice.total_taxes_and_charges, 2),
+        "totTaxblAmt": round(tot_taxable_amt, 2),
+        "totTaxAmt": round(tot_tax_amt, 2),
         "cashDcRt": invoice.additional_discount_percentage,
         "cashDcAmt": invoice.discount_amount,
         
