@@ -960,3 +960,11 @@ def submit_bulk_sales_invoices(docs_list: str) -> None:
                 doc = frappe.get_doc("Sales Invoice", record, for_update=False)
                 on_submit(doc, method=None)
 
+
+
+
+
+
+@frappe.whitelist()
+def save_stock_inventory(doc_list: str) -> None:
+    

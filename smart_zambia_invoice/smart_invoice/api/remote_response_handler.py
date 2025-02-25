@@ -2,7 +2,8 @@ import datetime
 import frappe
 from smart_zambia_invoice.smart_invoice.utilities import duplicate, fetch_qr_code, get_real_name, requote_current_url, show_success_message, success
 from ..error_handlers import handle_errors
-
+import base64
+from io import BytesIO
 
 
 
@@ -46,6 +47,7 @@ def item_composition_submission_succes(response: dict, document_name: str) -> No
 
 
 
+
 def on_success_customer_branch_details_submission(response: dict, document_name: str) -> None:
     try:
         # Update the document to indicate success
@@ -60,6 +62,7 @@ def on_success_customer_branch_details_submission(response: dict, document_name:
 
 
 
+
 def on_success_customer_insurance_details_submission(
     response: dict, document_name: str
 ) -> None:
@@ -68,6 +71,7 @@ def on_success_customer_insurance_details_submission(
         document_name,
         {"custom_insurance_details_submitted_successfully": 1},
     )
+
 
 
 
@@ -93,6 +97,9 @@ def on_error(
         doctype=doctype,
         document_name=document_name,
     )
+
+
+
 
 
 
@@ -127,6 +134,8 @@ def fetch_branch_request_on_success(response: dict) -> None:
             doc.custom_is_etims_branch = 1
 
             doc.save()
+
+
 
 
 
@@ -201,6 +210,8 @@ def on_imported_items_search_success(response: dict) -> None:
 
 
 
+
+
 def on_success_search_branch_request(response: dict) -> None:
     for branch in response["data"]["bhfList"]:
         doc = None
@@ -236,9 +247,14 @@ def on_success_search_branch_request(response: dict) -> None:
 
 
 
+
+
+
 def on_success_item_registration(response: dict, document_name: str) -> None:
     frappe.db.set_value("Item", document_name, {"custom_zra_item_registered_": 1})
     show_success_message("Item registration succesful")
+
+
 
 
 
@@ -248,6 +264,7 @@ def on_success_user_details_submission(response:dict, document_name:str)-> None:
     
     frappe.db.set_value("ZRA Smart Invoice User", document_name,{"registered_on_smart_invoice":1})
     show_success_message("The user has been succesfully registered on the ZRA Portal")
+
 
 
 
@@ -364,16 +381,13 @@ def on_success_rrp_item_registration(response: dict, document_name: str) -> None
     frappe.db.set_value("Item", document_name, {"custom_zra_item_registered_": 1})
     show_success_message(" RRP Item registration succesful")
 
-import base64
-from io import BytesIO
+
 
 def convert_qr_code_to_base64(qr_code_data):
     """Convert QR code binary data from BytesIO to a base64 string."""
     if isinstance(qr_code_data, BytesIO):
         qr_code_data = qr_code_data.read()  # Read the content from BytesIO
     return base64.b64encode(qr_code_data).decode('utf-8')
-
-
 
 
 
@@ -395,7 +409,8 @@ def on_success_sales_information_submission(
         receipt_number = response_data["rcptNo"]
         internal_data = response_data["intrlData"]
         control_unit_time = response_data["vsdcRcptPbctDate"]  # Make sure this is correct field
-        # qr_code_url = response_data["qrCodeUrl"]
+        qr_code_url = response_data["qrCodeUrl"]
+        # frappe.throw(qr_code_url)
 
         # Encoding the URL for the QR Code generation
         encoded_url = requote_current_url(
@@ -403,10 +418,8 @@ def on_success_sales_information_submission(
         )
 
         # Fetch the QR code
-        qr_code_data = fetch_qr_code(encoded_url)
+        qr_code = fetch_qr_code(encoded_url)
 
-        # If qr_code_data is in BytesIO format, convert to base64
-        # qr_code = convert_qr_code_to_base64(qr_code_data)
 
         # Setting values in the database
         frappe.db.set_value(
@@ -419,7 +432,7 @@ def on_success_sales_information_submission(
                 "custom_zra_control_unit_time": control_unit_time,
                 "custom_has_it_been_successfully_submitted": 1,
                 "custom_zra_submission_sequence_number": invoice_number,
-                # "custom_zra_sales_invoice_qr_code": qr_code_data,
+                "custom_zra_sales_invoice_qr": qr_code,
             },
         )
         show_success_message("The Sales Invoice has been succesfully registered on the ZRA Portal")
@@ -431,7 +444,6 @@ def on_success_sales_information_submission(
     except Exception as e:
         # Handle any other exceptions
         frappe.throw(f"An error occurred while processing the submission: {str(e)}")
-
 
 
 
@@ -612,4 +624,11 @@ def on_success_submit_inventory(response: dict, document_name: str) -> None:
         "Stock Ledger Entry",
         document_name,
         {"custom_inventory_submitted_successfully": 1},
+    )
+
+
+
+def on_success_stock_movement(response: dict, document_name: str) -> None:
+    frappe.db.set_value(
+        "Stock Ledger Entry", document_name, {"custom_submitted_successfully": 1}
     )

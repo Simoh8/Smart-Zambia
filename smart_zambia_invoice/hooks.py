@@ -207,7 +207,8 @@ doc_events = {
 	"Item": {
 		"validate": ["smart_zambia_invoice.smart_invoice.overrides.backend.item.validate"],
 
-	}
+	},
+    # "Sales Invoice":[]
 }
 
 # Scheduled Tasks

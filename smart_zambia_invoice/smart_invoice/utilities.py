@@ -1,5 +1,6 @@
 
 import base64
+from decimal import ROUND_DOWN, Decimal
 from urllib.parse import quote, unquote
 from urllib.parse import urlsplit, urlunsplit
 import re
@@ -370,6 +371,8 @@ def add_file_info(data: str) -> str:
 
 
 
+
+
 def bytes_to_base64_string(data: bytes) -> str:
     """Convert bytes to a base64 encoded string."""
     return b64encode(data).decode("utf-8")
@@ -377,14 +380,35 @@ def bytes_to_base64_string(data: bytes) -> str:
 
 
 
+
 def fetch_qr_code(data: str) -> str:
-    """Generates a QR code for the provided data and returns it as a base64-encoded string."""
+    """Generate QR Code data
+
+    Args:
+        data (str): The information used to generate the QR Code
+
+    Returns:
+        str: The QR Code.
+    """
+    qr_code_bytes = fetch_qr_code_bytes(data, format="PNG")
+    base_64_string = bytes_to_base64_string(qr_code_bytes)
+
+    return add_file_info(base_64_string)
+
+
+
+
+
+def fetch_qr_code_bytes(data: bytes | str, format: str = "PNG") -> bytes:
+    """Create a QR code and return the bytes."""
     img = qrcode.make(data)
-    byte_io = BytesIO()
-    img.save(byte_io, 'PNG')
-    byte_io.seek(0)
-    # Convert the BytesIO content to a base64 string
-    return base64.b64encode(byte_io.read()).decode('utf-8')
+
+    buffered = BytesIO()
+    img.save(buffered, format=format)
+
+    return buffered.getvalue()
+
+
 
 
 
@@ -911,5 +935,18 @@ def build_invoice_payload(
     }
     
     return payload
+
+def extract_doc_series_number(document: Document) -> int | None:
+    split_invoice_name = document.name.split("-")
+
+    if len(split_invoice_name) == 4:
+        return int(split_invoice_name[-1])
+
+    if len(split_invoice_name) == 5:
+        return int(split_invoice_name[-2])
+    
+def quantize_amount(number: str | int | float) -> str:
+    """Return number value to two decimal points"""
+    return Decimal(number).quantize(Decimal(".01"), rounding=ROUND_DOWN).to_eng_string()
 
     
