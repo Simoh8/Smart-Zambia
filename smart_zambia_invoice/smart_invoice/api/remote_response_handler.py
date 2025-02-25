@@ -632,3 +632,12 @@ def on_success_stock_movement(response: dict, document_name: str) -> None:
     frappe.db.set_value(
         "Stock Ledger Entry", document_name, {"custom_submitted_successfully": 1}
     )
+def on_succesful_purchase_invoice_submission(response: dict, document_name: str) -> None:
+    # Update Invoice fields from KRA's response
+    frappe.db.set_value(
+        "Purchase Invoice",
+        document_name,
+        {
+            "custom_has_it_been_submitted_successfully": 1,
+        },
+    )

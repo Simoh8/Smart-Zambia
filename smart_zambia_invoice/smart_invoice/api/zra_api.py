@@ -965,6 +965,6 @@ def submit_bulk_sales_invoices(docs_list: str) -> None:
 
 
 
-@frappe.whitelist()
-def save_stock_inventory(doc_list: str) -> None:
+# @frappe.whitelist()
+# def save_stock_inventory(doc_list: str) -> None:
     

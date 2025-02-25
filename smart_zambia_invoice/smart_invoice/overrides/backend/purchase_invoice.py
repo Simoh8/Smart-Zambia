@@ -9,7 +9,8 @@ from frappe.utils import get_link_to_form
 from ...api.api_builder import EndpointConstructor
 from ...api.remote_response_handler import (
 	on_error,
-	purchase_invoice_submission_on_success,
+	on_succesful_purchase_invoice_submission,
+	
 )
 from ...utilities import (
 	build_request_headers,
@@ -57,10 +58,9 @@ def on_submit(doc: Document, method: str) -> None:
 	if doc.is_return == 0 and doc.update_stock == 1:
 		# TODO: Handle cases when item tax templates have not been picked
 		company_name = doc.company
-		vendor="OSCU KRA"
-		headers = build_request_headers(company_name,vendor, doc.branch)
-		server_url = get_server_url(company_name,vendor, doc.branch)
-		route_path, last_request_date = get_route_path("TrnsPurchaseSaveReq")
+		headers = build_request_headers(company_name, doc.branch)
+		server_url = get_server_url(company_name, doc.branch)
+		route_path, last_request_date = get_route_path("SAVE PURCHASES")
 
 		if headers and server_url and route_path:
 			url = f"{server_url}{route_path}"
@@ -70,13 +70,13 @@ def on_submit(doc: Document, method: str) -> None:
 			endpoints_maker.headers = headers
 			endpoints_maker.payload = payload
 			endpoints_maker.success_callback = partial(
-				purchase_invoice_submission_on_success, document_name=doc.name
+				on_succesful_purchase_invoice_submission, document_name=doc.name
 			)
 
 			endpoints_maker.error_callback = on_error
 
 			frappe.enqueue(
-				endpoints_maker.make_remote_call,
+				endpoints_maker.perform_remote_calls,
 				is_async=True,
 				queue="default",
 				timeout=300,
