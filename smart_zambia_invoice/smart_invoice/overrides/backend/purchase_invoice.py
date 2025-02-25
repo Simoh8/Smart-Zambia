@@ -181,11 +181,11 @@ def validate_item_registration(items):
 def validation_message(item_code):
 	item_doc = frappe.get_doc("Item", item_code)
 	
-	if item_doc.custom_referenced_imported_item and (item_doc.custom_item_registered == 0 or item_doc.custom_imported_item_submitted == 0):
+	if item_doc.custom_zra_referenced_imported_item and (item_doc.custom_zra_item_registered_ == 0 or item_doc.custom_imported_item_submitted == 0):
 		item_link = get_link_to_form("Item", item_doc.name)
 		frappe.throw(f"Register or submit the item: {item_link}")
 	
-	elif not item_doc.custom_referenced_imported_item and item_doc.custom_item_registered == 0:
+	elif not item_doc.custom_zra_referenced_imported_item and item_doc.custom_zra_item_registered_ == 0:
 		item_link = get_link_to_form("Item", item_doc.name)
 		frappe.throw(f"Register the item: {item_link}")
 
