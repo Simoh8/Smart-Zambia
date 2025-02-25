@@ -13,13 +13,13 @@ frappe.ui.form.on(parentDoctype, {
       settingsDoctypeName,
       {
         is_active: 1,
-        bhfid: frm.doc.branch ?? '00',
+        branch_id: frm.doc.branch ?? '00',
         company: frappe.defaults.get_user_default('Company'),
       },
       [
         'name',
         'company',
-        'bhfid',
+        'branch_id',
         'purchases_purchase_type',
         'purchases_receipt_type',
         'purchases_payment_type',
