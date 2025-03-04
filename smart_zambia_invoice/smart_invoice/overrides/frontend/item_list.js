@@ -18,10 +18,10 @@ frappe.listview_settings[doctypeName].onload = function (listview) {
       },
     });
   });
-  // listview.page.add_inner_button(__('Fetch Latest Products'), function (listview) {
+  // listview.page.add_inner_button(__('Fetch Registered Products'), function (listview) {
   //   frappe.call({
   //     method:
-  //     "smart_zambia_invoice.smart_invoice.api.zra_api.fetch_latest_items",
+  //     "smart_zambia_invoice.smart_invoice.api.zra_api.fetch_Previous_registered_zra_items",
   //     args: {
   //       request_data: {
   //         company_name: companyName,

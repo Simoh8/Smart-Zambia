@@ -443,7 +443,7 @@ def make_zra_item_registration(request_data: str) -> dict | None:
 
 
 @frappe.whitelist()
-def fetch_latest_items(request_data: str, frm: dict = None) -> None:  # Default to None if frm is not passed
+def fetch_Previous_registered_zra_items(request_data: str, frm: dict = None) -> None:  # Default to None if frm is not passed
     data: dict = json.loads(request_data)
 
     company_name = data["company_name"]
@@ -833,6 +833,8 @@ def perform_zra_item_code_classification_search(request_data: str) -> None:
 @frappe.whitelist()
 def perform_purchases_search_on_zra(request_data: str) -> None:
     data: dict = json.loads(request_data)
+
+    print("The data is ", data)
     company_name = data["company_name"]
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
@@ -962,6 +964,9 @@ def submit_bulk_sales_invoices(docs_list: str) -> None:
 
 
 
+
+# @frappe.whitelist()
+# def get_existing_purchase_invoice_frm_zra()
 
 
 
