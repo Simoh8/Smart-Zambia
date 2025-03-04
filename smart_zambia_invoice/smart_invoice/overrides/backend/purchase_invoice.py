@@ -62,14 +62,8 @@ def on_submit(doc: Document, method: str) -> None:
 
         # Fetch common payload fields (includes tpin and bhfId)
         common_payload = last_request_less_payload(headers)
-
-        # Build the purchase invoice payload and merge with common payload
         invoice_payload = build_purchase_invoice_payload(doc)
         payload = {**common_payload, **invoice_payload}
-
-        print("The payload looks like this:", payload)
-
-        # Set up the endpoint and callbacks
         endpoints_maker.url = url
         endpoints_maker.headers = headers
         endpoints_maker.payload = payload
@@ -82,41 +76,6 @@ def on_submit(doc: Document, method: str) -> None:
         endpoints_maker.perform_remote_calls()
 
 
-
-# def on_submit(doc: Document, method: str) -> None:
-# 	validate_item_registration(doc.items)
-# 	if doc.is_return == 0 and doc.update_stock == 1:
-# 		# TODO: Handle cases when item tax templates have not been picked
-# 		company_name = doc.company
-
-# 		headers = build_request_headers(company_name)
-# 		server_url = get_server_url(company_name)
-# 		route_path, last_request_date = get_route_path("SAVE PURCHASES")
-
-# 		if headers and server_url and route_path:
-# 			url = f"{server_url}{route_path}"
-# 			payload = build_purchase_invoice_payload(doc)
-# 			print("The payload looks like this ",payload)
-
-# 			endpoints_maker.url = url
-# 			endpoints_maker.headers = headers
-# 			endpoints_maker.payload = payload
-# 			endpoints_maker.success_callback = partial(
-# 				on_succesful_purchase_invoice_submission, document_name=doc.name
-# 			)
-
-# 			endpoints_maker.perform_remote_calls()
-# 			endpoints_maker.error_callback = on_error
-
-# 			# frappe.enqueue(
-# 			# 	endpoints_maker.perform_remote_calls,
-# 			# 	is_async=True,
-# 			# 	queue="default",
-# 			# 	timeout=300,
-# 			# 	job_name=f"{doc.name}_send_purchase_information",
-# 			# 	doctype="Purchase Invoice",
-# 			# 	document_name=doc.name,
-# 			# )
 
 
 def build_purchase_invoice_payload(doc: Document) -> dict:
