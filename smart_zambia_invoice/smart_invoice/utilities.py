@@ -722,6 +722,14 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
 
     return items_list
 
+
+
+
+
+
+
+
+
 def success(success_codes: list) -> str:
     """
     Generates a success message for successfully inserted codes.

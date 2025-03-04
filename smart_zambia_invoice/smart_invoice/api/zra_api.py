@@ -902,8 +902,6 @@ def submit_inventory(request_data: str, vendor: str="OSCU KRA") -> None:
 
 
 
-
-
 @frappe.whitelist()
 def perform_sales_invoice_registration(request_data: str) -> dict | None:
     data: dict = json.loads(request_data)
@@ -911,7 +909,6 @@ def perform_sales_invoice_registration(request_data: str) -> dict | None:
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
     route_path, last_req_date = get_route_path("SAVE SALES")
-    print("The request data looks like this ", request_data)
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
@@ -954,7 +951,6 @@ def submit_bulk_sales_invoices(docs_list: str) -> None:
     all_sales_invoices = frappe.db.get_all(
         "Sales Invoice", {"docstatus": 1, "custom_has_it_been_successfully_submitted": 0}, ["name"]
     )
-    print("All the sales invoices are ", all_sales_invoices)
 
     for record in data:
         for invoice in all_sales_invoices:

@@ -4,7 +4,8 @@ from functools import partial
 import frappe
 from frappe.model.document import Document
 from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
-from frappe.utils import get_link_to_form 
+from frappe.utils import get_link_to_form
+from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides import last_request_less_payload 
 
 from ...api.api_builder import EndpointConstructor
 from ...api.remote_response_handler import (
@@ -48,40 +49,74 @@ def validate(doc: Document, method: str) -> None:
 			],
 		)
 
-
-
 def on_submit(doc: Document, method: str) -> None:
-	validate_item_registration(doc.items)
-	if doc.is_return == 0 and doc.update_stock == 1:
-		# TODO: Handle cases when item tax templates have not been picked
-		company_name = doc.company
+    validate_item_registration(doc.items)
 
-		headers = build_request_headers(company_name)
-		server_url = get_server_url(company_name)
-		route_path, last_request_date = get_route_path("SAVE PURCHASES")
+    company_name = doc.company
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_request_date = get_route_path("SAVE PURCHASES")
 
-		if headers and server_url and route_path:
-			url = f"{server_url}{route_path}"
-			payload = build_purchase_invoice_payload(doc)
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
 
-			endpoints_maker.url = url
-			endpoints_maker.headers = headers
-			endpoints_maker.payload = payload
-			endpoints_maker.success_callback = partial(
-				on_succesful_purchase_invoice_submission, document_name=doc.name
-			)
+        # Fetch common payload fields (includes tpin and bhfId)
+        common_payload = last_request_less_payload(headers)
 
-			endpoints_maker.error_callback = on_error
+        # Build the purchase invoice payload and merge with common payload
+        invoice_payload = build_purchase_invoice_payload(doc)
+        payload = {**common_payload, **invoice_payload}
 
-			frappe.enqueue(
-				endpoints_maker.perform_remote_calls,
-				is_async=True,
-				queue="default",
-				timeout=300,
-				job_name=f"{doc.name}_send_purchase_information",
-				doctype="Purchase Invoice",
-				document_name=doc.name,
-			)
+        print("The payload looks like this:", payload)
+
+        # Set up the endpoint and callbacks
+        endpoints_maker.url = url
+        endpoints_maker.headers = headers
+        endpoints_maker.payload = payload
+        endpoints_maker.success_callback = partial(
+            on_succesful_purchase_invoice_submission, 
+            document_name=doc.name
+        )
+        endpoints_maker.error_callback = on_error
+
+        endpoints_maker.perform_remote_calls()
+
+
+
+# def on_submit(doc: Document, method: str) -> None:
+# 	validate_item_registration(doc.items)
+# 	if doc.is_return == 0 and doc.update_stock == 1:
+# 		# TODO: Handle cases when item tax templates have not been picked
+# 		company_name = doc.company
+
+# 		headers = build_request_headers(company_name)
+# 		server_url = get_server_url(company_name)
+# 		route_path, last_request_date = get_route_path("SAVE PURCHASES")
+
+# 		if headers and server_url and route_path:
+# 			url = f"{server_url}{route_path}"
+# 			payload = build_purchase_invoice_payload(doc)
+# 			print("The payload looks like this ",payload)
+
+# 			endpoints_maker.url = url
+# 			endpoints_maker.headers = headers
+# 			endpoints_maker.payload = payload
+# 			endpoints_maker.success_callback = partial(
+# 				on_succesful_purchase_invoice_submission, document_name=doc.name
+# 			)
+
+# 			endpoints_maker.perform_remote_calls()
+# 			endpoints_maker.error_callback = on_error
+
+# 			# frappe.enqueue(
+# 			# 	endpoints_maker.perform_remote_calls,
+# 			# 	is_async=True,
+# 			# 	queue="default",
+# 			# 	timeout=300,
+# 			# 	job_name=f"{doc.name}_send_purchase_information",
+# 			# 	doctype="Purchase Invoice",
+# 			# 	document_name=doc.name,
+# 			# )
 
 
 def build_purchase_invoice_payload(doc: Document) -> dict:
@@ -97,10 +132,10 @@ def build_purchase_invoice_payload(doc: Document) -> dict:
 		"spplrNm": doc.supplier,
 		"spplrInvcNo": doc.bill_no,
 		"regTyCd": "A",
-		"pchsTyCd": doc.custom_purchase_type_code,
-		"rcptTyCd": doc.custom_receipt_type_code,
-		"pmtTyCd": doc.custom_payment_type_code,
-		"pchsSttsCd": doc.custom_purchase_status_code,
+		"pchsTyCd": doc.custom_zra_purchase_type_code_,  # Correct field name
+		"rcptTyCd": doc.custom_zra_receipt_type_code,
+		"pmtTyCd": doc.custom_zra_payment_type_code,
+		"pchsSttsCd": doc.custom_zra_purchase_status_code,
 		"cfmDt": None,
 		"pchsDt": "".join(str(doc.posting_date).split("-")),
 		"wrhsDt": None,
@@ -138,38 +173,100 @@ def build_purchase_invoice_payload(doc: Document) -> dict:
 	return payload
 
 
+
 def get_items_details(doc: Document) -> list:
-	items_list = []
+    """Constructs a list of item details with proper tax allocation.
 
-	for index, item in enumerate(doc.items):
+    Args:
+        doc (Document): The invoice document.
 
-		items_list.append(
-			{
-				"itemSeq": item.idx,
-				"itemCd": item.custom_item_code_etims,
-				"itemClsCd": item.custom_item_classification_code,
-				"itemNm": item.item_name,
-				"bcd": "",
-				"spplrItemClsCd": None,
-				"spplrItemCd": None,
-				"spplrItemNm": None,
-				"pkgUnitCd": item.custom_packaging_unit_code,
-				"pkg": 1,
-				"qtyUnitCd": item.custom_unit_of_quantity_code,
-				"qty": abs(item.qty),
-				"prc": item.base_rate,
-				"splyAmt": item.base_amount,
-				"dcRt": quantize_amount(item.discount_percentage) or 0,
-				"dcAmt": quantize_amount(item.discount_amount) or 0,
-				"taxblAmt": quantize_amount(item.net_amount),
-				"taxTyCd": item.custom_taxation_type or "B",
-				"taxAmt": quantize_amount(item.custom_tax_amount) or 0,
-				"totAmt": quantize_amount(item.net_amount + item.custom_tax_amount),
-				"itemExprDt": None,
-			}
-		)
+    Returns:
+        list: A list of dictionaries containing item details.
+    """
+    items_list = []
 
-	return items_list
+    for index, item in enumerate(doc.items):
+        print(f"Item {index + 1} Details: {item.as_dict()}")
+
+        vatCatCd = None
+        iplCatCd = None
+        tlCatCd = None
+        exciseTxCatCd = None
+
+        taxTyCd = getattr(item, "custom_taxation_type", "B")
+
+        # Categorize tax types
+        if taxTyCd in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"]:
+            vatCatCd = taxTyCd
+        elif taxTyCd in ["IPL1", "IPL2"]:
+            iplCatCd = taxTyCd
+        elif taxTyCd == "TL":
+            tlCatCd = "TL"
+        elif taxTyCd in ["ECM", "EXEEG"]:
+            exciseTxCatCd = taxTyCd
+
+        qty = abs(getattr(item, "qty", 0))
+        prc = round(getattr(item, "base_rate", 0), 2)
+        splyAmt = round(getattr(item, "base_amount", 0), 2)
+        dcRt = round(float(quantize_amount(float(getattr(item, "discount_percentage", 0) or 0))), 2)
+        dcAmt = round(float(quantize_amount(float(getattr(item, "discount_amount", 0) or 0))), 2)
+        taxblAmt = round(float(getattr(item, "net_amount", 0) or 0), 2)
+        taxAmt = round(float(quantize_amount(float(getattr(item, "custom_tax_amount", 0) or 0))), 2)
+
+        # Allocate taxable amounts based on tax type
+        vatTaxblAmt = taxblAmt if vatCatCd else 0
+        iplTaxblAmt = taxblAmt if iplCatCd else 0
+        exciseTaxblAmt = taxblAmt if exciseTxCatCd else 0
+        tlTaxblAmt = taxblAmt if tlCatCd else 0
+
+        vatAmt = taxAmt if vatTaxblAmt > 0 else 0
+        iplAmt = taxAmt if iplTaxblAmt > 0 else 0
+        exciseTxAmt = taxAmt if exciseTaxblAmt > 0 else 0
+        tlAmt = taxAmt if tlTaxblAmt > 0 else 0
+
+        totAmt = round(taxblAmt + taxAmt, 2)
+
+        items_list.append({
+            "itemSeq": item.idx,
+            "itemCd": getattr(item, "custom_item_classification", ""),
+            "itemClsCd": getattr(item, "custom_item_classification_code", ""),
+            "itemNm": getattr(item, "item_name", ""),
+            "bcd": "",
+            "spplrItemClsCd": None,
+            "spplrItemCd": None,
+            "spplrItemNm": None,
+            "pkgUnitCd": getattr(item, "custom_packaging_unit_code", ""),
+            "pkg": 1,
+            "qtyUnitCd": getattr(item, "custom_unit_of_quantity_code", ""),
+            "qty": qty,
+            "prc": prc,
+            "splyAmt": splyAmt,
+            "dcRt": dcRt,
+            "dcAmt": dcAmt,
+            "tlTaxblAmt": tlTaxblAmt,
+            "vatCatCd": vatCatCd,
+            "iplTaxblAmt": iplTaxblAmt,
+            "exciseTaxblAmt": exciseTaxblAmt,
+            "exciseTxCatCd": exciseTxCatCd,
+            "vatTaxblAmt": vatTaxblAmt,
+            "exciseTxAmt": exciseTxAmt,
+            "vatAmt": vatAmt,
+            "tlAmt": tlAmt,
+            "iplAmt": iplAmt,
+            "iplCatCd": iplCatCd,
+            "tlCatCd": tlCatCd,
+            "taxTyCd": taxTyCd,
+            "taxblAmt": taxblAmt,
+            "taxAmt": taxAmt,
+            "totAmt": totAmt,
+            "itemExprDt": None,
+        })
+
+    return items_list
+
+
+
+
 
 def validate_item_registration(items):
 	for item in items:
