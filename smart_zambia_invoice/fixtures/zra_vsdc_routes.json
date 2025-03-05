@@ -2,7 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "ZRA VSDC Routes",
-  "modified": "2025-01-23 08:14:10.490771",
+  "modified": "2025-03-04 11:41:16.949278",
   "name": "ZRA VSDC Routes",
   "zra_vscd_routes": [
    {
@@ -190,7 +190,7 @@
     "parent": "ZRA VSDC Routes",
     "parentfield": "zra_vscd_routes",
     "parenttype": "ZRA VSDC Routes",
-    "path": " /trnsPurchase/savePurchase",
+    "path": "/trnsPurchase/savePurchase",
     "path_description": "This endpoint is utilized to approve or reject all purchases made by a business from suppliers",
     "path_function": "SAVE PURCHASES"
    },

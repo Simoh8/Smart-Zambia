@@ -1,6 +1,6 @@
 import datetime
 import frappe
-from smart_zambia_invoice.smart_invoice.utilities import duplicate, fetch_qr_code, get_real_name, requote_current_url, show_success_message, success
+from smart_zambia_invoice.smart_invoice.utilities import duplicate, get_qr_code, get_real_name, requote_current_url, show_success_message, success
 from ..error_handlers import handle_errors
 import base64
 from io import BytesIO
@@ -403,23 +403,16 @@ def on_success_sales_information_submission(
 ) -> None:
     try:
         response_data = response["data"]
+        print("The print data looks like ", response_data)
 
         # Extracting the relevant fields from the response data
         receipt_signature = response_data["rcptSign"]
         receipt_number = response_data["rcptNo"]
         internal_data = response_data["intrlData"]
         control_unit_time = response_data["vsdcRcptPbctDate"]  # Make sure this is correct field
-        qr_code_url = response_data["qrCodeUrl"]
-        # frappe.throw(qr_code_url)
-
-        # Encoding the URL for the QR Code generation
-        encoded_url = requote_current_url(
-            f"https://sandboxportal.zra.org.zm/common/link/ebm/receipt/indexEbmReceiptData?Data={tpin}{branch_id}{receipt_signature}"
-        )
 
         # Fetch the QR code
-        qr_code = fetch_qr_code(encoded_url)
-
+        qr_code = get_qr_code(response_data["qrCodeUrl"])
 
         # Setting values in the database
         frappe.db.set_value(
@@ -432,7 +425,7 @@ def on_success_sales_information_submission(
                 "custom_zra_control_unit_time": control_unit_time,
                 "custom_has_it_been_successfully_submitted": 1,
                 "custom_zra_submission_sequence_number": invoice_number,
-                "custom_zra_sales_invoice_qr": qr_code,
+                "custom_qr_code_details": qr_code,
             },
         )
         show_success_message("The Sales Invoice has been succesfully registered on the ZRA Portal")

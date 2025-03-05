@@ -381,7 +381,8 @@ def bytes_to_base64_string(data: bytes) -> str:
 
 
 
-def fetch_qr_code(data: str) -> str:
+
+def get_qr_code(data: str) -> str:
     """Generate QR Code data
 
     Args:
@@ -390,11 +391,20 @@ def fetch_qr_code(data: str) -> str:
     Returns:
         str: The QR Code.
     """
-    qr_code_bytes = fetch_qr_code_bytes(data, format="PNG")
+    qr_code_bytes = get_qr_code_bytes(data, format="PNG")
     base_64_string = bytes_to_base64_string(qr_code_bytes)
 
     return add_file_info(base_64_string)
 
+
+def get_qr_code_bytes(data: bytes | str, format: str = "PNG") -> bytes:
+    """Create a QR code and return the bytes."""
+    img = qrcode.make(data)
+
+    buffered = BytesIO()
+    img.save(buffered, format=format)
+
+    return buffered.getvalue()
 
 
 
