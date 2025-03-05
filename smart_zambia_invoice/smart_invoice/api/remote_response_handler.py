@@ -370,10 +370,16 @@ def on_successful_fetch_latest_items(frm, response):
 
 
 
+
+
 def on_success_item_composition_submission(response: dict, document_name: str) -> None:
     frappe.db.set_value(
         "BOM", document_name, {"custom_has_item_composition_been_submitted_successfully": 1}
     )
+
+
+
+
 
 
 
@@ -383,11 +389,19 @@ def on_success_rrp_item_registration(response: dict, document_name: str) -> None
 
 
 
+
+
+
+
+
 def convert_qr_code_to_base64(qr_code_data):
     """Convert QR code binary data from BytesIO to a base64 string."""
     if isinstance(qr_code_data, BytesIO):
         qr_code_data = qr_code_data.read()  # Read the content from BytesIO
     return base64.b64encode(qr_code_data).decode('utf-8')
+
+
+
 
 
 
@@ -437,6 +451,11 @@ def on_success_sales_information_submission(
     except Exception as e:
         # Handle any other exceptions
         frappe.throw(f"An error occurred while processing the submission: {str(e)}")
+
+
+
+
+
 
 
 
@@ -586,6 +605,11 @@ def create_purchase_from_search_details(fetched_purchase: dict) -> str:
 
 
 
+
+
+
+
+
 def check_duplicate_registered_purchase(fetched_purchase: dict) -> str:
     """
     Check if a Registered Purchase already exists based on a unique ID.
@@ -612,6 +636,9 @@ def check_duplicate_registered_purchase(fetched_purchase: dict) -> str:
 
 
 
+
+
+
 def on_success_submit_inventory(response: dict, document_name: str) -> None:
     frappe.db.set_value(
         "Stock Ledger Entry",
@@ -621,10 +648,21 @@ def on_success_submit_inventory(response: dict, document_name: str) -> None:
 
 
 
+
+
+
+
 def on_success_stock_movement(response: dict, document_name: str) -> None:
     frappe.db.set_value(
         "Stock Ledger Entry", document_name, {"custom_submitted_successfully": 1}
     )
+
+
+
+
+
+
+    
 def on_succesful_purchase_invoice_submission(response: dict, document_name: str) -> None:
     # Update Invoice fields from KRA's response
     frappe.db.set_value(

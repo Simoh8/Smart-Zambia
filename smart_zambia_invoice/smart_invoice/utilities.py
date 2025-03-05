@@ -131,6 +131,9 @@ def get_docment_series_number(document: Document) -> int | None:
     return None
 
 
+
+
+
 def get_server_url(company_name: str, branch_id: str = "001") -> str | None:
     settings = get_current_env_settings(company_name, branch_id)
 
@@ -140,6 +143,9 @@ def get_server_url(company_name: str, branch_id: str = "001") -> str | None:
         return server_url
 
     return
+
+
+
 
 
 
@@ -158,6 +164,10 @@ def build_common_payload(headers: dict, last_req_date: datetime) -> dict:
         "lastReqDt": last_req_date.strftime("%Y%m%d%H%M%S"),
         "bhfId": headers.get("bhfId"),
     }
+
+
+
+
 
 def last_request_less_payload (headers: dict, last_req_date: datetime = None) -> dict:
     """
@@ -181,6 +191,9 @@ def last_request_less_payload (headers: dict, last_req_date: datetime = None) ->
     return payload
 
 
+
+
+
 def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str, str] | None:
     settings = get_current_env_settings(company_name, branch_id=branch_id)
 
@@ -196,6 +209,9 @@ def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str
         return headers
 
     return None
+
+
+
 
 
 
@@ -274,7 +290,9 @@ async def make_post_request(
         # Timeout of 1800 or 30 mins, especially for fetching Item classification
         async with session.post(url, json=data, headers=headers) as response:
             return await response.json()
-        
+
+
+
         
 
 def get_document_series(document: Document) -> int | None:
@@ -292,6 +310,11 @@ def get_document_series(document: Document) -> int | None:
 def split_user_mail(email_string: str) -> str:
     """Retrieve portion before @ from an email string"""
     return email_string.split("@")[0]
+
+
+
+
+
 
 def update_last_request_date(
     response_datetime: str,
@@ -339,6 +362,8 @@ def update_last_request_date(
         frappe.log_error(
             frappe.get_traceback(), f"Unexpected error: {str(e)}"
         )
+
+
 
 
     
@@ -397,6 +422,8 @@ def get_qr_code(data: str) -> str:
     return add_file_info(base_64_string)
 
 
+
+
 def get_qr_code_bytes(data: bytes | str, format: str = "PNG") -> bytes:
     """Create a QR code and return the bytes."""
     img = qrcode.make(data)
@@ -405,6 +432,7 @@ def get_qr_code_bytes(data: bytes | str, format: str = "PNG") -> bytes:
     img.save(buffered, format=format)
 
     return buffered.getvalue()
+
 
 
 
@@ -953,6 +981,12 @@ def build_invoice_payload(
     }
     
     return payload
+
+
+
+
+
+
 
 def extract_doc_series_number(document: Document) -> int | None:
     split_invoice_name = document.name.split("-")

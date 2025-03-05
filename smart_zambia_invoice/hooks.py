@@ -210,6 +210,8 @@ doc_events = {
 		"validate": ["smart_zambia_invoice.smart_invoice.overrides.backend.item.validate"],
 
 	},
+    "POS Invoice":{
+        "on_submit":["smart_zambia_invoice.smart_invoice.overrides.backend.pos_invoice.on_submit"]},
     "Purchase Invoice": {
 		"before_save": ["smart_zambia_invoice.smart_invoice.utilities.before_save_"],
         "on_submit":["smart_zambia_invoice.smart_invoice.overrides.backend.purchase_invoice.on_submit"],
