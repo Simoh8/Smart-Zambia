@@ -185,7 +185,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
         payload["totItemCnt"] = len(current_item)
         payload["custNm"] = record.customer
         payload["custTin"] = record.tax_id
-        payload["vatCatCd"]="A"
+        payload["vatCatCd"]= current_item.custom_zra_tax_type or "B"
 
         if record.is_return:
             if doc.actual_qty > 0:
@@ -257,7 +257,7 @@ def get_stock_entry_movement_items_details(
                         ),
                         "totDcAmt": 0,
                         "taxTyCd": fetched_item.custom_zra_tax_type or "B",
-                        "vatCatCd": "A",
+                        "vatCatCd": fetched_item.custom_zra_tax_type or "B",
                         "taxblAmt": 0,
                         "taxAmt": 0,
                         "totAmt": 0,
@@ -303,7 +303,7 @@ def get_stock_recon_movement_items_details(
                         "taxblAmt": 0,
                         "taxAmt": 0,
                         "totAmt": 0,
-                        "vatCatCd": "B",
+                        "vatCatCd": fetched_item.custom_zra_tax_type or "B",
                         "quantity_difference": item.quantity_difference,
                     }
                 )
@@ -343,7 +343,7 @@ def get_purchase_docs_items_details(
                         ),
                         "totDcAmt": 0,
                         "taxTyCd": fetched_item.custom_zra_tax_type or "B",
-                        "vatCatCd": "C",
+                        "vatCatCd": fetched_item.custom_zra_tax_type or "B",
                         "taxblAmt": quantize_amount(item.net_amount),
                         "taxAmt": quantize_amount(item.custom_tax_amount) or 0,
                         "totAmt": quantize_amount(item.net_amount + item.custom_tax_amount),
@@ -392,7 +392,7 @@ def get_notes_docs_items_details(
                             else 0
                         ),
                         "totDcAmt": 0,
-                        "vatCatCd": "D",
+                        "vatCatCd": fetched_item.custom_zra_tax_type or "B",
                         "taxTyCd": fetched_item.custom_zra_tax_type or "B",
                         "taxblAmt": quantize_amount(item.net_amount),
                         "taxAmt": quantize_amount(item.custom_tax_amount) or 0,
