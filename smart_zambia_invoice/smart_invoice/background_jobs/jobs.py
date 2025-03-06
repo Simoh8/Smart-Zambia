@@ -4,6 +4,8 @@ import frappe
 import frappe.defaults
 from frappe.model.document import Document
 from..overrides.backend.stock_ledger_entry import on_update
+from..overrides.backend.sales_invoice import on_submit
+
 from ..api.zra_api import save_stock_inventory,perform_zra_notice_search
 
 
@@ -27,13 +29,13 @@ def send_item_inventory_information() -> None:
         ORDER BY sle.creation DESC;
         """
 
-    sles = frappe.db.sql(query, as_dict=True)
+    stock_ledger_entries = frappe.db.sql(query, as_dict=True)
 
-    for stock_ledger in sles:
+    for stock_ledger in stock_ledger_entries:
         response = json.dumps(stock_ledger)
 
         try:
-            submit_inventory(response)
+            save_stock_inventory(response)
 
         except Exception as error:
             # TODO: Suspicious looking type(error)
@@ -42,7 +44,7 @@ def send_item_inventory_information() -> None:
 
 
 
-def refresh_notices() -> None:
+def frequent_refresh_notices() -> None:
 
     company = frappe.defaults.get_user_default("Company")
 
@@ -101,3 +103,23 @@ def send_item_inventory_information() -> None:
             # TODO: Suspicious looking type(error)
             frappe.throw("Error Encountered", type(error), title="Error")
 
+
+
+def submit_pos_invoices_information() -> None:
+
+    all_pending_pos_invoices: list[Document] = frappe.get_all(
+        "POS Invoice", {"docstatus": 1, "custom_successfully_submitted": 0}, ["name"]
+    )
+
+    if all_pending_pos_invoices:
+        for pos_invoice in all_pending_pos_invoices:
+            doc = frappe.get_doc(
+                "POS Invoice", pos_invoice.name, for_update=False
+            )  # Refetch to get the document representation of the record
+
+            try:
+                on_submit(
+                    doc, method=None
+                ) 
+            except TypeError:
+                continue
