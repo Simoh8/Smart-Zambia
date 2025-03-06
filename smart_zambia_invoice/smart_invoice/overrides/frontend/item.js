@@ -104,36 +104,36 @@ frappe.ui.form.on(itemDoctypName, {
         
         
       }
-      // if (frm.doc.is_stock_item) {
-      //   frm.add_custom_button(
-      //     __('Submit Item Inventory'),
-      //     function () {
-      //       frappe.call({
-      //         method:
-      //           'kenya_compliance.kenya_compliance.apis.apis.submit_inventory',
-      //         args: {
-      //           request_data: {
-      //             company_name: companyName,
-      //             name: frm.doc.name,
-      //             itemName: frm.doc.item_code,
-      //             itemCd: frm.doc.custom_item_code_etims,
-      //             registered_by: frm.doc.owner,
-      //             modified_by: frm.doc.modified_by,
-      //             // TODO: Fix the branch id below
-      //             branch_id: '00',
-      //           },
-      //         },
-      //         callback: (response) => {
-      //           frappe.msgprint('Inventory submission queued.');
-      //         },
-      //         error: (error) => {
-      //           // Error Handling is Defered to the Server
-      //         },
-      //       });
-      //     },
-      //     __('ZRA Actions'),
-      //   );
-      // }
+      if (frm.doc.is_stock_item) {
+        frm.add_custom_button(
+          __('ZRA Item Inventory Submission'),
+          function () {
+            frappe.call({
+              method:
+                'smart_zambia_invoice.smart_invoice.api.zra_api.save_stock_inventory',
+              args: {
+                request_data: {
+                  company_name: companyName,
+                  name: frm.doc.name,
+                  itemName: frm.doc.item_code,
+                  remainq:frm.doc.stock_levels,
+                  itemCd: frm.doc.custom_zra_item_classification_code,
+                  registered_by: frm.doc.owner,
+                  modified_by: frm.doc.modified_by,
+
+                },
+              },
+              callback: (response) => {
+                frappe.msgprint('Inventory submission queued.');
+              },
+              error: (error) => {
+                // Error Handling is Defered to the Server
+              },
+            });
+          },
+          __('ZRA Actions'),
+        );
+      }
       if (
         frm.doc.custom_has_a_recommended_retail_price_rrp_ &&
         !frm.doc.custom_zra_item_registered_

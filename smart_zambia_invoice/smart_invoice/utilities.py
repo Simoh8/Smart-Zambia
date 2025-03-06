@@ -1002,3 +1002,17 @@ def quantize_amount(number: str | int | float) -> str:
     return Decimal(number).quantize(Decimal(".01"), rounding=ROUND_DOWN).to_eng_string()
 
     
+
+
+def get_stock_balance(item_name: str) -> float:
+    """Fetches the stock balance for an item from Bin table"""
+    stock_data = frappe.db.sql(
+        """
+        SELECT SUM(actual_qty) FROM `tabBin`
+        WHERE item_code = %s
+        """,
+        (item_name,),
+        as_list=True,
+    )
+
+    return stock_data[0][0] if stock_data and stock_data[0][0] else 0.0

@@ -3,7 +3,7 @@ import json
 import frappe
 import frappe.defaults
 from frappe.model.document import Document
-from ..api.zra_api import submit_inventory,perform_zra_notice_search
+from ..api.zra_api import save_stock_inventory,perform_zra_notice_search
 
 
 def send_item_inventory_information() -> None:
@@ -67,3 +67,36 @@ def send_stock_information() -> None:
 
         except TypeError:
             continue
+
+def send_item_inventory_information() -> None:
+
+    query = """
+        SELECT sle.name as name,
+            sle.owner,
+            sle.custom_submitted_successfully,
+            sle.custom_inventory_submitted_successfully,
+            qty_after_transaction as residual_qty,
+            sle.warehouse,
+            w.custom_branch as branch_id,
+            i.item_code as item,
+            custom_item_code_etims as item_code
+        FROM `tabStock Ledger Entry` sle
+            INNER JOIN tabItem i ON sle.item_code = i.item_code
+            INNER JOIN tabWarehouse w ON sle.warehouse = w.name
+        WHERE sle.custom_submitted_successfully = '1'
+            AND sle.custom_inventory_submitted_successfully = '0'
+        ORDER BY sle.creation DESC;
+        """
+
+    stock_ledgers = frappe.db.sql(query, as_dict=True)
+
+    for stock_ledger in stock_ledgers:
+        response = json.dumps(stock_ledger)
+
+        try:
+            save_stock_inventory(response)
+
+        except Exception as error:
+            # TODO: Suspicious looking type(error)
+            frappe.throw("Error Encountered", type(error), title="Error")
+
