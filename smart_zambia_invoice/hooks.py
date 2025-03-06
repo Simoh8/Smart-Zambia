@@ -221,6 +221,9 @@ doc_events = {
 
 
 	},
+    "Stock Ledger Entry":{
+        "on_update": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_update"]
+    }
     # "Sales Invoice":[]
 }
 

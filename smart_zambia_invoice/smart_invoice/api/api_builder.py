@@ -52,7 +52,6 @@ class ErrorsObserver:
 
             frappe.throw(str(notifier.error), title="Critical Error")  # Avoids TypeError
 
-# TODO: Does this class need to be singleton?
 class EndpointConstructor(BaseEndpointConstructor):
     def __init__(self) -> None:
         super().__init__()

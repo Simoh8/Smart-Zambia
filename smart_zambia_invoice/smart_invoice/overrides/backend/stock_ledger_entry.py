@@ -1,5 +1,6 @@
 from functools import partial
 from hashlib import sha256
+import json
 from typing import Literal
 
 import frappe
@@ -31,13 +32,14 @@ def on_update(doc: Document, method: str | None = None) -> None:
     )  # Get all items to filter and fetch metadata
     record = frappe.get_doc(doc.voucher_type, doc.voucher_no)
     series_no = extract_doc_series_number(record)
+    headers = build_request_headers(company_name )
     payload = {
         "sarNo": series_no,
         "orgSarNo": series_no,
         "regTyCd": "M",
         "custTin": None,
         "custNm": None,
-        "custBhfId": get_warehouse_branch_id(doc.warehouse) or None,
+        "custBhfId": headers.get("bhfId") or None,
         "ocrnDt": record.posting_date.strftime("%Y%m%d"),
         "totTaxblAmt": 0,
         "totItemCnt": len(record.items),
@@ -49,33 +51,31 @@ def on_update(doc: Document, method: str | None = None) -> None:
         "modrNm": record.modified_by,
         "modrId": split_user_mail(record.modified_by),
     }
-    headers = build_request_headers(company_name, record.branch)
+    headers = build_request_headers(company_name )
+    payload["tpin"] = headers.get("tpin")
+    payload["bhfId"] = headers.get("bhfId")
 
     if doc.voucher_type == "Stock Reconciliation":
         items_list = get_stock_recon_movement_items_details(
             record.items, all_items
-        )  # Get details abt item using the function
+        )  
         current_item = list(
             filter(lambda item: item["itemNm"] == doc.item_code, items_list)
-        )  # filter only the item referenced in this stock ledger entry
+        )  
         qty_diff = int(
             current_item[0].pop("quantity_difference")
-        )  # retrieve the quantity difference from the items dict. Only applies to stock recons
+        )  
         payload["itemList"] = current_item
         payload["totItemCnt"] = len(current_item)
 
         if record.purpose == "Opening Stock":
-            # Stock Recons of type "opening stock" are never negative, so just short-curcuit
             payload["sarTyCd"] = "06"
 
         else:
-            # Stock recons of other types apart from "opening stock"
             if qty_diff < 0:
-                # If the quantity difference is negative, apply etims stock in/out code 16
                 payload["sarTyCd"] = "16"
 
             else:
-                # If the quantity difference is positive, apply etims stock in/out code 06
                 payload["sarTyCd"] = "06"
 
     if doc.voucher_type == "Stock Entry":
@@ -100,19 +100,13 @@ def on_update(doc: Document, method: str | None = None) -> None:
             )
 
             if doc.actual_qty < 0:
-                # If the record warehouse is the source warehouse
                 headers = build_request_headers(doc.company, doc_warehouse_branch_id)
-                payload["custBhfId"] = get_warehouse_branch_id(
-                    voucher_details.t_warehouse
-                )
+                payload["custBhfId"] = headers.get("bhfId")
                 payload["sarTyCd"] = "13"
 
             else:
-                # If the record warehouse is the target warehouse
-                headers = build_request_headers(doc.company, doc_warehouse_branch_id)
-                payload["custBhfId"] = get_warehouse_branch_id(
-                    voucher_details.s_warehouse
-                )
+                headers = build_request_headers(doc.company)
+                payload["custBhfId"] = headers.get("bhfId")
                 payload["sarTyCd"] = "04"
 
         if record.stock_entry_type == "Manufacture":
@@ -127,14 +121,13 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
         if record.stock_entry_type == "Repack":
             if doc.actual_qty < 0:
-                # Negative repack
                 payload["sarTyCd"] = "14"
 
             else:
                 payload["sarTyCd"] = "05"
 
     if doc.voucher_type in ("Purchase Receipt", "Purchase Invoice"):
-        # TODO: This is very bad looking. Clean it up
+
         items_list = get_purchase_docs_items_details(record.items, all_items)
         item_taxes = get_itemised_tax_breakup_data(record)
 
@@ -160,7 +153,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
         payload["itemList"] = current_item
         payload["totItemCnt"] = len(current_item)
 
-        # TODO: use qty change field from SLE
         if record.is_return:
             payload["sarTyCd"] = "12"
 
@@ -193,11 +185,9 @@ def on_update(doc: Document, method: str | None = None) -> None:
         payload["totItemCnt"] = len(current_item)
         payload["custNm"] = record.customer
         payload["custTin"] = record.tax_id
+        payload["vatCatCd"]="A"
 
-        # TODO: opposite of previous, and use qty change field
-        # TODO: These map to sales returns
         if record.is_return:
-            # if is_return is checked, it turns to different type of docs
             if doc.actual_qty > 0:
                 payload["sarTyCd"] = "03"
 
@@ -207,10 +197,12 @@ def on_update(doc: Document, method: str | None = None) -> None:
         else:
             payload["sarTyCd"] = "11"
 
-    server_url = get_server_url(company_name, record.branch)
-    route_path, last_request_date = get_route_path("SAVE STOCK ITEM")
+    server_url = get_server_url(company_name)
+    route_path = get_route_path("SAVE STOCK ITEM")
     if headers and server_url and route_path:
-        url = f"{server_url}{route_path}"
+        route_path = route_path[0] if isinstance(route_path, tuple) else route_path
+        url = f"{server_url}{route_path}"        
+        # frappe.throw(url)
 
         endpoint_maker.url = url
         endpoint_maker.headers = headers
@@ -248,13 +240,13 @@ def get_stock_entry_movement_items_details(
                 items_list.append(
                     {
                         "itemSeq": item.idx,
-                        "itemCd": fetched_item.custom_item_code_etims,
-                        "itemClsCd": fetched_item.custom_item_classification,
+                        "itemCd": fetched_item.custom_zra_item_code,
+                        "itemClsCd": fetched_item.custom_zra_item_classification_code,
                         "itemNm": fetched_item.item_code,
                         "bcd": None,
-                        "pkgUnitCd": fetched_item.custom_packaging_unit_code,
+                        "pkgUnitCd": fetched_item.custom_zra_packaging_unit_code,
                         "pkg": 1,
-                        "qtyUnitCd": fetched_item.custom_unit_of_quantity_code,
+                        "qtyUnitCd": fetched_item.custom_zra_unit_quantity_code,
                         "qty": abs(item.qty),
                         "itemExprDt": "",
                         "prc": (
@@ -263,9 +255,9 @@ def get_stock_entry_movement_items_details(
                         "splyAmt": (
                             round(int(item.basic_rate), 2) if item.basic_rate else 0
                         ),
-                        # TODO: Handle discounts properly
                         "totDcAmt": 0,
-                        "taxTyCd": fetched_item.custom_taxation_type_code or "B",
+                        "taxTyCd": fetched_item.custom_zra_tax_type or "B",
+                        "vatCatCd": "A",
                         "taxblAmt": 0,
                         "taxAmt": 0,
                         "totAmt": 0,
@@ -287,8 +279,8 @@ def get_stock_recon_movement_items_details(
                 items_list.append(
                     {
                         "itemSeq": item.idx,
-                        "itemCd": fetched_item.custom_item_code_etims,
-                        "itemClsCd": fetched_item.custom_item_classification,
+                        "itemCd": fetched_item.custom_zra_item_code,
+                        "itemClsCd": fetched_item.custom_zra_item_classification_code,
                         "itemNm": fetched_item.item_code,
                         "bcd": None,
                         "pkgUnitCd": fetched_item.custom_packaging_unit_code,
@@ -307,10 +299,11 @@ def get_stock_recon_movement_items_details(
                             else 0
                         ),
                         "totDcAmt": 0,
-                        "taxTyCd": fetched_item.custom_taxation_type_code or "B",
+                        "taxTyCd": fetched_item.custom_zra_tax_type or "B",
                         "taxblAmt": 0,
                         "taxAmt": 0,
                         "totAmt": 0,
+                        "vatCatCd": "B",
                         "quantity_difference": item.quantity_difference,
                     }
                 )
@@ -329,8 +322,8 @@ def get_purchase_docs_items_details(
                 items_list.append(
                     {
                         "itemSeq": item.idx,
-                        "itemCd": fetched_item.custom_item_code_etims,
-                        "itemClsCd": fetched_item.custom_item_classification,
+                        "itemCd": fetched_item.custom_zra_item_code,
+                        "itemClsCd": fetched_item.custom_zra_item_classification_code,
                         "itemNm": fetched_item.item_code,
                         "bcd": None,
                         "pkgUnitCd": fetched_item.custom_packaging_unit_code,
@@ -349,7 +342,8 @@ def get_purchase_docs_items_details(
                             else 0
                         ),
                         "totDcAmt": 0,
-                        "taxTyCd": fetched_item.custom_taxation_type_code or "B",
+                        "taxTyCd": fetched_item.custom_zra_tax_type or "B",
+                        "vatCatCd": "C",
                         "taxblAmt": quantize_amount(item.net_amount),
                         "taxAmt": quantize_amount(item.custom_tax_amount) or 0,
                         "totAmt": quantize_amount(item.net_amount + item.custom_tax_amount),
@@ -378,8 +372,8 @@ def get_notes_docs_items_details(
                 items_list.append(
                     {
                         "itemSeq": item.idx,
-                        "itemCd": None,
-                        "itemClsCd": fetched_item.custom_item_classification,
+                        "itemCd": fetched_item.custom_zra_item_code,
+                        "itemClsCd": fetched_item.custom_zra_item_classification_code,
                         "itemNm": fetched_item.item_code,
                         "bcd": None,
                         "pkgUnitCd": fetched_item.custom_packaging_unit_code,
@@ -398,10 +392,11 @@ def get_notes_docs_items_details(
                             else 0
                         ),
                         "totDcAmt": 0,
-                        "taxTyCd": fetched_item.custom_taxation_type_code or "B",
-                        "taxblAmt": quantize_number(item.net_amount),
-                        "taxAmt": quantize_number(item.custom_tax_amount) or 0,
-                        "totAmt": quantize_number(item.net_amount + item.custom_tax_amount),
+                        "vatCatCd": "D",
+                        "taxTyCd": fetched_item.custom_zra_tax_type or "B",
+                        "taxblAmt": quantize_amount(item.net_amount),
+                        "taxAmt": quantize_amount(item.custom_tax_amount) or 0,
+                        "totAmt": quantize_amount(item.net_amount + item.custom_tax_amount),
                     }
                 )
 

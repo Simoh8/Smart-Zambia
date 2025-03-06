@@ -8,7 +8,7 @@ from datetime import datetime
 import frappe.defaults
 from frappe.utils.dateutils import add_to_date
 from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides import on_error
-# from smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice import on_submit
+from smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice import on_submit
 from .api_builder import EndpointConstructor
 
 from .remote_response_handler import on_succesful_inventory_submission, on_succesfull_purchase_search_zra, on_success_item_classification_search, on_success_sales_information_submission,  on_success_customer_search, on_success_item_composition_submission, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_rrp_item_registration, on_success_submit_inventory, on_success_user_details_submission, on_successful_fetch_latest_items
@@ -44,7 +44,6 @@ def make_branch_request(request_data: str) -> None:
         endpoint_builder.perform_remote_calls(
             doctype="Branch",
         )
-
 
 
 
@@ -787,6 +786,8 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
 
 
 
+
+
 @frappe.whitelist()
 def perform_zra_item_code_classification_search(request_data: str) -> None:
     data: dict = json.loads(request_data)
@@ -830,6 +831,7 @@ def perform_zra_item_code_classification_search(request_data: str) -> None:
 
 
 
+
 @frappe.whitelist()
 def perform_purchases_search_on_zra(request_data: str) -> None:
     data: dict = json.loads(request_data)
@@ -854,6 +856,9 @@ def perform_purchases_search_on_zra(request_data: str) -> None:
         endpoint_builder.perform_remote_calls( 
             doctype="Purchase Invoice",
         )
+
+
+
 
 
 
@@ -943,26 +948,24 @@ def perform_sales_invoice_registration(request_data: str) -> dict | None:
 
         
 
-# @frappe.whitelist()
-# def submit_bulk_sales_invoices(docs_list: str) -> None:
+@frappe.whitelist()
+def submit_bulk_sales_invoices(docs_list: str) -> None:
 
 
-#     data = json.loads(docs_list)
-#     all_sales_invoices = frappe.db.get_all(
-#         "Sales Invoice", {"docstatus": 1, "custom_has_it_been_successfully_submitted": 0}, ["name"]
-#     )
+    data = json.loads(docs_list)
+    all_sales_invoices = frappe.db.get_all(
+        "Sales Invoice", {"docstatus": 1, "custom_has_it_been_successfully_submitted": 0}, ["name"]
+    )
 
-#     for record in data:
-#         for invoice in all_sales_invoices:
-#             if record == invoice.name:
-#                 doc = frappe.get_doc("Sales Invoice", record, for_update=False)
-#                 on_submit(doc, method=None)
-
-
+    for record in data:
+        for invoice in all_sales_invoices:
+            if record == invoice.name:
+                doc = frappe.get_doc("Sales Invoice", record, for_update=False)
+                on_submit(doc, method=None)
 
 
-# @frappe.whitelist()
-# def get_existing_purchase_invoice_frm_zra()
+
+
 
 
 @frappe.whitelist()
@@ -971,7 +974,6 @@ def save_stock_inventory(request_data: str) -> None:
     # frappe.throw(json.dumps(data, indent=2))  # Debugging output
 
     company_name = frappe.defaults.get_user_default("Company")
-
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
     route_path, last_req_date = get_route_path("SAVE STOCK MASTER")
@@ -991,20 +993,18 @@ def save_stock_inventory(request_data: str) -> None:
                     "rsdQty": get_stock_balance(item.get("itemName", ""))
                 })
         else:
-            # Single item case - Construct stock item from available fields
             stock_items.append({
                 "itemCd": data.get("itemCd", ""),
                 "rsdQty": get_stock_balance(data.get("itemName", ""))
             })
 
-        # Final payload structure
         payload = {
             **common_payload,
             "regrId": split_user_mail(data.get("registered_by", "")),
             "regrNm": data.get("registered_by", ""),
             "modrId": split_user_mail(data.get("modified_by", "")),
             "modrNm": data.get("modified_by", ""),
-            "stockItemList": stock_items  # Adding list of stock items
+            "stockItemList": stock_items  
         }
         # frappe.throw(json.dumps(payload, indent=2))  
 
