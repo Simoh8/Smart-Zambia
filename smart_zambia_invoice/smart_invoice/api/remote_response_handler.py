@@ -683,4 +683,5 @@ def on_succesful_inventory_submission(response: dict, document_name: str) -> Non
         "Stock Ledger Entry",
         document_name,
         {"custom_inventory_submitted_successfully": 1},
+        frappe.throw("Stock registration succesful")
     )

@@ -3,6 +3,7 @@ import json
 import frappe
 import frappe.defaults
 from frappe.model.document import Document
+from..overrides.backend.stock_ledger_entry import on_update
 from ..api.zra_api import save_stock_inventory,perform_zra_notice_search
 
 
@@ -49,7 +50,7 @@ def refresh_notices() -> None:
 
 
 
-def send_stock_information() -> None:
+def send_stock_update_information() -> None:
     all_stock_ledger_entries: list[Document] = frappe.get_all(
         "Stock Ledger Entry",
         {"docstatus": 1, "custom_submitted_successfully": 0},

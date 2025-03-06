@@ -943,20 +943,20 @@ def perform_sales_invoice_registration(request_data: str) -> dict | None:
 
         
 
-@frappe.whitelist()
-def submit_bulk_sales_invoices(docs_list: str) -> None:
+# @frappe.whitelist()
+# def submit_bulk_sales_invoices(docs_list: str) -> None:
 
 
-    data = json.loads(docs_list)
-    all_sales_invoices = frappe.db.get_all(
-        "Sales Invoice", {"docstatus": 1, "custom_has_it_been_successfully_submitted": 0}, ["name"]
-    )
+#     data = json.loads(docs_list)
+#     all_sales_invoices = frappe.db.get_all(
+#         "Sales Invoice", {"docstatus": 1, "custom_has_it_been_successfully_submitted": 0}, ["name"]
+#     )
 
-    for record in data:
-        for invoice in all_sales_invoices:
-            if record == invoice.name:
-                doc = frappe.get_doc("Sales Invoice", record, for_update=False)
-                on_submit(doc, method=None)
+#     for record in data:
+#         for invoice in all_sales_invoices:
+#             if record == invoice.name:
+#                 doc = frappe.get_doc("Sales Invoice", record, for_update=False)
+#                 on_submit(doc, method=None)
 
 
 
@@ -972,26 +972,41 @@ def save_stock_inventory(request_data: str) -> None:
 
     company_name = frappe.defaults.get_user_default("Company")
 
-    # Fetch stock level (residual quantity) using item name
-    residual_qty = get_stock_balance(data["itemName"])  # Assuming "itemNm" is item name
-
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
     route_path, last_req_date = get_route_path("SAVE STOCK MASTER")
-    frappe.throw(headers)  # Debugging output
+    # frappe.throw(json.dumps(headers, indent=2))  
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
+
+        common_payload = last_request_less_payload(headers)
+
+        stock_items = []
+        if "items" in data and isinstance(data["items"], list):
+            for item in data["items"]:
+                stock_items.append({
+                    "itemCd": item.get("itemCd", ""),
+                    "rsdQty": get_stock_balance(item.get("itemName", ""))
+                })
+        else:
+            # Single item case - Construct stock item from available fields
+            stock_items.append({
+                "itemCd": data.get("itemCd", ""),
+                "rsdQty": get_stock_balance(data.get("itemName", ""))
+            })
+
+        # Final payload structure
         payload = {
-            "itemCd": data["itemCd"],
-            "rsdQty": residual_qty,  # Use retrieved stock level
-            "regrId": split_user_mail(data["registered_by"]),
-            "regrNm": data["registered_by"],
-            "modrId": split_user_mail(data["modified_by"]),
-            "modrNm": data["modified_by"],
+            **common_payload,
+            "regrId": split_user_mail(data.get("registered_by", "")),
+            "regrNm": data.get("registered_by", ""),
+            "modrId": split_user_mail(data.get("modified_by", "")),
+            "modrNm": data.get("modified_by", ""),
+            "stockItemList": stock_items  # Adding list of stock items
         }
-        # frappe.throw(json.dumps(payload, indent=2))  # Debugging output
+        # frappe.throw(json.dumps(payload, indent=2))  
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -1000,4 +1015,14 @@ def save_stock_inventory(request_data: str) -> None:
             on_succesful_inventory_submission, document_name=data["name"]
         )
         endpoint_builder.error_callback = on_error
-        endpoint_builder.perform_remote_calls()
+
+
+        frappe.enqueue(
+            endpoint_builder.perform_remote_calls,
+            is_async=True,
+            queue="default",
+            timeout=300,
+            job_name=f"{data['name']}_submit_inventory",
+            doctype="Stock Ledger Entry",
+            document_name=data["name"],
+        )
