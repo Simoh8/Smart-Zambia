@@ -672,3 +672,15 @@ def on_succesful_purchase_invoice_submission(response: dict, document_name: str)
             "custom_has_it_been_submitted_successfully": 1,
         },
     )
+
+
+
+
+
+
+def on_succesful_inventory_submission(response: dict, document_name: str) -> None:
+    frappe.db.set_value(
+        "Stock Ledger Entry",
+        document_name,
+        {"custom_inventory_submitted_successfully": 1},
+    )

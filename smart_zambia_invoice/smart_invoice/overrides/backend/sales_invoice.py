@@ -3,14 +3,14 @@ from frappe.model.document import Document
 
 from .common_overrides import on_submit_override_generic_invoices
 
-def on_submit(doc: Document, method: str) -> None:
-    """Intercepts submit event for document"""
+# def on_submit(doc: Document, method: str) -> None:
+#     """Intercepts submit event for document"""
 
-    if (
-        doc.custom_has_it_been_successfully_submitted == 0
-        and doc.update_stock == 1
-    ):
-        on_submit_override_generic_invoices(doc, "Sales Invoice")
+#     if (
+#         doc.custom_has_it_been_successfully_submitted == 0
+#         and doc.update_stock == 1
+#     ):
+#         on_submit_override_generic_invoices(doc, "Sales Invoice")
 
 def before_cancel(doc: Document, method: str) -> None:
     """Disallow cancelling of submitted invoice to ZRA ."""
