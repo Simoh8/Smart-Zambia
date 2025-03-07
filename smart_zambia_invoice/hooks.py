@@ -213,6 +213,8 @@ doc_events = {
     
     "Sales Invoice":{
         "on_submit":["smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice.on_submit"]},
+
+        
     "Purchase Invoice": {
 		"before_save": ["smart_zambia_invoice.smart_invoice.utilities.before_save_"],
         "on_submit":["smart_zambia_invoice.smart_invoice.overrides.backend.purchase_invoice.on_submit"],
@@ -222,7 +224,9 @@ doc_events = {
 
 	},
     "Stock Ledger Entry":{
-        "on_update": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_update"]
+        "on_submit": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_submit"],
+        "on_update": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_update"],
+
     }
     # "Sales Invoice":[]
 }

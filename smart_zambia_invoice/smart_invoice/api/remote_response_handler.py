@@ -652,17 +652,6 @@ def on_success_submit_inventory(response: dict, document_name: str) -> None:
 
 
 
-def on_success_stock_movement(response: dict, document_name: str) -> None:
-    frappe.db.set_value(
-        "Stock Ledger Entry", document_name, {"custom_submitted_successfully": 1}
-    )
-    # frappe.throw("Hello mother M")
-
-
-
-
-
-
     
 def on_succesful_purchase_invoice_submission(response: dict, document_name: str) -> None:
     # Update Invoice fields from KRA's response
@@ -684,5 +673,12 @@ def on_succesful_inventory_submission(response: dict, document_name: str) -> Non
         "Stock Ledger Entry",
         document_name,
         {"custom_inventory_submitted_successfully": 1},
-        frappe.throw("Stock registration succesful")
     )
+
+
+def on_success_stock_registration(response: dict, document_name: str) -> None:
+    frappe.db.set_value(
+        "Stock Ledger Entry", document_name, {"custom_submitted_successfully": 1}
+    )
+
+

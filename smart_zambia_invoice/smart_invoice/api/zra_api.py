@@ -8,6 +8,7 @@ from datetime import datetime
 import frappe.defaults
 from frappe.utils.dateutils import add_to_date
 from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides import on_error
+from smart_zambia_invoice.smart_invoice.overrides.backend.purchase_invoice import on_succesful_purchase_invoice_submission
 from smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice import on_submit
 from .api_builder import EndpointConstructor
 
@@ -861,52 +862,6 @@ def perform_purchases_search_on_zra(request_data: str) -> None:
 
 
 
-
-@frappe.whitelist()
-def submit_inventory(request_data: str, vendor: str="OSCU KRA") -> None:
-    data: dict = json.loads(request_data)
-
-    company_name = frappe.defaults.get_user_default("Company")
-
-    headers = build_request_headers   (company_name,vendor, data["branch_id"])
-    server_url = get_server_url(company_name,vendor, data["branch_id"])
-    route_path, last_req_date = get_route_path("SAVE PURCHASES")
-
-    if headers and server_url and route_path:
-        url = f"{server_url}{route_path}"
-
-        payload = {
-            "itemCd": data["item_code"],
-            "rsdQty": data["residual_qty"],
-            "regrId": split_user_mail(data["owner"]),
-            "regrNm": data["owner"],
-            "modrId": split_user_mail(data["owner"]),
-            "modrNm": data["owner"],
-        }
-
-        endpoint_builder.headers = headers
-        endpoint_builder.url = url
-        endpoint_builder.payload = payload
-        endpoint_builder.success_callback = partial(
-            on_success_submit_inventory, document_name=data["name"]
-        )
-        endpoint_builder.error_callback = on_error
-
-        frappe.enqueue(
-            endpoint_builder.perform_remote_calls,
-            is_async=True,
-            queue="default",
-            timeout=300,
-            job_name=f"{data['name']}_submit_inventory",
-            doctype="Stock Ledger Entry",
-            document_name=data["name"],
-        )
-
-
-
-
-
-
 @frappe.whitelist()
 def perform_sales_invoice_registration(request_data: str) -> dict | None:
     data: dict = json.loads(request_data)
@@ -974,6 +929,7 @@ def save_stock_inventory(request_data: str) -> None:
     # frappe.throw(json.dumps(data, indent=2))  # Debugging output
 
     company_name = frappe.defaults.get_user_default("Company")
+
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
     route_path, last_req_date = get_route_path("SAVE STOCK MASTER")
