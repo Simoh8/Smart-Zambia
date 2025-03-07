@@ -166,7 +166,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
     if doc.voucher_type in ("Delivery Note", "Sales Invoice"):
         if (
             doc.voucher_type == "Sales Invoice"
-            and record.custom_successfully_submitted != 1
+            and record.custom_has_it_been_successfully_submitted != 1
         ):
             return
 
@@ -218,6 +218,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
 
         endpoint_maker.perform_remote_calls()
+        frappe.throw("hello world ")
 
         # frappe.enqueue(
         #     endpoint_maker.perform_remote_calls,

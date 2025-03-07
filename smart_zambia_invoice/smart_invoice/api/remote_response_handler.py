@@ -656,6 +656,7 @@ def on_success_stock_movement(response: dict, document_name: str) -> None:
     frappe.db.set_value(
         "Stock Ledger Entry", document_name, {"custom_submitted_successfully": 1}
     )
+    # frappe.throw("Hello mother M")
 
 
 
