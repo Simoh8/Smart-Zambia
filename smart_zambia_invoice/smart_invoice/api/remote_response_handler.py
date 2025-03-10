@@ -423,7 +423,8 @@ def on_success_sales_information_submission(
         receipt_signature = response_data["rcptSign"]
         receipt_number = response_data["rcptNo"]
         internal_data = response_data["intrlData"]
-        control_unit_time = response_data["vsdcRcptPbctDate"]  # Make sure this is correct field
+        control_unit_time = response_data["vsdcRcptPbctDate"]
+        custom_vscd_id=response_data["sdcId"]  # Make sure this is correct field
 
         # Fetch the QR code
         qr_code = get_qr_code(response_data["qrCodeUrl"])
@@ -439,6 +440,7 @@ def on_success_sales_information_submission(
                 "custom_zra_control_unit_time": control_unit_time,
                 "custom_has_it_been_successfully_submitted": 1,
                 "custom_zra_submission_sequence_number": invoice_number,
+                "custom_vscd_id":custom_vscd_id,
                 "custom_qr_code_details": qr_code,
             },
         )

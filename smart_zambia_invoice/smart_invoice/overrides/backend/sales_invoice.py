@@ -12,6 +12,7 @@ def on_submit(doc: Document, method: str) -> None:
     ):
         on_submit_override_generic_invoices(doc, "Sales Invoice")
 
+
 def before_cancel(doc: Document, method: str) -> None:
     """Disallow cancelling of submitted invoice to ZRA ."""
     

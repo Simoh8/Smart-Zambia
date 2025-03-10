@@ -13,45 +13,47 @@ require_app =["frappe/erpnext"]
 fixtures = [
     "ZRA Tax Type",
     "ZRA VSDC Routes",
-    "ZRA  Registered Purchase",
-    "ZRA Registered Purchases Items",
-    # "Smart Zambia Country",
-    # "ZRA Transaction Type",
-    # "ZRA Payment Method",
-    # "ZRA Unit of Quantity",
-    # "ZRA Packaging Unit",
-    # "ZRA Transaction Progress",
-    # "ZRA Smart Invoice Settings",
-    # "ZRA Item Classification",
-    # "ZRA Import Item Status",
-    # "ZRA Credit Note Reason",
-    # "ZRA Purchase Receipt Type",
-    # "ZRA Product Type",
-    # "ZRA Registered Purchases",
-    # "ZRA Registered Imported Item",
+    # "ZRA Registered Purchase",
+    # "ZRA Registered Purchases Items",
+    "Smart Zambia Country",
+    "ZRA Transaction Type",
+    "ZRA Payment Method",
+    "ZRA Unit of Quantity",
+    "ZRA Packaging Unit",
+    "ZRA Transaction Progress",
+    "ZRA Smart Invoice Settings",
+    "ZRA Item Classification",
+    "ZRA Import Item Status",
+    "ZRA Credit Note Reason",
+    "ZRA Purchase Receipt Type",
+    "ZRA Product Type",
+    "ZRA Registered Imported Item",
     {
         "doctype": "Custom Field",
         "filters": [
             ["dt", "in", ["Item",
                           "Sales Invoice",
-                        #   "Sales Invoice Item",
-                        #   "BOM", 
-                        #   "Branch",
-                        #   "Supplier",
-                        #   "Warehouse",
-                        #   "Customer Group",
-                        #   "Customer",
-                        #   "Item Tax Template",
-                        #   "Purchase Invoice",
-                        #   "Purchase Invoice Item",
-                        #   "Stock Ledger Entry",
-                        #   "POS Invoice Item",
+                          "Sales Invoice Item",
+                          "BOM", 
+                          "Branch",
+                          "Supplier",
+                          "Warehouse",
+                          "Customer Group",
+                          "Customer",
+                          "Item Tax Template",
+                          "Purchase Invoice",
+                          "Purchase Invoice Item",
+                          "Stock Ledger Entry",
+                          "POS Invoice Item",
                           ]
                         ], 
-            ["is_system_generated", "=", 0]           # Exclude system-generated fields
+            ["is_system_generated", "=", 0]  # Exclude system-generated fields
         ],
+    },
+    {
+        "doctype": "Print Format",
+        "filters": [["name", "in", ["ZRA Invoice"]]]  # Export only this print format
     }
-
 ]
 
 before_uninstall = "smart_zambia_invoice.uninstall.cleanup_custom_fields"
@@ -212,7 +214,9 @@ doc_events = {
 	},
     
     "Sales Invoice":{
-        "on_submit":["smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice.on_submit"]},
+        "on_submit":["smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice.on_submit"],
+        "before_cancel":["smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice.before_cancel"]},
+
 
         
     "Purchase Invoice": {
@@ -224,7 +228,7 @@ doc_events = {
 
 	},
     "Stock Ledger Entry":{
-        "on_submit": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_submit"],
+        # "on_submit": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_submit"],
         "on_update": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_update"],
 
     }
