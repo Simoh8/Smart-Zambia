@@ -3,7 +3,6 @@
 
 import asyncio
 import frappe
-import _asyncio
 import aiohttp
 import frappe.defaults
 from ...error_handlers import handle_errors
@@ -12,7 +11,7 @@ from frappe.integrations.utils import create_request_log
 from frappe.model.document import Document
 from ... api.api_builder import update_integration_request
 
-from ...utilities import (get_route_path,is_valid_tpin,is_valid_tpin,make_post_request,update_last_request_date)
+from ...utilities import (get_route_path,is_valid_tpin,make_post_request,update_last_request_date)
 
 
 class ZRASmartInvoiceSettings(Document):
@@ -25,8 +24,7 @@ class ZRASmartInvoiceSettings(Document):
 
     def before_insert(self) -> None:
             """Before Insertion Hook"""
-            route_path, last_request_date = get_route_path("device initialization")
-            
+            route_path, last_req_date = get_route_path("device initialization")     
             if route_path:
                 url = f"{self.server_url}{route_path}"
                 payload = {
@@ -34,7 +32,6 @@ class ZRASmartInvoiceSettings(Document):
                     "bhfId": self.branch_id,
                     "dvcSrlNo": self.vsdc_device_serial_number,
                 }
-
                 integration_request = create_request_log(
                     data=payload,
                     service_name="zra vsdc",
@@ -42,12 +39,9 @@ class ZRASmartInvoiceSettings(Document):
                     request_headers=None,
                     is_remote_request=True,
                 )
-
                 try:
                     response = asyncio.run(make_post_request(url, payload))
-                    print("The response is ", response)
 
-                    # Validate response structure
                     if not response or "resultCd" not in response:
                         self.error_title = "Unexpected API Response"
                         error_message = f"Response from {url}: {response}"
@@ -65,24 +59,19 @@ class ZRASmartInvoiceSettings(Document):
                         )
                         frappe.throw("Server Error. Check logs.")
 
-                                        # Process the response
                     if response["resultCd"] == "000":
-                        # Extract info from the response
                         info = response.get("data", {}).get("info", {})
-                        
-                        # Setting the fields from the API response
                         self.sales_control_unit_id = info.get("sdcId")
-                        self.company_name = info.get("taxprNm")  # Setting company name
-                        self.company_tpin = info.get("tin")  # Setting company TPIN
-                        self.branch_name = info.get("bhfNm")  # Setting branch name
-                        self.branch_id = info.get("bhfId")  # Setting branch ID
-                        self.province_name = info.get("prvncNm")  # Setting province name
-                        self.manager_email = info.get("mgrEmail")  # Setting manager's email
-                        self.manager_contract_number = info.get("mrcNo")  # Setting manager contract number
-                        self.manager_name = info.get("mgrNm")  # Setting manager name
-                        self.location_description = info.get("locDesc")  # Setting location description
+                        self.company_name = info.get("taxprNm")  
+                        self.company_tpin = info.get("tin")  
+                        self.branch_name = info.get("bhfNm")  
+                        self.branch_id = info.get("bhfId")  
+                        self.province_name = info.get("prvncNm")  
+                        self.manager_email = info.get("mgrEmail") 
+                        self.manager_contract_number = info.get("mrcNo")  
+                        self.manager_name = info.get("mgrNm") 
+                        self.location_description = info.get("locDesc")  
 
-                        # Update the last request date and integration request status
                         update_last_request_date(response.get("resultDt"), route_path)
                         update_integration_request(
                             integration_request.name,
@@ -90,7 +79,6 @@ class ZRASmartInvoiceSettings(Document):
                             output=f'{response.get("resultMsg", "Success")}, {response["resultCd"]}',
                             error=None,
                         )
-
                     else:
                         error_message = f'{response.get("resultMsg", "Error")}, {response["resultCd"]}'
                         update_integration_request(
@@ -138,8 +126,6 @@ class ZRASmartInvoiceSettings(Document):
                     },
                 )
                 dimension.save()
-
-
     def log_and_throw_error(self, integration_request, error_title, error):
             """Log and throw errors"""
             self.error_title = error_title
