@@ -32,6 +32,8 @@ def on_update(doc: Document, method: str | None = None) -> None:
         "Item", ["*"]
     )  # Get all items to filter and fetch metadata
     record = frappe.get_doc(doc.voucher_type, doc.voucher_no)
+    recordtype=doc.voucher_type
+    # frappe.throw(recordtype)
     series_no = extract_doc_series_number(record)
     print("The record has ",record)
     headers = build_request_headers(company_name )
@@ -102,7 +104,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
             )
 
             if doc.actual_qty < 0:
-                headers = build_request_headers(doc.company, doc_warehouse_branch_id)
+                headers = build_request_headers(doc.company)
                 payload["custBhfId"] = headers.get("bhfId")
                 payload["sarTyCd"] = "13"
 
@@ -167,7 +169,8 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
     if doc.voucher_type in ("Delivery Note", "Sales Invoice"):
         if (
-            doc.voucher_type == "Sales Invoice"
+            recordtype == "Sales Invoice"
+            and record.custom_has_it_been_successfully_submitted != 1
         ):
             return
 
@@ -176,7 +179,8 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
         current_item = list(
             filter(lambda item: item["itemNm"] == doc.item_code, items_list)
-        )  # Get current item only
+        ) 
+        frappe.throw(str(item_taxes))
         tax_details = list(filter(lambda i: i["item"] == doc.item_code, item_taxes))[
             0
         ]  
@@ -185,7 +189,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
         payload["totItemCnt"] = len(current_item)
         payload["custNm"] = record.customer
         payload["custTin"] = record.tax_id
-        payload["vatCatCd"]= current_item.custom_zra_tax_type or "B"
+        payload["vatCatCd"]= "B"
 
         if record.is_return:
             if doc.actual_qty > 0:
@@ -198,15 +202,11 @@ def on_update(doc: Document, method: str | None = None) -> None:
             payload["sarTyCd"] = "11"
 
     server_url = get_server_url(company_name)
-    if doc.voucher_type in ("Sales Invoice", "Delivery Note"):
-        route_path = get_route_path("SAVE STOCK MASTER")
-    else:
-        route_path = get_route_path("SAVE STOCK ITEM")
-
+    route_path = get_route_path("SAVE STOCK ITEM")
     if headers and server_url and route_path:
         route_path = route_path[0] if isinstance(route_path, tuple) else route_path
-        print("The route path is ", route_path)
-        url = f"{server_url}{route_path}"
+        url = f"{server_url}{route_path}"        
+        # frappe.throw(url)
 
         endpoint_maker.url = url
         endpoint_maker.headers = headers

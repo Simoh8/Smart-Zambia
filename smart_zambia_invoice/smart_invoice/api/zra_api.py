@@ -926,10 +926,9 @@ def submit_bulk_sales_invoices(docs_list: str) -> None:
 @frappe.whitelist()
 def save_stock_inventory(request_data: str) -> None:
     data: dict = json.loads(request_data)
-    # frappe.throw(json.dumps(data, indent=2))  # Debugging output
+    print("The request data is ",request_data)
 
     company_name = frappe.defaults.get_user_default("Company")
-    # print("Hello im trying to submit the  sales ledger")
 
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
@@ -946,25 +945,24 @@ def save_stock_inventory(request_data: str) -> None:
         if "items" in data and isinstance(data["items"], list):
             for item in data["items"]:
                 stock_items.append({
-                    "itemCd": item.get("itemCd", ""),
-                    "rsdQty": get_stock_balance(item.get("itemName", ""))
+                    "itemCd": item.get("item_code", ""),
+                    "rsdQty": get_stock_balance(item.get("item", ""))
                 })
         else:
             stock_items.append({
-                "itemCd": data.get("itemCd", ""),
-                "rsdQty": get_stock_balance(data.get("itemName", ""))
+                "itemCd": data.get("item_code", ""),
+                "rsdQty": get_stock_balance(data.get("item", ""))
             })
 
         payload = {
             **common_payload,
-            "regrId": split_user_mail(data.get("registered_by", "")),
-            "regrNm": data.get("registered_by", ""),
-            "modrId": split_user_mail(data.get("modified_by", "")),
-            "modrNm": data.get("modified_by", ""),
+            "regrId": split_user_mail(data.get("owner", "")),
+            "regrNm": data.get("owner", ""),
+            "modrId": split_user_mail(data.get("owner", "")),
+            "modrNm": data.get("owner", ""),
             "stockItemList": stock_items  
         }
-        # frappe.throw(json.dumps(payload, indent=2))  
-        # print("The stock update is ",payload)
+
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -973,17 +971,26 @@ def save_stock_inventory(request_data: str) -> None:
             on_succesful_inventory_submission, document_name=data["name"]
         )
         endpoint_builder.error_callback = on_error
+        endpoint_builder.perform_remote_calls(),
 
 
-        frappe.enqueue(
-            endpoint_builder.perform_remote_calls,
-            is_async=True,
-            queue="default",
-            timeout=300,
-            job_name=f"{data['name']}_submit_inventory",
-            doctype="Stock Ledger Entry",
-            document_name=data["name"],
-        )
+
+        # frappe.enqueue(
+        #     endpoint_builder.perform_remote_calls,
+        #     is_async=True,
+        #     queue="default",
+        #     timeout=300,
+        #     job_name=f"{data['name']}_submit_inventory",
+        #     doctype="Stock Ledger Entry",
+        #     document_name=data["name"],
+        # )
+
+
+
+
+
+
+
 
 @frappe.whitelist()
 def bulk_register_item(docs_list: str) -> None:

@@ -26,12 +26,11 @@ def send_stock_update_information() -> None:
     for entry in all_stock_ledger_entries:
         doc = frappe.get_doc(
             "Stock Ledger Entry", entry.name, for_update=False
-        )  # Refetch to get the document representation of the record
-
+        )  
         try:
             on_update(
                 doc, method=None
-            )  # Delegate to the on_update method for Stock Ledger Entry override
+            ) 
 
         except TypeError:
             continue
