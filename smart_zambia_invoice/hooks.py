@@ -228,7 +228,7 @@ doc_events = {
 
 	},
     "Stock Ledger Entry":{
-        "on_submit": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_submit"],
+        # "on_submit": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_submit"],
         "on_update": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_update"],
 
     }
@@ -238,23 +238,21 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"smart_zambia_invoice.tasks.all"
-# 	],
-# 	"daily": [
-# 		"smart_zambia_invoice.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"smart_zambia_invoice.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"smart_zambia_invoice.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"smart_zambia_invoice.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"all": [
+		"smart_zambia_invoice.smart_invoice.background_jobs.jobs.send_item_inventory_information",
+        "smart_zambia_invoice.smart_invoice.background_jobs.jobs.send_stock_update_information"
+
+	],
+	"hourly": [
+        "smart_zambia_invoice.smart_invoice.background_jobs.jobs.frequent_refresh_notices"
+	],
+
+
+	"monthly": [
+        "smart_zambia_invoice.smart_invoice.background_jobs.jobs.send_stock_update_information"
+	],
+}
 
 # Testing
 # -------

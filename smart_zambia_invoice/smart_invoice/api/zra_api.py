@@ -929,6 +929,7 @@ def save_stock_inventory(request_data: str) -> None:
     # frappe.throw(json.dumps(data, indent=2))  # Debugging output
 
     company_name = frappe.defaults.get_user_default("Company")
+    # print("Hello im trying to submit the  sales ledger")
 
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
@@ -963,6 +964,7 @@ def save_stock_inventory(request_data: str) -> None:
             "stockItemList": stock_items  
         }
         # frappe.throw(json.dumps(payload, indent=2))  
+        # print("The stock update is ",payload)
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
