@@ -228,7 +228,7 @@ doc_events = {
 
 	},
     "Stock Ledger Entry":{
-        # "on_submit": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_submit"],
+        "on_submit": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_submit"],
         "on_update": ["smart_zambia_invoice.smart_invoice.overrides.backend.stock_ledger_entry.on_update"],
 
     }
