@@ -82,6 +82,10 @@ def on_update(doc: Document, method: str | None = None) -> None:
             else:
                 payload["sarTyCd"] = "06"
 
+
+
+
+
     if doc.voucher_type == "Stock Entry":
         items_list = get_stock_entry_movement_items_details(record.items, all_items)
         current_item = list(
@@ -166,13 +170,10 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
 
 
-
-
-
     if doc.voucher_type in ("Delivery Note", "Sales Invoice"):
         if (
-            recordtype == "Sales Invoice"
-            and record.custom_has_it_been_successfully_submitted != 1
+            doc.voucher_type == "Sales Invoice"
+            and record.custom_has_it_been_successfully_submitted != 0
         ):
             return
 
@@ -181,19 +182,20 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
         current_item = list(
             filter(lambda item: item["itemNm"] == doc.item_code, items_list)
-        ) 
-        frappe.throw(str(item_taxes))
-        tax_details = list(filter(lambda i: i["item"] == doc.item_code, item_taxes))[
-            0
-        ]  
+        )  # Get current item only
+        # tax_details = list(filter(lambda i: i["item"] == doc.item_code, item_taxes))[
+        #     0
+        # ]  
       
         payload["itemList"] = current_item
         payload["totItemCnt"] = len(current_item)
         payload["custNm"] = record.customer
         payload["custTin"] = record.tax_id
-        payload["vatCatCd"]= record.custom_zra_tax_type or "B"
 
+        # TODO: opposite of previous, and use qty change field
+        # TODO: These map to sales returns
         if record.is_return:
+            # if is_return is checked, it turns to different type of docs
             if doc.actual_qty > 0:
                 payload["sarTyCd"] = "03"
 
@@ -295,9 +297,9 @@ def get_stock_recon_movement_items_details(
                         "itemClsCd": fetched_item.custom_zra_item_classification_code,
                         "itemNm": fetched_item.item_code,
                         "bcd": None,
-                        "pkgUnitCd": fetched_item.custom_packaging_unit_code,
+                        "pkgUnitCd": fetched_item.custom_zra_packaging_unit_code,
                         "pkg": 1,
-                        "qtyUnitCd": fetched_item.custom_unit_of_quantity_code,
+                        "qtyUnitCd": fetched_item.custom_zra_unit_quantity_code,
                         "qty": abs(int(item.quantity_difference)),
                         "itemExprDt": "",
                         "prc": (
@@ -338,9 +340,9 @@ def get_purchase_docs_items_details(
                         "itemClsCd": fetched_item.custom_zra_item_classification_code,
                         "itemNm": fetched_item.item_code,
                         "bcd": None,
-                        "pkgUnitCd": fetched_item.custom_packaging_unit_code,
+                        "pkgUnitCd": fetched_item.custom_zra_packaging_unit_code,
                         "pkg": 1,
-                        "qtyUnitCd": fetched_item.custom_unit_of_quantity_code,
+                        "qtyUnitCd": fetched_item.custom_zra_unit_quantity_code,
                         "qty": abs(item.qty),
                         "itemExprDt": "",
                         "prc": (
@@ -388,9 +390,9 @@ def get_notes_docs_items_details(
                         "itemClsCd": fetched_item.custom_zra_item_classification_code,
                         "itemNm": fetched_item.item_code,
                         "bcd": None,
-                        "pkgUnitCd": fetched_item.custom_packaging_unit_code,
+                        "pkgUnitCd": fetched_item.custom_zra_packaging_unit_code,
                         "pkg": 1,
-                        "qtyUnitCd": fetched_item.custom_unit_of_quantity_code,
+                        "qtyUnitCd": fetched_item.custom_zra_unit_quantity_code,
                         "qty": abs(item.qty),
                         "itemExprDt": "",
                         "prc": (
