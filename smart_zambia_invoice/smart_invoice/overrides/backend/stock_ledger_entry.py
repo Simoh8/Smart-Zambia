@@ -6,7 +6,7 @@ from typing import Literal
 import frappe
 from frappe.model.document import Document
 from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
-from smart_zambia_invoice.smart_invoice.api.zra_api import on_succesful_inventory_submission
+from ...api.zra_api import on_succesful_inventory_submission
 
 from ...api.api_builder import EndpointConstructor
 from ...api.remote_response_handler import (
@@ -112,6 +112,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
                 payload["sarTyCd"] = "13"
 
             else:
+                # If the record warehouse is the target warehouse
                 headers = build_request_headers(doc.company, doc_warehouse_branch_id)
                 payload["custBhfId"] = get_warehouse_branch_id(
                     voucher_details.s_warehouse
@@ -130,6 +131,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
         if record.stock_entry_type == "Repack":
             if doc.actual_qty < 0:
+                # Negative repack
                 payload["sarTyCd"] = "14"
 
             else:
@@ -147,6 +149,19 @@ def on_update(doc: Document, method: str | None = None) -> None:
         )
         tax_details = list(filter(lambda i: i["item"] == doc.item_code, item_taxes))[0]
 
+        # current_item[0]["taxblAmt"] = round(
+        #     tax_details["taxable_amount"] / current_item[0]["qty"], 2
+        # )
+        # current_item[0]["totAmt"] = round(
+        #     tax_details["taxable_amount"] / current_item[0]["qty"], 2
+        # )
+
+        # actual_tax_amount = 0
+        # tax_head = doc.taxes[0].description
+
+        # actual_tax_amount = tax_details[tax_head]["tax_amount"]
+
+        # current_item[0]["taxAmt"] = round(actual_tax_amount / current_item[0]["qty"], 2)
 
         payload["itemList"] = current_item
         payload["totItemCnt"] = len(current_item)
@@ -166,6 +181,8 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
 
 
+
+
     if doc.voucher_type in ("Delivery Note", "Sales Invoice"):
         if (
             recordtype == "Sales Invoice"
@@ -179,7 +196,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
         current_item = list(
             filter(lambda item: item["itemNm"] == doc.item_code, items_list)
         ) 
-        # frappe.throw(str(item_taxes))
+        frappe.throw(str(item_taxes))
         tax_details = list(filter(lambda i: i["item"] == doc.item_code, item_taxes))[
             0
         ]  
@@ -205,6 +222,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
     if headers and server_url and route_path:
         route_path = route_path[0] if isinstance(route_path, tuple) else route_path
         url = f"{server_url}{route_path}"        
+        # frappe.throw(url)
 
         endpoint_maker.url = url
         endpoint_maker.headers = headers
