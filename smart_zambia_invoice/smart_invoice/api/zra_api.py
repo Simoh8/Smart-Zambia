@@ -992,57 +992,57 @@ def save_stock_inventory(request_data: str) -> None:
 
 
 
-@frappe.whitelist()
-def bulk_register_item(docs_list: str) -> None:
-    data = json.loads(docs_list)
-    all_items = frappe.db.get_all("Item", {"custom_item_registered": 0}, ["name"])
-    for record in data:
-        for item in all_items:
-            if record == item.name:
-                process_single_item(record)
+# @frappe.whitelist()
+# def bulk_register_item(docs_list: str) -> None:
+#     data = json.loads(docs_list)
+#     all_items = frappe.db.get_all("Item", {"custom_item_registered": 0}, ["name"])
+#     for record in data:
+#         for item in all_items:
+#             if record == item.name:
+#                 process_single_item(record)
 
 
-@frappe.whitelist()
-def process_single_item(record: str) -> None:
-    """
-    Process a single item for registration, construct the payload, and perform registration.
+# @frappe.whitelist()
+# def process_single_item(record: str) -> None:
+#     """
+#     Process a single item for registration, construct the payload, and perform registration.
     
-    Args:
-        record (str): Name of the item to process.
-    """
-    item = frappe.get_doc("Item", record, for_update=False)
+#     Args:
+#         record (str): Name of the item to process.
+#     """
+#     item = frappe.get_doc("Item", record, for_update=False)
     
-    valuation_rate = item.valuation_rate if item.valuation_rate is not None else 0
+#     valuation_rate = item.valuation_rate if item.valuation_rate is not None else 0
 
-    request_data = {
-        "name": item.name,
-        "company_name": frappe.defaults.get_user_default("Company"),
-        "itemCd": item.custom_item_code_etims,
-        "itemClsCd": item.custom_item_classification,
-        "itemTyCd": item.custom_product_type,
-        "itemNm": item.item_name,
-        "temStdNm": None,
-        "orgnNatCd": item.custom_etims_country_of_origin_code,
-        "pkgUnitCd": item.custom_packaging_unit_code,
-        "qtyUnitCd": item.custom_unit_of_quantity_code,
-        "taxTyCd": item.get("custom_taxation_type", "B"),
-        "btchNo": None,
-        "bcd": None,
-        "dftPrc": round(valuation_rate, 2),
-        "grpPrcL1": None,
-        "grpPrcL2": None,
-        "grpPrcL3": None,
-        "grpPrcL4": None,
-        "grpPrcL5": None,
-        "addInfo": None,
-        "sftyQty": None,
-        "isrcAplcbYn": "Y",
-        "useYn": "Y",
-        "regrId": split_user_email(item.owner),
-        "regrNm": item.owner,
-        "modrId": split_user_email(item.modified_by),
-        "modrNm": item.modified_by,
-    }
+#     request_data = {
+#         "name": item.name,
+#         "company_name": frappe.defaults.get_user_default("Company"),
+#         "itemCd": item.custom_item_code_etims,
+#         "itemClsCd": item.custom_item_classification,
+#         "itemTyCd": item.custom_product_type,
+#         "itemNm": item.item_name,
+#         "temStdNm": None,
+#         "orgnNatCd": item.custom_etims_country_of_origin_code,
+#         "pkgUnitCd": item.custom_packaging_unit_code,
+#         "qtyUnitCd": item.custom_unit_of_quantity_code,
+#         "taxTyCd": item.get("custom_taxation_type", "B"),
+#         "btchNo": None,
+#         "bcd": None,
+#         "dftPrc": round(valuation_rate, 2),
+#         "grpPrcL1": None,
+#         "grpPrcL2": None,
+#         "grpPrcL3": None,
+#         "grpPrcL4": None,
+#         "grpPrcL5": None,
+#         "addInfo": None,
+#         "sftyQty": None,
+#         "isrcAplcbYn": "Y",
+#         "useYn": "Y",
+#         "regrId": split_user_mail(item.owner),
+#         "regrNm": item.owner,
+#         "modrId": split_user_mail(item.modified_by),
+#         "modrNm": item.modified_by,
+#     }
 
-    perform_item_registration(request_data=json.dumps(request_data))
+#     make_zra_item_registration(request_data=json.dumps(request_data))
 
