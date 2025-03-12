@@ -104,13 +104,18 @@ def on_update(doc: Document, method: str | None = None) -> None:
             )
 
             if doc.actual_qty < 0:
-                headers = build_request_headers(doc.company)
-                payload["custBhfId"] = headers.get("bhfId")
+                # If the record warehouse is the source warehouse
+                headers = build_request_headers(doc.company, doc_warehouse_branch_id)
+                payload["custBhfId"] = get_warehouse_branch_id(
+                    voucher_details.t_warehouse
+                )
                 payload["sarTyCd"] = "13"
 
             else:
-                headers = build_request_headers(doc.company)
-                payload["custBhfId"] = headers.get("bhfId")
+                headers = build_request_headers(doc.company, doc_warehouse_branch_id)
+                payload["custBhfId"] = get_warehouse_branch_id(
+                    voucher_details.s_warehouse
+                )
                 payload["sarTyCd"] = "04"
 
         if record.stock_entry_type == "Manufacture":
@@ -130,6 +135,8 @@ def on_update(doc: Document, method: str | None = None) -> None:
             else:
                 payload["sarTyCd"] = "05"
 
+
+
     if doc.voucher_type in ("Purchase Receipt", "Purchase Invoice"):
 
         items_list = get_purchase_docs_items_details(record.items, all_items)
@@ -140,19 +147,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
         )
         tax_details = list(filter(lambda i: i["item"] == doc.item_code, item_taxes))[0]
 
-        # current_item[0]["taxblAmt"] = round(
-        #     tax_details["taxable_amount"] / current_item[0]["qty"], 2
-        # )
-        # current_item[0]["totAmt"] = round(
-        #     tax_details["taxable_amount"] / current_item[0]["qty"], 2
-        # )
-
-        # actual_tax_amount = 0
-        # tax_head = doc.taxes[0].description
-
-        # actual_tax_amount = tax_details[tax_head]["tax_amount"]
-
-        # current_item[0]["taxAmt"] = round(actual_tax_amount / current_item[0]["qty"], 2)
 
         payload["itemList"] = current_item
         payload["totItemCnt"] = len(current_item)
@@ -167,6 +161,11 @@ def on_update(doc: Document, method: str | None = None) -> None:
             else:
                 payload["sarTyCd"] = "02"
 
+
+
+
+
+
     if doc.voucher_type in ("Delivery Note", "Sales Invoice"):
         if (
             recordtype == "Sales Invoice"
@@ -180,7 +179,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
         current_item = list(
             filter(lambda item: item["itemNm"] == doc.item_code, items_list)
         ) 
-        frappe.throw(str(item_taxes))
+        # frappe.throw(str(item_taxes))
         tax_details = list(filter(lambda i: i["item"] == doc.item_code, item_taxes))[
             0
         ]  
@@ -189,7 +188,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
         payload["totItemCnt"] = len(current_item)
         payload["custNm"] = record.customer
         payload["custTin"] = record.tax_id
-        payload["vatCatCd"]= "B"
+        payload["vatCatCd"]= record.custom_zra_tax_type or "B"
 
         if record.is_return:
             if doc.actual_qty > 0:
@@ -206,7 +205,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
     if headers and server_url and route_path:
         route_path = route_path[0] if isinstance(route_path, tuple) else route_path
         url = f"{server_url}{route_path}"        
-        # frappe.throw(url)
 
         endpoint_maker.url = url
         endpoint_maker.headers = headers
