@@ -808,27 +808,21 @@ def clean_invc_no(invoice_name):
 def get_taxation_types(doc):
     taxation_totals = {}
 
-    # Loop through each item in the Sales Invoice
     for item in getattr(doc, "items", []):
         taxation_type = getattr(item, "custom_zra_taxation_type", None)
-        net_amount = getattr(item, "net_amount", 0)  # Original selling price
+        net_amount = getattr(item, "net_amount", 0) 
 
         if not taxation_type:
             frappe.logger().warning(f"Missing taxation type for item {getattr(item, 'item_code', 'Unknown')}")
             continue
 
-        # Fetch tax rate from "ZRA Tax Type" doctype
         tax_rate = frappe.db.get_value("ZRA Tax Type", taxation_type, "tax_rate_")
-        tax_rate = float(tax_rate) if tax_rate else 0  # Ensure it's a number
-
-        # Calculate taxable amount based on the correct formula
+        tax_rate = float(tax_rate) if tax_rate else 0  
         taxable_amount = net_amount / (1 + (tax_rate / 100)) if tax_rate > 0 else net_amount
         taxable_amount = round(taxable_amount, 2)
 
-        # Calculate tax amount
         tax_amount = round(taxable_amount * (tax_rate / 100), 2)
 
-        # Update or initialize taxation totals
         if taxation_type in taxation_totals:
             taxation_totals[taxation_type]["taxable_amount"] = round(taxation_totals[taxation_type]["taxable_amount"] + taxable_amount, 2)
             taxation_totals[taxation_type]["tax_amount"] = round(taxation_totals[taxation_type]["tax_amount"] + tax_amount, 2)
@@ -850,7 +844,7 @@ def build_invoice_payload(
 ) -> dict[str, str | int | float]:
     # Retrieve taxation data for the invoice
     taxation_type = get_taxation_types(invoice)
-    # frappe.throw(str(taxation_type))
+    frappe.throw(str(taxation_type))
     """Converts relevant invoice data to a JSON payload
 
     Args:
