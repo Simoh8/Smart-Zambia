@@ -60,7 +60,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
     payload["bhfId"] = headers.get("bhfId")
 
     if doc.voucher_type == "Stock Reconciliation":
-        items_list = get_stock_recon_movement_items_details(
+        items_list = fetch_stock_reconciliation_items_details(
             record.items, all_items
         )  
         current_item = list(
@@ -145,7 +145,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
     if doc.voucher_type in ("Purchase Receipt", "Purchase Invoice"):
 
-        items_list = get_purchase_docs_items_details(record.items, all_items)
+        items_list = get_purchase_items_details_from_doc(record.items, all_items)
         item_taxes = get_itemised_tax_breakup_data(record)
 
         current_item = list(
@@ -177,7 +177,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
         ):
             return
 
-        items_list = get_notes_docs_items_details(record.items, all_items)
+        items_list = get_latest_items_details_from_doc(record.items, all_items)
         item_taxes = get_itemised_tax_breakup_data(record)
 
         current_item = list(
@@ -244,6 +244,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
 
 
+
 def get_stock_entry_movement_items_details(
     records: list[Document], all_items: list[Document]
 ) -> list[dict]:
@@ -272,7 +273,7 @@ def get_stock_entry_movement_items_details(
                         ),
                         "totDcAmt": 0,
                         "taxTyCd": fetched_item.custom_zra_tax_type or "B",
-                        "vatCatCd": fetched_item.custom_zra_tax_type or "B",
+                        "vatCatCd": "A",
                         "taxblAmt": 0,
                         "taxAmt": 0,
                         "totAmt": 0,
@@ -282,7 +283,7 @@ def get_stock_entry_movement_items_details(
     return items_list
 
 
-def get_stock_recon_movement_items_details(
+def fetch_stock_reconciliation_items_details(
     records: list, all_items: list
 ) -> list[dict]:
     items_list = []
@@ -317,7 +318,7 @@ def get_stock_recon_movement_items_details(
                         "taxblAmt": 0,
                         "taxAmt": 0,
                         "totAmt": 0,
-                        "vatCatCd": fetched_item.custom_zra_tax_type or "B",
+                        "vatCatCd": "B",
                         "quantity_difference": item.quantity_difference,
                     }
                 )
@@ -325,7 +326,9 @@ def get_stock_recon_movement_items_details(
     return items_list
 
 
-def get_purchase_docs_items_details(
+
+
+def get_purchase_items_details_from_doc(
     items: list, all_present_items: list[Document]
 ) -> list[dict]:
     items_list = []
@@ -357,7 +360,7 @@ def get_purchase_docs_items_details(
                         ),
                         "totDcAmt": 0,
                         "taxTyCd": fetched_item.custom_zra_tax_type or "B",
-                        "vatCatCd": fetched_item.custom_zra_tax_type or "B",
+                        "vatCatCd": "C1",
                         "taxblAmt": quantize_amount(item.net_amount),
                         "taxAmt": quantize_amount(item.custom_tax_amount) or 0,
                         "totAmt": quantize_amount(item.net_amount + item.custom_tax_amount),
@@ -375,7 +378,7 @@ def get_purchase_docs_items_details(
     return items_list
 
 
-def get_notes_docs_items_details(
+def get_latest_items_details_from_doc(
     items: list[Document], all_present_items: list[Document]
 ) -> list[dict]:
     items_list = []
@@ -406,7 +409,7 @@ def get_notes_docs_items_details(
                             else 0
                         ),
                         "totDcAmt": 0,
-                        "vatCatCd": fetched_item.custom_zra_tax_type or "B",
+                        "vatCatCd": "D",
                         "taxTyCd": fetched_item.custom_zra_tax_type or "B",
                         "taxblAmt": quantize_amount(item.net_amount),
                         "taxAmt": quantize_amount(item.custom_tax_amount) or 0,
