@@ -1,6 +1,7 @@
 from collections import defaultdict
 from functools import partial
 from typing import Literal
+import frappe
 
 from frappe.model.document import Document
 
@@ -25,7 +26,7 @@ def on_submit_override_generic_invoices(
     company_name = doc.company
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path = get_route_path("SAVE SALES")
+    route_path = get_route_path("SAVE SALES INVOICE")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"

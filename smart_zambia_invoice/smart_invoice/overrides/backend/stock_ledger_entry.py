@@ -118,9 +118,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
             else:
                 # If the record warehouse is the target warehouse
                 headers = build_request_headers(doc.company, doc_warehouse_branch_id)
-                payload["custBhfId"] = get_warehouse_branch_id(
-                    voucher_details.s_warehouse
-                )
+                payload["custBhfId"] = ""
                 payload["sarTyCd"] = "04"
 
         if record.stock_entry_type == "Manufacture":
@@ -225,17 +223,16 @@ def on_update(doc: Document, method: str | None = None) -> None:
         ).hexdigest()
 
 
-        endpoint_maker.perform_remote_calls()
 
-        # frappe.enqueue(
-        #     endpoint_maker.perform_remote_calls,
-        #     queue="default",
-        #     is_async=True,
-        #     timeout=300,
-        #     job_name=job_name,
-        #     doctype="Stock Ledger Entry",
-        #     document_name=doc.name,
-        # )
+        frappe.enqueue(
+            endpoint_maker.perform_remote_calls,
+            queue="default",
+            is_async=True,
+            timeout=300,
+            job_name=job_name,
+            doctype="Stock Ledger Entry",
+            document_name=doc.name,
+        )
 
 
 

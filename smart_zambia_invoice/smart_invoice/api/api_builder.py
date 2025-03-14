@@ -103,9 +103,6 @@ class EndpointConstructor(BaseEndpointConstructor):
         self._error_callback_handler = callback
 
 
-
-
-
     def perform_remote_calls(self, doctype: Document | str | None = None, document_name: str | None = None) -> None:
         if not all([self._url, self._headers, self._success_callback_handler, self._error_callback_handler]):
             frappe.throw(
@@ -116,7 +113,7 @@ class EndpointConstructor(BaseEndpointConstructor):
 
         self.doctype, self.document_name = doctype, document_name
         parsed_url = parse.urlparse(self._url)
-        route_path = parsed_url.path.replace("/zrasandboxvsdc", "", 1)  # Remove the base path
+        route_path = parsed_url.path.replace("/zrasandboxvsdc", "", 1)
 
         self.integration_request = create_request_log(
             data=self._payload,

@@ -105,6 +105,9 @@ def is_url_valid(url: str) -> bool:
     return bool(re.match(pattern, url))
 
 
+
+
+
 def make_datetime_from_string(
     date_string: str, format: str = "%Y-%m-%d %H:%M:%S"
 ) -> datetime:
@@ -120,6 +123,11 @@ def make_datetime_from_string(
     date_object = datetime.strptime(date_string, format)
 
     return date_object
+
+
+
+
+
 
 def get_docment_series_number(document: Document) -> int | None:
     """Extracts the series number from the document name."""
@@ -198,10 +206,9 @@ def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str
     settings = get_current_env_settings(company_name, branch_id=branch_id)
 
     if settings:
-        # current_time = datetime.now().strftime("%Y%m%d%H%M%S")
 
         headers = {
-            "tpin": settings.get("company_tpin"),  # Adjusted to match the key in `settings`
+            "tpin": settings.get("company_tpin"),  
             "bhfId": settings.get("branch_id"), 
             "Content-Type": "application/json"
         }
@@ -241,12 +248,14 @@ def get_route_path(
     results = frappe.db.sql(query, (search_field,), as_dict=True)
 
     if results:
-        return results[0]["route_path"], results[0]["last_request_date"]
+        return results[0]["route_path"]
     return None
 
-# -------------------------------
-# Async HTTP Requests
-# -------------------------------
+
+
+
+
+
 
 async def make_get_request(url: str) -> aiohttp.ClientResponse:
     """Make an Asynchronous GET Request to the specified URL.
@@ -680,8 +689,7 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
         List[Dict[str, Union[str, int, float, None]]]: The parsed data as a list of dictionaries
     """
 
-    taxation_types = get_taxation_types(invoice)  # Get taxation details
-
+    taxation_types = get_taxation_types(invoice)  
     items_list = []
 
     for index, item in enumerate(invoice.items):
@@ -708,7 +716,9 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
         dcAmt = round(getattr(item, "discount_amount", 0), 2)
 
         taxation_type = getattr(item, "custom_zra_taxation_type", None)
-        tax_data = taxation_types.get(taxation_type, {})  # Fetch tax data
+
+        tax_data = next((tax for tax in taxation_types if tax["item_code"] == getattr(item, "item_code", "")), {})
+
         taxblAmt = round(tax_data.get("taxable_amount", 0), 2)
         taxAmt = round(tax_data.get("tax_amount", 0), 2)
 
@@ -734,7 +744,7 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             "pkgUnitCd": getattr(item, "custom_zra_packaging_unit_code", ""),
             "pkg": 1,
             "qtyUnitCd": getattr(item, "custom_zra_unit_of_quantity_code", ""),
-            "qty": qty,
+            "qty": abs(item.qty),
             "prc": prc,
             "splyAmt": splyAmt,
             "dcRt": dcRt,
@@ -747,8 +757,8 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             "vatTaxblAmt": vatTaxblAmt,
             "exciseTxAmt": exciseTxAmt,
             "vatAmt": vatAmt,
-            "tlAmt":tlAmt,
-            "iplAmt":iplAmt,
+            "tlAmt": tlAmt,
+            "iplAmt": iplAmt,
             "iplCatCd": iplCatCd,
             "tlCatCd": tlCatCd,
             "taxTyCd": taxTyCd,
@@ -756,9 +766,9 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             "taxAmt": taxAmt,
             "totAmt": totAmt
         })
+        # frappe.throw(str(items_list))
 
     return items_list
-
 
 
 
@@ -806,7 +816,7 @@ def clean_invc_no(invoice_name):
 
 
 def get_taxation_types(doc):
-    taxation_totals = {}
+    taxation_list = []  
 
     for item in getattr(doc, "items", []):
         taxation_type = getattr(item, "custom_zra_taxation_type", None)
@@ -823,17 +833,17 @@ def get_taxation_types(doc):
 
         tax_amount = round(taxable_amount * (tax_rate / 100), 2)
 
-        if taxation_type in taxation_totals:
-            taxation_totals[taxation_type]["taxable_amount"] = round(taxation_totals[taxation_type]["taxable_amount"] + taxable_amount, 2)
-            taxation_totals[taxation_type]["tax_amount"] = round(taxation_totals[taxation_type]["tax_amount"] + tax_amount, 2)
-        else:
-            taxation_totals[taxation_type] = {
-                "tax_rate": tax_rate,
-                "tax_amount": tax_amount,
-                "taxable_amount": taxable_amount
-            }
+        taxation_list.append({
+            "item_code": getattr(item, "item_code", "Unknown"),
+            "taxation_type": taxation_type,
+            "tax_rate": tax_rate,
+            "taxable_amount": taxable_amount,
+            "tax_amount": tax_amount
+        })
 
-    return taxation_totals
+    return taxation_list  
+
+
 
 
 
@@ -842,27 +852,23 @@ def get_taxation_types(doc):
 def build_invoice_payload(
     invoice: Document, invoice_type_identifier: Literal["S", "C"], company_name: str
 ) -> dict[str, str | int | float]:
-    # Retrieve taxation data for the invoice
-    taxation_type = get_taxation_types(invoice)
-    frappe.throw(str(taxation_type))
-    """Converts relevant invoice data to a JSON payload
+    """
+    Converts relevant invoice data to a JSON payload
 
     Args:
         invoice (Document): The Invoice record to generate data from
-        invoice_type_identifier (Literal["S", "C"]): The
-        Invoice type identifier. S for Sales Invoice, C for Credit Notes
+        invoice_type_identifier (Literal["S", "C"]): The Invoice type identifier. 
+            S for Sales Invoice, C for Credit Notes
         company_name (str): The company name used to fetch the valid settings doctype record
 
     Returns:
         dict[str, str | int | float]: The payload
     """
-    post_time = invoice.posting_time
 
-    # Ensure post_time is a string if it's a timedelta
+    post_time = invoice.posting_time
     if isinstance(post_time, timedelta):
         post_time = str(post_time)
 
-    # Parse posting date and time
     posting_date = make_datetime_from_string(
         f"{invoice.posting_date} {post_time[:8].replace('.', '')}",
         format="%Y-%m-%d %H:%M:%S",
@@ -873,20 +879,36 @@ def build_invoice_payload(
 
     # Fetch list of invoice items
     items_list = get_invoice_items_list(invoice)
-
-    # Determine the invoice number format
-    invoice_name = invoice.name
     
+    # Initialize dynamic tax groupings
+    tax_types = [
+        "A", "B", "C1", "C2", "C3", "D", "RVAT", "E", "F", "IPL1", "IPL2",
+        "TL", "ECM", "EXEEG", "TOT"
+    ]
+    
+    taxation_summary = {f"taxblAmt{t}": 0 for t in tax_types}
+    taxation_summary.update({f"taxAmt{t}": 0 for t in tax_types})
+    
+    # Aggregate taxable amounts and tax amounts dynamically
+    for item in items_list:
+        tax_type = item.get("taxTyCd")
+        if tax_type in tax_types:
+            taxation_summary[f"taxblAmt{tax_type}"] += item.get("taxblAmt", 0)
+            taxation_summary[f"taxAmt{tax_type}"] += item.get("taxAmt", 0)
+
+    # Compute total taxable and tax amounts
+    tot_taxable_amt = sum(item.get("taxblAmt", 0) for item in items_list)
+    tot_tax_amt = sum(item.get("taxAmt", 0) for item in items_list)
+
+    # Determine invoice number format
+    invoice_name = invoice.name
     if invoice.amended_from:
         invoice_name = clean_invc_no(invoice_name)
 
-    tot_taxable_amt = sum(item.get("taxblAmt", 0) for item in items_list)
-    tot_tax_amt = sum(item.get("taxAmt", 0) for item in items_list)
-        
     payload = {
         "orgInvcNo": (
             0 if invoice_type_identifier == "S"
-            else frappe.get_doc("Sales Invoice", invoice.return_against).custom_submission_sequence_number
+            else frappe.get_doc("Sales Invoice", invoice.return_against).custom_zra_submission_sequence_number
         ),
         "cisInvcNo": invoice_name,
         "custTpin": invoice.tax_id if invoice.tax_id else None,
@@ -903,60 +925,13 @@ def build_invoice_payload(
         "rfdDt": None,
         "rfdRsnCd": None,
         "totItemCnt": len(items_list),
-
-        "taxblAmtA": taxation_type.get("A", {}).get("taxable_amount", 0),
-        "taxblAmtB": taxation_type.get("B", {}).get("taxable_amount", 0),
-        "taxblAmtC1": taxation_type.get("C1", {}).get("taxable_amount", 0),
-        "taxblAmtC2": taxation_type.get("C2", {}).get("taxable_amount", 0),
-        "taxblAmtC3": taxation_type.get("C3", {}).get("taxable_amount", 0),
-        "taxblAmtD": taxation_type.get("D", {}).get("taxable_amount", 0),
-        "taxblAmtRVAT": taxation_type.get("RVAT", {}).get("taxable_amount", 0),
-        "taxblAmtE": taxation_type.get("E", {}).get("taxable_amount", 0),
-        "taxblAmtF": taxation_type.get("F", {}).get("taxable_amount", 0),
-        "taxblAmtIpl1": taxation_type.get("IPL1", {}).get("taxable_amount", 0),
-        "taxblAmtIpl2": taxation_type.get("IPL2", {}).get("taxable_amount", 0),
-        "taxblAmtTl": taxation_type.get("TL", {}).get("taxable_amount", 0),
-        "taxblAmtEcm": taxation_type.get("ECM", {}).get("taxable_amount", 0),
-        "taxblAmtExeeg": taxation_type.get("EXEEG", {}).get("taxable_amount", 0),
-        "taxblAmtTot": taxation_type.get("TOT", {}).get("taxable_amount", 0),
-        
-        "taxRtA": taxation_type.get("A", {}).get("tax_rate", 0),
-        "taxRtB": taxation_type.get("B", {}).get("tax_rate", 0),
-        "taxRtC1": taxation_type.get("C1", {}).get("tax_rate", 0),
-        "taxRtC2": taxation_type.get("C2", {}).get("tax_rate", 0),
-        "taxRtC3": taxation_type.get("C3", {}).get("tax_rate", 0),
-        "taxRtD": taxation_type.get("D", {}).get("tax_rate", 0),
-        "taxRtRVAT": taxation_type.get("RVAT", {}).get("tax_rate", 0),
-        "taxRtE": taxation_type.get("E", {}).get("tax_rate", 0),
-        "taxRtF": taxation_type.get("F", {}).get("tax_rate", 0),
-        "taxRtIpl1": taxation_type.get("IPL1", {}).get("tax_rate", 0),
-        "taxRtIpl2": taxation_type.get("IPL2", {}).get("tax_rate", 0),
-        "taxRtTl": taxation_type.get("TL", {}).get("tax_rate", 0),
-        "taxRtEcm": taxation_type.get("ECM", {}).get("tax_rate", 0),
-        "taxRtExeeg": taxation_type.get("EXEEG", {}).get("tax_rate", 0),
-        "taxRtTot": taxation_type.get("TOT", {}).get("tax_rate", 0),
-
-        "taxAmtA": taxation_type.get("A", {}).get("tax_amount", 0),
-        "taxAmtB": taxation_type.get("B", {}).get("tax_amount", 0),
-        "taxAmtC1": taxation_type.get("C1", {}).get("tax_amount", 0),
-        "taxAmtC2": taxation_type.get("C2", {}).get("tax_amount", 0),
-        "taxAmtC3": taxation_type.get("C3", {}).get("tax_amount", 0),
-        "taxAmtD": taxation_type.get("D", {}).get("tax_amount", 0),
-        "taxAmtRVAT": taxation_type.get("RVAT", {}).get("tax_amount", 0),
-        "taxAmtE": taxation_type.get("E", {}).get("tax_amount", 0),
-        "taxAmtF": taxation_type.get("F", {}).get("tax_amount", 0),
-        "taxAmtIpl1": taxation_type.get("IPL1", {}).get("tax_amount", 0),
-        "taxAmtIpl2": taxation_type.get("IPL2", {}).get("tax_amount", 0),
-        "taxAmtTl": taxation_type.get("TL", {}).get("tax_amount", 0),
-        "taxAmtEcm": taxation_type.get("ECM", {}).get("tax_amount", 0),
-        "taxAmtExeeg": taxation_type.get("EXEEG", {}).get("tax_amount", 0),
-        "taxAmtTot": taxation_type.get("TOT", {}).get("tax_amount", 0),
+        **taxation_summary,  # Dynamically add tax values
 
         "totTaxblAmt": round(tot_taxable_amt, 2),
         "totTaxAmt": round(tot_tax_amt, 2),
         "cashDcRt": invoice.additional_discount_percentage,
         "cashDcAmt": invoice.discount_amount,
-        
+
         "totAmt": round(invoice.grand_total, 2),
         "prchrAcptcYn": "Y",
         "remark": None,
@@ -970,11 +945,12 @@ def build_invoice_payload(
         "regrNm": invoice.owner,
         "modrId": split_user_mail(invoice.modified_by),
         "modrNm": invoice.modified_by,
-        "itemList": items_list,
+        "itemList": items_list,  # Attach the dynamically fetched item list
     }
-    
-    return payload
 
+    # frappe.throw(str(payload))  # Debugging output
+
+    return payload
 
 
 

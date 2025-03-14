@@ -6,6 +6,8 @@ import json
 import datetime
 from datetime import datetime
 import frappe.defaults
+from frappe.model.document import Document 
+
 from frappe.utils.dateutils import add_to_date
 from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides import on_error
 from smart_zambia_invoice.smart_invoice.overrides.backend.purchase_invoice import on_succesful_purchase_invoice_submission
@@ -382,7 +384,7 @@ def fetch_customer_info(request_data: str) -> None:
         endpoint_builder.success_callback = partial(on_success_customer_search, document_name=data["name"])
         endpoint_builder.error_callback = on_error
 
-        endpoint_builder.perform_remote_calls()
+        # endpoint_builder.perform_remote_calls()
 
         frappe.enqueue(
             endpoint_builder.perform_remote_calls,
@@ -553,7 +555,7 @@ def save_item_composition(request_data: str) -> None:
                             document_name=data["name"],
                         )
                         endpoint_builder.error_callback = on_error
-                        endpoint_builder.perform_remote_calls()
+                        # endpoint_builder.perform_remote_calls()
 
                         frappe.enqueue(
                             endpoint_builder.perform_remote_calls,
@@ -915,7 +917,7 @@ def submit_bulk_sales_invoices(docs_list: str) -> None:
     for record in data:
         for invoice in all_sales_invoices:
             if record == invoice.name:
-                doc = frappe.get_doc("Sales Invoice", record, for_update=False)
+                doc = frappe.get_doc("Sales Invoice", record)
                 on_submit(doc, method=None)
 
 
@@ -933,7 +935,6 @@ def save_stock_inventory(request_data: str) -> None:
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
     route_path, last_req_date = get_route_path("SAVE STOCK MASTER")
-    # frappe.throw(json.dumps(headers, indent=2))  
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
@@ -971,19 +972,19 @@ def save_stock_inventory(request_data: str) -> None:
             on_succesful_inventory_submission, document_name=data["name"]
         )
         endpoint_builder.error_callback = on_error
-        endpoint_builder.perform_remote_calls(),
+        # endpoint_builder.perform_remote_calls(),
 
 
 
-        # frappe.enqueue(
-        #     endpoint_builder.perform_remote_calls,
-        #     is_async=True,
-        #     queue="default",
-        #     timeout=300,
-        #     job_name=f"{data['name']}_submit_inventory",
-        #     doctype="Stock Ledger Entry",
-        #     document_name=data["name"],
-        # )
+        frappe.enqueue(
+            endpoint_builder.perform_remote_calls,
+            is_async=True,
+            queue="default",
+            timeout=300,
+            job_name=f"{data['name']}_submit_inventory",
+            doctype="Stock Ledger Entry",
+            document_name=data["name"],
+        )
 
 
 
