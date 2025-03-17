@@ -678,7 +678,6 @@ def get_real_name(doctype, field_name, value, target_field):
         return None
 
 
-
 def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, float, None]]]:
     """Iterates over the invoice items and correctly assigns tax amounts based on tax type codes.
 
@@ -720,7 +719,7 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
         tax_data = next((tax for tax in taxation_types if tax["item_code"] == getattr(item, "item_code", "")), {})
 
         taxblAmt = round(tax_data.get("taxable_amount", 0), 2)
-        taxAmt = round(tax_data.get("tax_amount", 0), 2)
+        taxAmt = round(tax_data.get("tax_amount", 0), 2)  # Keep original sign
 
         # Correct allocation based on tax type code
         vatTaxblAmt = taxblAmt if taxTyCd in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"] else 0
@@ -728,10 +727,12 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
         exciseTaxblAmt = taxblAmt if taxTyCd in ["EXEEG", "ECM"] else 0
         tlTaxblAmt = taxblAmt if taxTyCd == "TL" else 0
 
-        vatAmt = taxAmt if vatTaxblAmt > 0 else 0
-        iplAmt = taxAmt if iplTaxblAmt > 0 else 0
-        exciseTxAmt = taxAmt if exciseTaxblAmt > 0 else 0
-        tlAmt = taxAmt if tlTaxblAmt > 0 else 0
+        # Assign tax amounts without forcing them to zero
+        vatAmt = taxAmt if bool(vatTaxblAmt) else 0
+        iplAmt = taxAmt if bool(iplTaxblAmt) else 0
+        exciseTxAmt = taxAmt if bool(exciseTaxblAmt) else 0
+        tlAmt = taxAmt if bool(tlTaxblAmt) else 0
+
 
         totAmt = round(taxblAmt + taxAmt, 2)
 
@@ -745,32 +746,29 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             "pkg": 1,
             "qtyUnitCd": getattr(item, "custom_zra_unit_of_quantity_code", ""),
             "qty": abs(item.qty),
-            "prc": prc,
-            "splyAmt": splyAmt,
-            "dcRt": dcRt,
-            "dcAmt": dcAmt,
-            "tlTaxblAmt": tlTaxblAmt,
+            "prc": abs(prc),
+            "splyAmt": abs(splyAmt),
+            "dcRt": abs(dcRt),
+            "dcAmt": abs(dcAmt),
+            "tlTaxblAmt": abs(tlTaxblAmt),
             "vatCatCd": vatCatCd,
-            "iplTaxblAmt": iplTaxblAmt,
-            "exciseTaxblAmt": exciseTaxblAmt,
+            "iplTaxblAmt": abs(iplTaxblAmt),
+            "exciseTaxblAmt": abs(exciseTaxblAmt),
             "exciseTxCatCd": exciseTxCatCd,
-            "vatTaxblAmt": vatTaxblAmt,
-            "exciseTxAmt": exciseTxAmt,
-            "vatAmt": vatAmt,
-            "tlAmt": tlAmt,
-            "iplAmt": iplAmt,
+            "vatTaxblAmt": abs(vatTaxblAmt),
+            "exciseTxAmt": abs(exciseTxAmt),
+            "vatAmt": abs(vatAmt),
+            "tlAmt": abs(tlAmt),
+            "iplAmt": abs(iplAmt),
             "iplCatCd": iplCatCd,
             "tlCatCd": tlCatCd,
             "taxTyCd": taxTyCd,
-            "taxblAmt": taxblAmt,
-            "taxAmt": taxAmt,
-            "totAmt": totAmt
+            "taxblAmt": abs(taxblAmt),
+            "taxAmt": abs(taxAmt),
+            "totAmt": abs(totAmt)
         })
-        # frappe.throw(str(items_list))
 
     return items_list
-
-
 
 
 
@@ -814,13 +812,12 @@ def clean_invc_no(invoice_name):
 
 
 
-
 def get_taxation_types(doc):
     taxation_list = []  
 
     for item in getattr(doc, "items", []):
         taxation_type = getattr(item, "custom_zra_taxation_type", None)
-        net_amount = getattr(item, "net_amount", 0) 
+        net_amount = abs(getattr(item, "net_amount", 0))  # Ensure net_amount is positive
 
         if not taxation_type:
             frappe.logger().warning(f"Missing taxation type for item {getattr(item, 'item_code', 'Unknown')}")
@@ -828,10 +825,11 @@ def get_taxation_types(doc):
 
         tax_rate = frappe.db.get_value("ZRA Tax Type", taxation_type, "tax_rate_")
         tax_rate = float(tax_rate) if tax_rate else 0  
-        taxable_amount = net_amount / (1 + (tax_rate / 100)) if tax_rate > 0 else net_amount
-        taxable_amount = round(taxable_amount, 2)
 
-        tax_amount = round(taxable_amount * (tax_rate / 100), 2)
+        taxable_amount = net_amount / (1 + (tax_rate / 100)) if tax_rate > 0 else net_amount
+        taxable_amount = abs(round(taxable_amount, 2))  # Ensure taxable_amount is always positive
+
+        tax_amount = abs(round(taxable_amount * (tax_rate / 100), 2))  # Ensure tax_amount is always positive
 
         taxation_list.append({
             "item_code": getattr(item, "item_code", "Unknown"),
@@ -842,8 +840,6 @@ def get_taxation_types(doc):
         })
 
     return taxation_list  
-
-
 
 
 
@@ -971,6 +967,8 @@ def build_invoice_payload(
         "modrNm": invoice.modified_by,
         "itemList": items_list,  
     }
+    frappe.throw(str(payload))
+
 
     return payload
 
