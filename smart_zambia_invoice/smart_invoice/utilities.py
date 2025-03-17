@@ -847,8 +847,8 @@ def get_taxation_types(doc):
 
 
 
-
 from decimal import Decimal, ROUND_HALF_UP
+from datetime import datetime
 
 def round_decimal(value, places=4):
     """Rounds a number to the specified decimal places."""
@@ -883,9 +883,8 @@ def build_invoice_payload(
     sales_date = posting_date.strftime("%Y%m%d")
 
     taxation_data = get_taxation_types(invoice)  
-
     items_list = get_invoice_items_list(invoice)
-    
+
     tax_types = [
         "A", "B", "C1", "C2", "C3", "D", "RVAT", "E", "F", "IPL1", "IPL2",
         "TL", "ECM", "EXEEG", "TOT"
@@ -894,23 +893,38 @@ def build_invoice_payload(
     taxation_summary = {f"taxblAmt{t}": Decimal(0) for t in tax_types}
     taxation_summary.update({f"taxAmt{t}": Decimal(0) for t in tax_types})
     taxation_summary.update({f"taxRt{t}": Decimal(0) for t in tax_types}) 
+
     for tax_entry in taxation_data:
         tax_type = tax_entry.get("taxation_type")  
         if tax_type in tax_types:
             taxation_summary[f"taxblAmt{tax_type}"] += Decimal(str(tax_entry.get("taxable_amount", 0)))
             taxation_summary[f"taxAmt{tax_type}"] += Decimal(str(tax_entry.get("tax_amount", 0)))
-
             taxation_summary[f"taxRt{tax_type}"] = Decimal(str(tax_entry.get("tax_rate", 0.0)))
 
     for key in taxation_summary.keys():
         taxation_summary[key] = round_decimal(taxation_summary[key], 4)
 
-    tot_taxable_amt = round_decimal(sum(taxation_summary[f"taxblAmt{t}"] for t in tax_types), 4)
-    tot_tax_amt = round_decimal(sum(taxation_summary[f"taxAmt{t}"] for t in tax_types), 4)
+    # Ensure all amounts are absolute (no negatives in returns)
+    tot_taxable_amt = abs(round_decimal(sum(taxation_summary[f"taxblAmt{t}"] for t in tax_types), 4))
+    tot_tax_amt = abs(round_decimal(sum(taxation_summary[f"taxAmt{t}"] for t in tax_types), 4))
 
     invoice_name = invoice.name
     if invoice.amended_from:
         invoice_name = clean_invc_no(invoice_name)
+
+    # Handling Returns (Credit Notes)
+    orgSdcId = None
+    cnclDt = None
+    rfdDt = None
+    rfdRsnCd = None
+
+    if invoice_type_identifier == "C":  # Credit Note
+        original_invoice = frappe.get_doc("Sales Invoice", invoice.return_against) if invoice.return_against else None
+        if original_invoice:
+            orgSdcId = original_invoice.custom_vscd_id  # Get the original invoice ID
+            cnclDt = validated_date  # Cancellation date is now
+            rfdDt = sales_date  # Refund date is the original invoice date
+            rfdRsnCd = invoice.get("custom_zra_credit_note_reason", "")  # Fetch refund reason
 
     payload = {
         "orgInvcNo": (
@@ -927,10 +941,13 @@ def build_invoice_payload(
         "cfmDt": validated_date,
         "salesDt": sales_date,
         "stockRlsDt": validated_date,
-        "cnclReqDt": None,
-        "cnclDt": None,
-        "rfdDt": None,
-        "rfdRsnCd": None,
+
+        # Return fields
+        "orgSdcId": orgSdcId,  # Original invoice ID
+        "cnclDt": cnclDt,  # Cancellation date
+        "rfdDt": cnclDt,  # Refund date
+        "rfdRsnCd": rfdRsnCd,  # Refund reason code
+
         "totItemCnt": len(items_list),
         **taxation_summary,  
 
@@ -939,7 +956,7 @@ def build_invoice_payload(
         "cashDcRt": round_decimal(invoice.get("additional_discount_percentage", 0), 2),
         "cashDcAmt": round_decimal(invoice.get("discount_amount", 0), 2),
 
-        "totAmt": round_decimal(invoice.get("grand_total", 0), 2),
+        "totAmt": abs(round_decimal(invoice.get("grand_total", 0), 2)),  # Ensure total amount is absolute
         "prchrAcptcYn": "Y",
         "remark": None,
         "regrId": split_user_mail(invoice.owner),
@@ -956,6 +973,9 @@ def build_invoice_payload(
     }
 
     return payload
+
+
+
 
 
 
