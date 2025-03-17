@@ -17,6 +17,8 @@ def frequent_refresh_notices() -> None:
 
 
 
+
+
 def send_stock_update_information() -> None:
     all_stock_ledger_entries: list[Document] = frappe.get_all(
         "Stock Ledger Entry",
@@ -34,6 +36,10 @@ def send_stock_update_information() -> None:
 
         except TypeError:
             continue
+
+
+
+
 
 def send_item_inventory_information() -> None:
 
@@ -66,7 +72,6 @@ def send_item_inventory_information() -> None:
         except Exception as error:
             
             frappe.throw("Error Encountered", type(error), title="Error")
-
 
 
 def submit_pos_invoices_information() -> None:

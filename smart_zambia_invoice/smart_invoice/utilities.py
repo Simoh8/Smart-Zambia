@@ -848,21 +848,26 @@ def get_taxation_types(doc):
 
 
 
+from decimal import Decimal, ROUND_HALF_UP
+
+def round_decimal(value, places=4):
+    """Rounds a number to the specified decimal places."""
+    return float(Decimal(str(value)).quantize(Decimal(f'1.{"0" * places}'), rounding=ROUND_HALF_UP))
 
 def build_invoice_payload(
     invoice: Document, invoice_type_identifier: Literal["S", "C"], company_name: str
 ) -> dict[str, str | int | float]:
     """
-    Converts relevant invoice data to a JSON payload
+    Converts relevant invoice data to a JSON payload.
 
     Args:
-        invoice (Document): The Invoice record to generate data from
-        invoice_type_identifier (Literal["S", "C"]): The Invoice type identifier. 
-            S for Sales Invoice, C for Credit Notes
-        company_name (str): The company name used to fetch the valid settings doctype record
+        invoice (Document): The Invoice record to generate data from.
+        invoice_type_identifier (Literal["S", "C"]): The Invoice type identifier.
+            S for Sales Invoice, C for Credit Notes.
+        company_name (str): The company name used to fetch the valid settings doctype record.
 
     Returns:
-        dict[str, str | int | float]: The payload
+        dict[str, str | int | float]: The payload.
     """
 
     post_time = invoice.posting_time
@@ -877,30 +882,32 @@ def build_invoice_payload(
     validated_date = posting_date.strftime("%Y%m%d%H%M%S")
     sales_date = posting_date.strftime("%Y%m%d")
 
-    # Fetch list of invoice items
+    taxation_data = get_taxation_types(invoice)  
+
     items_list = get_invoice_items_list(invoice)
     
-    # Initialize dynamic tax groupings
     tax_types = [
         "A", "B", "C1", "C2", "C3", "D", "RVAT", "E", "F", "IPL1", "IPL2",
         "TL", "ECM", "EXEEG", "TOT"
     ]
     
-    taxation_summary = {f"taxblAmt{t}": 0 for t in tax_types}
-    taxation_summary.update({f"taxAmt{t}": 0 for t in tax_types})
-    
-    # Aggregate taxable amounts and tax amounts dynamically
-    for item in items_list:
-        tax_type = item.get("taxTyCd")
+    taxation_summary = {f"taxblAmt{t}": Decimal(0) for t in tax_types}
+    taxation_summary.update({f"taxAmt{t}": Decimal(0) for t in tax_types})
+    taxation_summary.update({f"taxRt{t}": Decimal(0) for t in tax_types}) 
+    for tax_entry in taxation_data:
+        tax_type = tax_entry.get("taxation_type")  
         if tax_type in tax_types:
-            taxation_summary[f"taxblAmt{tax_type}"] += item.get("taxblAmt", 0)
-            taxation_summary[f"taxAmt{tax_type}"] += item.get("taxAmt", 0)
+            taxation_summary[f"taxblAmt{tax_type}"] += Decimal(str(tax_entry.get("taxable_amount", 0)))
+            taxation_summary[f"taxAmt{tax_type}"] += Decimal(str(tax_entry.get("tax_amount", 0)))
 
-    # Compute total taxable and tax amounts
-    tot_taxable_amt = sum(item.get("taxblAmt", 0) for item in items_list)
-    tot_tax_amt = sum(item.get("taxAmt", 0) for item in items_list)
+            taxation_summary[f"taxRt{tax_type}"] = Decimal(str(tax_entry.get("tax_rate", 0.0)))
 
-    # Determine invoice number format
+    for key in taxation_summary.keys():
+        taxation_summary[key] = round_decimal(taxation_summary[key], 4)
+
+    tot_taxable_amt = round_decimal(sum(taxation_summary[f"taxblAmt{t}"] for t in tax_types), 4)
+    tot_tax_amt = round_decimal(sum(taxation_summary[f"taxAmt{t}"] for t in tax_types), 4)
+
     invoice_name = invoice.name
     if invoice.amended_from:
         invoice_name = clean_invc_no(invoice_name)
@@ -911,12 +918,12 @@ def build_invoice_payload(
             else frappe.get_doc("Sales Invoice", invoice.return_against).custom_zra_submission_sequence_number
         ),
         "cisInvcNo": invoice_name,
-        "custTpin": invoice.tax_id if invoice.tax_id else None,
-        "custNm": invoice.customer,
+        "custTpin": invoice.get("tax_id", ""),
+        "custNm": invoice.get("customer", ""),
         "salesTyCd": "N",
         "rcptTyCd": invoice_type_identifier if invoice_type_identifier == "S" else "R",
-        "pmtTyCd": invoice.custom_zra_payment_code,
-        "salesSttsCd": invoice.custom_progress_status_code,
+        "pmtTyCd": invoice.get("custom_zra_payment_code", ""),
+        "salesSttsCd": invoice.get("custom_progress_status_code", ""),
         "cfmDt": validated_date,
         "salesDt": sales_date,
         "stockRlsDt": validated_date,
@@ -925,35 +932,30 @@ def build_invoice_payload(
         "rfdDt": None,
         "rfdRsnCd": None,
         "totItemCnt": len(items_list),
-        **taxation_summary,  # Dynamically add tax values
+        **taxation_summary,  
 
-        "totTaxblAmt": round(tot_taxable_amt, 2),
-        "totTaxAmt": round(tot_tax_amt, 2),
-        "cashDcRt": invoice.additional_discount_percentage,
-        "cashDcAmt": invoice.discount_amount,
+        "totTaxblAmt": tot_taxable_amt,
+        "totTaxAmt": tot_tax_amt,
+        "cashDcRt": round_decimal(invoice.get("additional_discount_percentage", 0), 2),
+        "cashDcAmt": round_decimal(invoice.get("discount_amount", 0), 2),
 
-        "totAmt": round(invoice.grand_total, 2),
+        "totAmt": round_decimal(invoice.get("grand_total", 0), 2),
         "prchrAcptcYn": "Y",
         "remark": None,
         "regrId": split_user_mail(invoice.owner),
         "lpoNumber": None,
-        "currencyTyCd": invoice.currency,
-        "exchangeRt": invoice.conversion_rate,
+        "currencyTyCd": invoice.get("currency", "ZMW"),
+        "exchangeRt": round_decimal(invoice.get("conversion_rate", 1.0), 4),
         "destnCountryCd": "",
         "dbtRsnCd": "",
         "invcAdjustReason": "",
         "regrNm": invoice.owner,
         "modrId": split_user_mail(invoice.modified_by),
         "modrNm": invoice.modified_by,
-        "itemList": items_list,  # Attach the dynamically fetched item list
+        "itemList": items_list,  
     }
 
-    # frappe.throw(str(payload))  # Debugging output
-
     return payload
-
-
-
 
 
 

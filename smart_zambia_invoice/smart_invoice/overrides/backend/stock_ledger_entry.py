@@ -83,9 +83,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
                 payload["sarTyCd"] = "06"
 
 
-
-
-
     if doc.voucher_type == "Stock Entry":
         items_list = get_stock_entry_movement_items_details(record.items, all_items)
         current_item = list(
@@ -165,9 +162,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
                 payload["sarTyCd"] = "02"
 
 
-
-
-
     if doc.voucher_type in ("Delivery Note", "Sales Invoice"):
         if (
             doc.voucher_type == "Sales Invoice"
@@ -190,9 +184,9 @@ def on_update(doc: Document, method: str | None = None) -> None:
         payload["custNm"] = record.customer
         payload["custTin"] = record.tax_id
 
-        # TODO: opposite of previous, and use qty change field
-        # TODO: These map to sales returns
+
         if record.is_return:
+            # frappe.throw(str(record))
             # if is_return is checked, it turns to different type of docs
             if doc.actual_qty > 0:
                 payload["sarTyCd"] = "03"

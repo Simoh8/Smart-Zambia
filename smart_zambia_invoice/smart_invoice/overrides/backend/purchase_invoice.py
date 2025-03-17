@@ -225,8 +225,6 @@ def get_items_details(doc: Document) -> list:
 
 
 
-
-
 def validate_item_registration(items):
     for item in items:
         item_code = item.item_code

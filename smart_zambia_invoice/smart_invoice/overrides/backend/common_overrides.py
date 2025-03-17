@@ -27,10 +27,13 @@ def on_submit_override_generic_invoices(
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
     route_path = get_route_path("SAVE SALES INVOICE")
+    # frappe.throw("This is a return invoice")
+
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
         invoice_identifier = "C" if doc.is_return else "S"
+        print("I have xmade a return note ")
 
         invoice_payload = build_invoice_payload(doc, invoice_identifier, company_name)
         common_payload = last_request_less_payload(headers)

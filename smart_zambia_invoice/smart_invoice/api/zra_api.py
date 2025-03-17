@@ -408,7 +408,7 @@ def make_zra_item_registration(request_data: str) -> dict | None:
     company_name = data["company_name"]
     headers = build_request_headers(company_name )
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("SAVE ITEM")
+    route_path = get_route_path("SAVE ITEM")
 
     if headers and server_url and route_path:
             url = f"{server_url}{route_path}"
@@ -934,7 +934,8 @@ def save_stock_inventory(request_data: str) -> None:
 
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("SAVE STOCK MASTER")
+    route_path = get_route_path("SAVE STOCK MASTER")
+    # frappe.throw(str(route_path))
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
@@ -972,7 +973,6 @@ def save_stock_inventory(request_data: str) -> None:
             on_succesful_inventory_submission, document_name=data["name"]
         )
         endpoint_builder.error_callback = on_error
-        # endpoint_builder.perform_remote_calls(),
 
 
 
