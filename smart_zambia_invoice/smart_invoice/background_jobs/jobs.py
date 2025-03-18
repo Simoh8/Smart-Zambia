@@ -103,13 +103,13 @@ def submit_pos_invoices_information() -> None:
 
 
 @frappe.whitelist()
-def refresh_code_lists(vendor: str="OSCU KRA") -> str | None:
+def refresh_code_lists() -> str | None:
     company_name: str | None = frappe.defaults.get_user_default("Company")
 
-    headers = build_request_headers (company_name, vendor)
-    server_url = get_server_url(company_name, vendor)
+    headers = build_request_headers (company_name)
+    server_url = get_server_url(company_name)
 
-    code_search_route_path, last_request_date = get_route_path(
+    code_search_route_path, last_req_date = get_route_path(
         "CodeSearchReq"
     )  # endpoint for code search
 
@@ -117,7 +117,7 @@ def refresh_code_lists(vendor: str="OSCU KRA") -> str | None:
         url = f"{server_url}{code_search_route_path}"
         payload = {
             "lastReqDt": "20200101000000"
-        }  # Hard-coded to this date to get all code lists.
+        }  
 
         endpoint_maker.headers = headers
         endpoint_maker.payload = payload
@@ -126,7 +126,7 @@ def refresh_code_lists(vendor: str="OSCU KRA") -> str | None:
         # Fetch and update codes obtained from CodeSearchReq endpoint
         endpoint_maker.url = url
         endpoint_maker.success_callback = run_updater_functions
-        endpoint_maker.make_remote_call(doctype=None, document_name=None)
+        endpoint_maker.perform_remote_calls(doctype=None, document_name=None)
 
         return "succeeded"
 
@@ -138,9 +138,7 @@ def get_item_classification_codes() -> str | None:
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
 
-    item_cls_route_path, last_request_date = get_route_path(
-        "ItemClsSearchReq"
-    )  # overwriting last_request_date since it's not used elsewhere for this task
+    item_cls_route_path, last_request_date = get_route_path("Classification Codes")  # overwriting last_request_date since it's not used elsewhere for this task
 
     if headers and server_url and item_cls_route_path:
         url = f"{server_url}{item_cls_route_path}"
@@ -157,7 +155,7 @@ def get_item_classification_codes() -> str | None:
         endpoint_maker.url = f"{server_url}{item_cls_route_path}"
         endpoint_maker.success_callback = update_item_classification_codes
 
-        # endpoints_builder.make_remote_call(doctype=None, document_name=None)
+        endpoint_maker.make_remote_call(doctype=None, document_name=None)
         frappe.enqueue(
             endpoint_maker.perform_remote_calls,
             is_async=True,
