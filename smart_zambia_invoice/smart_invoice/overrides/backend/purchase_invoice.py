@@ -13,17 +13,14 @@ from ...api.remote_response_handler import (
 	on_succesful_purchase_invoice_submission,
 	
 )
-from ...utilities import (
-	build_request_headers,
-	extract_doc_series_number,
-	get_route_path,
-	get_server_url,
-	quantize_amount,
-	split_user_mail,
-	get_taxation_types
-)
+from ...utilities import (build_request_headers,extract_doc_series_number,get_route_path,get_server_url,quantize_amount,split_user_mail,get_taxation_types)
+
+
 
 endpoints_maker = EndpointConstructor()
+
+
+
 
 
 def validate(doc: Document, method: str) -> None:
@@ -49,6 +46,11 @@ def validate(doc: Document, method: str) -> None:
 			],
 		)
 
+
+
+
+
+
 def on_submit(doc: Document, method: str) -> None:
     validate_item_registration(doc.items)
 
@@ -60,7 +62,6 @@ def on_submit(doc: Document, method: str) -> None:
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
-        # Fetch common payload fields (includes tpin and bhfId)
         common_payload = last_request_less_payload(headers)
         invoice_payload = build_purchase_invoice_payload(doc)
         payload = {**common_payload, **invoice_payload}
@@ -74,6 +75,9 @@ def on_submit(doc: Document, method: str) -> None:
         endpoints_maker.error_callback = on_error
 
         endpoints_maker.perform_remote_calls()
+
+
+
 
 
 
@@ -130,6 +134,9 @@ def build_purchase_invoice_payload(doc: Document) -> dict:
 	}
 
 	return payload
+
+
+
 
 
 
@@ -225,10 +232,17 @@ def get_items_details(doc: Document) -> list:
 
 
 
+
+
+
 def validate_item_registration(items):
     for item in items:
         item_code = item.item_code
         validation_message(item_code)
+
+
+
+
 
 def validation_message(item_code):
     item_doc = frappe.get_doc("Item", item_code)

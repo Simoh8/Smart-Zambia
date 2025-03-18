@@ -245,12 +245,17 @@ scheduler_events = {
 
 	],
 	"hourly": [
-        "smart_zambia_invoice.smart_invoice.background_jobs.jobs.frequent_refresh_notices"
+        "smart_zambia_invoice.smart_invoice.background_jobs.jobs.frequent_refresh_notices",
+        "smart_zambia_invoice.smart_invoice.background_jobs.jobs.refresh_notices",
+        "smart_zambia_invoice.smart_invoice.background_jobs.jobs.send_stock_update_information",
 	],
 
 
 	"monthly": [
-        "smart_zambia_invoice.smart_invoice.background_jobs.jobs.send_stock_update_information"
+                "smart_zambia_invoice.smart_invoice.background_jobs.jobs.refresh_code_lists",
+                        "smart_zambia_invoice.smart_invoice.background_jobs.jobs.get_item_classification_codes"
+
+
 	],
 }
 

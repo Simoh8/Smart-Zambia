@@ -110,7 +110,7 @@ def refresh_code_lists() -> str | None:
     server_url = get_server_url(company_name)
 
     code_search_route_path, last_req_date = get_route_path(
-        "CodeSearchReq"
+        "Standard Codes (Constants)"
     )  # endpoint for code search
 
     if headers and server_url and code_search_route_path:
