@@ -30,10 +30,9 @@ def on_update(doc: Document, method: str | None = None) -> None:
     company_name = doc.company
     all_items = frappe.db.get_all(
         "Item", ["*"]
-    )  # Get all items to filter and fetch metadata
+    )  
     record = frappe.get_doc(doc.voucher_type, doc.voucher_no)
     recordtype=doc.voucher_type
-    # frappe.throw(recordtype)
     series_no = extract_doc_series_number(record)
     print("The record has ",record)
     headers = build_request_headers(company_name )
@@ -105,7 +104,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
             )
 
             if doc.actual_qty < 0:
-                # If the record warehouse is the source warehouse
                 headers = build_request_headers(doc.company, doc_warehouse_branch_id)
                 payload["custBhfId"] = get_warehouse_branch_id(
                     voucher_details.t_warehouse
@@ -113,7 +111,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
                 payload["sarTyCd"] = "13"
 
             else:
-                # If the record warehouse is the target warehouse
                 headers = build_request_headers(doc.company, doc_warehouse_branch_id)
                 payload["custBhfId"] = ""
                 payload["sarTyCd"] = "04"
@@ -130,7 +127,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
         if record.stock_entry_type == "Repack":
             if doc.actual_qty < 0:
-                # Negative repack
                 payload["sarTyCd"] = "14"
 
             else:
@@ -163,9 +159,12 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
 
     if doc.voucher_type in ("Delivery Note", "Sales Invoice"):
+
+
         if (
             doc.voucher_type == "Sales Invoice"
             and record.custom_has_it_been_successfully_submitted != 0
+            and not record.is_return 
         ):
             return
 
@@ -174,10 +173,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
         current_item = list(
             filter(lambda item: item["itemNm"] == doc.item_code, items_list)
-        )  # Get current item only
-        # tax_details = list(filter(lambda i: i["item"] == doc.item_code, item_taxes))[
-        #     0
-        # ]  
+        )
       
         payload["itemList"] = current_item
         payload["totItemCnt"] = len(current_item)
@@ -186,8 +182,8 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
 
         if record.is_return:
-            # frappe.throw(str(record))
-            # if is_return is checked, it turns to different type of docs
+            # frappe.throw(str(doc))
+
             if doc.actual_qty > 0:
                 payload["sarTyCd"] = "03"
 
@@ -202,7 +198,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
     if headers and server_url and route_path:
         route_path = route_path[0] if isinstance(route_path, tuple) else route_path
         url = f"{server_url}{route_path}"        
-        # frappe.throw(url)
 
         endpoint_maker.url = url
         endpoint_maker.headers = headers
@@ -216,6 +211,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
             f"{doc.name}{doc.creation}{doc.modified}".encode(), usedforsecurity=False
         ).hexdigest()
 
+        # endpoint_maker.perform_remote_calls(),
 
 
         frappe.enqueue(
@@ -227,6 +223,7 @@ def on_update(doc: Document, method: str | None = None) -> None:
             doctype="Stock Ledger Entry",
             document_name=doc.name,
         )
+
 
 
 

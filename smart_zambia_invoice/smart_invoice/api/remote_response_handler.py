@@ -424,12 +424,10 @@ def on_success_sales_information_submission(
         receipt_number = response_data["rcptNo"]
         internal_data = response_data["intrlData"]
         control_unit_time = response_data["vsdcRcptPbctDate"]
-        custom_vscd_id=response_data["sdcId"]  # Make sure this is correct field
+        custom_vscd_id=response_data["sdcId"]  
 
-        # Fetch the QR code
         qr_code = get_qr_code(response_data["qrCodeUrl"])
 
-        # Setting values in the database
         frappe.db.set_value(
             invoice_type,
             document_name,
@@ -448,10 +446,8 @@ def on_success_sales_information_submission(
 
 
     except KeyError as e:
-        # Handle missing fields from the response data
         frappe.throw(f"Missing expected field in the response: {str(e)}")
     except Exception as e:
-        # Handle any other exceptions
         frappe.throw(f"An error occurred while processing the submission: {str(e)}")
 
 
@@ -464,8 +460,10 @@ def on_success_sales_information_submission(
 
 def on_success_item_classification_search(response: dict) -> None:
     classification_codes = response.get("data", {}).get("itemClsList", [])
-    success_codes = []  # To store successfully inserted item codes
-    duplicate_codes = []  # To store duplicate item codes
+    success_codes = []  
+    
+    duplicate_codes = []  
+    
 
     for classification_code in classification_codes:
         doc = frappe.new_doc("ZRA Item Classification")
@@ -481,11 +479,9 @@ def on_success_item_classification_search(response: dict) -> None:
         except frappe.exceptions.DuplicateEntryError:
             duplicate_codes.append(classification_code.get("itemClsCd"))
 
-    # Generate messages using the modular functions
     success_message = success(success_codes)
     duplicate_message = duplicate(duplicate_codes)
 
-    # Display the combined message
     frappe.msgprint(f"{success_message}<br>{duplicate_message}", title="ZRA Data Import Summary")
 
 
@@ -511,7 +507,7 @@ def on_succesfull_purchase_search_zra(response: dict) -> None:
 
 def create_and_link_purchase_item(item: dict, parent_record: str) -> None:
     '''There is an issue with the way its creating items from fetched purchases. Need some fix.
-    KRA is down and am very annoyed because its really wasting my whole time.'''
+    ZRA is down and am very annoyed because its really wasting my whole time.'''
     item_cls_code = item["itemClsCd"]
 
     if not frappe.db.exists("ZRA Item Classification", item_cls_code):
@@ -547,8 +543,6 @@ def create_and_link_purchase_item(item: dict, parent_record: str) -> None:
     registered_item.total_amount = item["totAmt"]
 
     registered_item.save()
-
-
 
 
 

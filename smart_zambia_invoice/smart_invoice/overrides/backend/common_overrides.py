@@ -27,7 +27,6 @@ def on_submit_override_generic_invoices(
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
     route_path = get_route_path("SAVE SALES INVOICE")
-    # frappe.throw("This is a return invoice")
 
 
     if headers and server_url and route_path:
