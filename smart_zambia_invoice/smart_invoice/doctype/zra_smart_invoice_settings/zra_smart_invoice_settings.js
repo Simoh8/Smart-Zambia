@@ -57,33 +57,13 @@ frappe.ui.form.on("ZRA Smart Invoice Settings", {
       });
     }
 
-    frm.add_custom_button(
-      __("Update D Codes"),
-      function () {
-        frappe.call({
-          method:
-            "smart_zambia_invoice.smart_invoice.background_jobs.jobs.refresh_code_lists",
-          args: {
-            request_data: {
-              name: frm.doc.name,
-              company_name: companyName,
-            },
-          },
-          callback: (response) => {},
-          error: (error) => {
-            // Error Handling is Defered to the Server
-          },
-        });
-      },
-      __("ZRA Actions")
-    );
 
     frm.add_custom_button(
-      __("Get Item Codes"),
+      __("Get Standard Codes"),
       () => {
         frappe.call({
           method:
-            "smart_zambia_invoice.smart_invoice.background_jobs.jobs.get_item_classification_codes",
+            "smart_zambia_invoice.smart_invoice.background_jobs.jobs.refresh_code_lists",
           args: {},
 
           // args: { request_data: { server_url: frm.doc.server_url } },
@@ -94,6 +74,23 @@ frappe.ui.form.on("ZRA Smart Invoice Settings", {
       },
       __("ZRA Actions")
     );
+
+    frm.add_custom_button(
+        __("Get Item Codes"),
+        () => {
+          frappe.call({
+            method:
+              "smart_zambia_invoice.smart_invoice.background_jobs.jobs.get_item_classification_codes",
+            args: {},
+  
+            // args: { request_data: { server_url: frm.doc.server_url } },
+            callback: (response) => {
+              // Handle callback
+            },
+          });
+        },
+        __("ZRA Actions")
+      );
 
     frm.add_custom_button(
       __("Ping ZRA Server"),

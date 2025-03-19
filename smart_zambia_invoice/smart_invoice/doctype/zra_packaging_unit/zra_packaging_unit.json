@@ -8,7 +8,6 @@
  "field_order": [
   "packaging_unit_details_section",
   "code",
-  "sort_order",
   "column_break_tgzq",
   "code_name",
   "code_description"
@@ -25,12 +24,6 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Code"
-  },
-  {
-   "fieldname": "sort_order",
-   "fieldtype": "Int",
-   "label": "Sort Order",
-   "non_negative": 1
   },
   {
    "fieldname": "column_break_tgzq",
@@ -54,7 +47,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-22 08:41:02.842253",
+ "modified": "2025-03-19 14:56:19.832694",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Packaging Unit",

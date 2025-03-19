@@ -13,10 +13,7 @@
   "sort_order",
   "is_used",
   "column_break_rolb",
-  "code_class",
   "user_defined_code_1",
-  "user_defined_code_2",
-  "user_defined_code_3",
   "tax_rate_"
  ],
  "fields": [
@@ -65,24 +62,9 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "code_class",
-   "fieldtype": "Data",
-   "label": "Code Class"
-  },
-  {
    "fieldname": "user_defined_code_1",
    "fieldtype": "Data",
    "label": "User Defined Code 1"
-  },
-  {
-   "fieldname": "user_defined_code_2",
-   "fieldtype": "Data",
-   "label": "User Defined Code 2"
-  },
-  {
-   "fieldname": "user_defined_code_3",
-   "fieldtype": "Data",
-   "label": "User Defined Code 3"
   },
   {
    "fieldname": "tax_rate_",
@@ -92,7 +74,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-07 15:31:13.980051",
+ "modified": "2025-03-19 14:55:41.738737",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Tax Type",

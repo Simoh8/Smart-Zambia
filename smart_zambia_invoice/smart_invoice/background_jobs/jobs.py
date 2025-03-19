@@ -109,14 +109,16 @@ def refresh_code_lists() -> str | None:
 
     headers = build_request_headers (company_name)
     server_url = get_server_url(company_name)
-    frappe.throw(str(server_url))
 
     code_search_route_path = get_route_path("Standard Codes (Constants)")  # endpoint for code search
     if headers and server_url and code_search_route_path:
         url = f"{server_url}{code_search_route_path}"
-        payload = {
-            "lastReqDt": "20200101000000"
-        }  
+        common_payload = last_request_less_payload(headers)
+        payload = {**common_payload,
+            "lastReqDt": "20180101000000"
+        }  # Hard-coded to a this date to get all code lists.
+
+        # frappe.throw(str(payload))
 
         endpoint_maker.headers = headers
         endpoint_maker.payload = payload
@@ -125,7 +127,13 @@ def refresh_code_lists() -> str | None:
         # Fetch and update codes obtained from CodeSearchReq endpoint
         endpoint_maker.url = url
         endpoint_maker.success_callback = run_updater_functions
-        endpoint_maker.perform_remote_calls(doctype=None, document_name=None)
+        frappe.enqueue(
+            endpoint_maker.perform_remote_calls,
+            is_async=True,
+            queue="long",
+            timeout=1200,
+            doctype="ZRA Smart Invoice Settings",
+        )
 
         return "succeeded"
 
@@ -144,7 +152,7 @@ def get_item_classification_codes() -> str | None:
 
         common_payload = last_request_less_payload(headers)
         payload = {**common_payload,
-            "lastReqDt": "20230101000000"
+            "lastReqDt": "20180101000000"
         }  # Hard-coded to a this date to get all code lists.
 
         endpoint_maker.url = url
@@ -156,7 +164,7 @@ def get_item_classification_codes() -> str | None:
         endpoint_maker.url = f"{server_url}{item_cls_route_path}"
         endpoint_maker.success_callback = update_item_classification_codes
 
-        endpoint_maker.perform_remote_calls(doctype=None, document_name=None)
+        # endpoint_maker.perform_remote_calls(doctype=None, document_name=None)
         frappe.enqueue(
             endpoint_maker.perform_remote_calls,
             is_async=True,
@@ -195,9 +203,8 @@ def update_unit_of_quantity(data: dict) -> None:
 
         finally:
             doc.code = unit_of_quantity["cd"]
-            doc.sort_order = unit_of_quantity["srtOrd"]
             doc.code_name = unit_of_quantity["cdNm"]
-            doc.code_description = unit_of_quantity["cdDesc"]
+            doc.code_description = unit_of_quantity["cdNm"]
 
             doc.save()
 
@@ -215,14 +222,13 @@ def update_taxation_type(data: dict) -> None:
             doc = frappe.new_doc("ZRA Tax Type")
 
         finally:
-            doc.cd = taxation_type["cd"]
-            doc.cdnm = taxation_type["cdNm"]
-            doc.cddesc = taxation_type["cdDesc"]
-            doc.useyn = 1 if taxation_type["useYn"] == "Y" else 0
-            doc.srtord = taxation_type["srtOrd"]
-            doc.userdfncd1 = taxation_type["userDfnCd1"]
-            doc.userdfncd2 = taxation_type["userDfnCd2"]
-            doc.userdfncd3 = taxation_type["userDfnCd3"]
+            doc.code = taxation_type["cd"]
+            doc.code_name = taxation_type["cdNm"]
+            doc.code_description = taxation_type["cdNm"]
+            doc.is_used = 1 
+            doc.user_defined_code_1 = taxation_type["userDfnCd1"]
+            doc.tax_rate_ = taxation_type["userDfnCd1"]
+
 
             doc.save()
 
@@ -242,8 +248,7 @@ def update_packaging_units(data: dict) -> None:
         finally:
             doc.code = packaging_unit["cd"]
             doc.code_name = packaging_unit["cdNm"]
-            doc.sort_order = packaging_unit["srtOrd"]
-            doc.code_description = packaging_unit["cdDesc"]
+            doc.code_description = packaging_unit["cdNm"]
 
             doc.save()
 
@@ -263,9 +268,7 @@ def update_countries(data: dict) -> None:
         finally:
             doc.code = country["cd"]
             doc.code_name = country["cdNm"]
-            doc.sort_order = country["srtOrd"]
-            doc.code_description = country["cdDesc"]
-
+            doc.code_description = country["cdNm"]
             doc.save()
 
     frappe.db.commit()
