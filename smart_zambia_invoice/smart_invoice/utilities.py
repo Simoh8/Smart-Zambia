@@ -914,18 +914,18 @@ def build_invoice_payload(
     rfdDt = None
     rfdRsnCd = None
 
-    if invoice_type_identifier == "C":  # Credit Note
+    if invoice_type_identifier == "C":  
         original_invoice = frappe.get_doc("Sales Invoice", invoice.return_against) if invoice.return_against else None
         if original_invoice:
-            orgSdcId = original_invoice.custom_vscd_id  # Get the original invoice ID
-            cnclDt = validated_date  # Cancellation date is now
-            rfdDt = sales_date  # Refund date is the original invoice date
-            rfdRsnCd = invoice.get("custom_zra_credit_note_reason", "")  # Fetch refund reason
+            orgSdcId = original_invoice.custom_vscd_id 
+            cnclDt = validated_date  
+            rfdDt = sales_date  
+            rfdRsnCd = invoice.get("custom_zra_credit_note_reason", "")  
 
     payload = {
         "orgInvcNo": (
             0 if invoice_type_identifier == "S"
-            else frappe.get_doc("Sales Invoice", invoice.return_against).custom_zra_submission_sequence_number
+            else frappe.get_doc("Sales Invoice", invoice.return_against).custom_receipt_number
         ),
         "cisInvcNo": invoice_name,
         "custTpin": invoice.get("tax_id", ""),
@@ -938,12 +938,10 @@ def build_invoice_payload(
         "salesDt": sales_date,
         "stockRlsDt": validated_date,
 
-        # Return fields
-        "orgSdcId": orgSdcId,  # Original invoice ID
-        "cnclDt": cnclDt,  # Cancellation date
-        "rfdDt": cnclDt,  # Refund date
-        "rfdRsnCd": rfdRsnCd,  # Refund reason code
-
+        "orgSdcId": orgSdcId,  
+        "cnclDt": cnclDt,  
+        "rfdDt": cnclDt,  
+        "rfdRsnCd": rfdRsnCd,  
         "totItemCnt": len(items_list),
         **taxation_summary,  
 
@@ -967,7 +965,7 @@ def build_invoice_payload(
         "modrNm": invoice.modified_by,
         "itemList": items_list,  
     }
-    frappe.throw(str(payload))
+    # frappe.throw(str(payload))
 
 
     return payload
