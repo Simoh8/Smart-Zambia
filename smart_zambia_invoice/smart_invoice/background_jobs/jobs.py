@@ -109,11 +109,9 @@ def refresh_code_lists() -> str | None:
 
     headers = build_request_headers (company_name)
     server_url = get_server_url(company_name)
+    frappe.throw(str(server_url))
 
-    code_search_route_path, last_req_date = get_route_path(
-        "Standard Codes (Constants)"
-    )  # endpoint for code search
-
+    code_search_route_path = get_route_path("Standard Codes (Constants)")  # endpoint for code search
     if headers and server_url and code_search_route_path:
         url = f"{server_url}{code_search_route_path}"
         payload = {
