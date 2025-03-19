@@ -4,6 +4,7 @@ import frappe
 import frappe.defaults
 from frappe.model.document import Document
 from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides import EndpointConstructor, build_request_headers, get_route_path, get_server_url, on_error
+from smart_zambia_invoice.smart_invoice.utilities import last_request_less_payload
 from..overrides.backend.stock_ledger_entry import on_update
 from..overrides.backend.sales_invoice import on_submit
 
@@ -138,11 +139,13 @@ def get_item_classification_codes() -> str | None:
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
 
-    item_cls_route_path, last_request_date = get_route_path("Classification Codes")  # overwriting last_request_date since it's not used elsewhere for this task
+    item_cls_route_path = get_route_path("Classification Codes")  # overwriting last_request_date since it's not used elsewhere for this task
 
     if headers and server_url and item_cls_route_path:
         url = f"{server_url}{item_cls_route_path}"
-        payload = {
+
+        common_payload = last_request_less_payload(headers)
+        payload = {**common_payload,
             "lastReqDt": "20230101000000"
         }  # Hard-coded to a this date to get all code lists.
 
@@ -155,7 +158,7 @@ def get_item_classification_codes() -> str | None:
         endpoint_maker.url = f"{server_url}{item_cls_route_path}"
         endpoint_maker.success_callback = update_item_classification_codes
 
-        endpoint_maker.make_remote_call(doctype=None, document_name=None)
+        endpoint_maker.perform_remote_calls(doctype=None, document_name=None)
         frappe.enqueue(
             endpoint_maker.perform_remote_calls,
             is_async=True,
@@ -281,12 +284,12 @@ def update_item_classification_codes(response: dict) -> None:
         if item_classification["itemClsCd"] in existing_classifications:
             update_query = f"""
                 UPDATE `tab{"ZRA Item Classification"}`
-                SET itemclscd = '{item_classification["itemClsCd"]}',
-                    itemclslvl = '{item_classification["itemClsLvl"]}',
-                    itemclsnm = '{item_classification["itemClsNm"].replace("'", " ")}',
-                    taxtycd = '{item_classification["taxTyCd"]}',
-                    useyn = '{1 if item_classification["useYn"] == "Y" else 0}',
-                    mjrtgyn  = '{1 if item_classification["mjrTgYn"] == "Y" else 0}',
+                SET item_classification_code = '{item_classification["itemClsCd"]}',
+                    item_classification_level = '{item_classification["itemClsLvl"]}',
+                    item_classification_name = '{item_classification["itemClsNm"].replace("'", " ")}',
+                    taxation_type_code = '{item_classification["taxTyCd"]}',
+                    is_used = '{1 if item_classification["useYn"] == "Y" else 0}',
+                    is_major_target  = '{1 if item_classification["mjrTgYn"] == "Y" else 0}',
                     modified = SYSDATE()
                 WHERE name = '{item_classification["itemClsCd"]}';
             """
@@ -296,7 +299,7 @@ def update_item_classification_codes(response: dict) -> None:
         else:
             insert_query = f"""
                 INSERT INTO `tab{"ZRA Item Classification"}`
-                    (name, itemclscd, itemclslvl, itemclsnm, taxtycd, useyn, mjrtgyn, creation)
+                    (name, item_classification_code, item_classification_level, item_classification_name, taxation_type_code, is_used, is_major_target, creation)
                 VALUES
                     ('{item_classification["itemClsCd"]}',
                      '{item_classification["itemClsCd"]}',

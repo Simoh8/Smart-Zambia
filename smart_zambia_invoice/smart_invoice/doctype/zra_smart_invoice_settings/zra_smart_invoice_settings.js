@@ -14,7 +14,7 @@ frappe.ui.form.on('ZRA Smart Invoice Settings', {
               },
               {
                   label: __('Update Codes'),
-                  method: 'smart_zambia_invoice.smart_invoice.api.zra_api.ping_zra_server',
+                  method: 'smart_zambia_invoice.smart_invoice.api.zra_api.get_item_classification_codes',
                   args: { name: frm.doc.name, company_name: frm.doc.company }
               },
               {
@@ -48,6 +48,19 @@ frappe.ui.form.on('ZRA Smart Invoice Settings', {
               }, __('ZRA Actions'));
           });
       }
+
+
+      frm.add_custom_button(__('Update Standard Codes'), () => {
+        frappe.call({
+            method: 'smart_zambia_invoice.smart_invoice.background_jobs.jobs.get_item_classification_codes',
+            args: {},
+
+            // args: { request_data: { server_url: frm.doc.server_url } },
+            callback: (response) => {
+                // Handle callback
+            }
+        });
+    }, __('ZRA Actions'));
 
       frm.add_custom_button(__('Ping ZRA Server'), () => {
           frappe.call({
