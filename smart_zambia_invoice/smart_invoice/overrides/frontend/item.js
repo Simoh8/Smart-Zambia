@@ -31,33 +31,36 @@ frappe.ui.form.on(itemDoctypName, {
             let iplCatCd = null;
             let tlCatCd = null;
             let exciseTxCatCd = null;
-        
+
             // VAT Category Mapping
-            if (["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"].includes(taxType)) {
+            if (
+              ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"].includes(taxType)
+            ) {
               vatCatCd = taxType;
             }
-        
+
             // Insurance Premium Levy Mapping
             if (["IPL1", "IPL2"].includes(taxType)) {
               iplCatCd = taxType;
             }
-            
+
             if (taxType === "TOT") {
               tlCatCd = taxType;
             }
-        
+
             // Tourism Levy Mapping
             if (["TL", "F"].includes(taxType)) {
               tlCatCd = taxType;
             }
-        
+
             // Excise Tax Mapping
             if (["ECM", "EXEEG"].includes(taxType)) {
               exciseTxCatCd = taxType;
             }
-        
+
             frappe.call({
-              method: "smart_zambia_invoice.smart_invoice.api.zra_api.make_zra_item_registration",
+              method:
+                "smart_zambia_invoice.smart_invoice.api.zra_api.make_zra_item_registration",
               args: {
                 request_data: {
                   name: frm.doc.name,
@@ -92,7 +95,9 @@ frappe.ui.form.on(itemDoctypName, {
                 },
               },
               callback: (response) => {
-                frappe.msgprint("Item Registration Queued. Please refresh the browser tab.");
+                frappe.msgprint(
+                  "Item Registration Queued. Please refresh the browser tab."
+                );
               },
               error: (error) => {
                 // Error Handling is Deferred to the Server
@@ -101,36 +106,32 @@ frappe.ui.form.on(itemDoctypName, {
           },
           __("ZRA Actions")
         );
-        
-        
       }
       if (frm.doc.is_stock_item) {
         frm.add_custom_button(
-          __('ZRA Item Inventory Submission'),
+          __("ZRA Item Inventory Submission"),
           function () {
             frappe.call({
               method:
-                'smart_zambia_invoice.smart_invoice.api.zra_api.save_stock_inventory',
+                "smart_zambia_invoice.smart_invoice.api.zra_api.save_stock_inventory",
               args: {
                 request_data: {
                   company_name: companyName,
                   name: frm.doc.name,
                   itemName: frm.doc.item_code,
-                  remainq:frm.doc.stock_levels,
+                  remainq: frm.doc.stock_levels,
                   itemCd: frm.doc.custom_zra_item_classification_code,
                   registered_by: frm.doc.owner,
                   modified_by: frm.doc.modified_by,
-
                 },
               },
-              callback: (response) => {
-              },
+              callback: (response) => {},
               error: (error) => {
                 // Error Handling is Defered to the Server
               },
             });
           },
-          __('ZRA Actions'),
+          __("ZRA Actions")
         );
       }
       if (
@@ -140,6 +141,11 @@ frappe.ui.form.on(itemDoctypName, {
         frm.add_custom_button(
           __("Submit RRP Item"),
           function () {
+            let originalItemName = frm.doc.item_name || "";
+
+            // Ensure item name is a valid string and trim if necessary
+            let shortenedItemName = originalItemName.substring(0, 200);
+
             frappe.call({
               method:
                 "smart_zambia_invoice.smart_invoice.api.zra_api.make_rrp_item_registration",
@@ -150,13 +156,12 @@ frappe.ui.form.on(itemDoctypName, {
                   itemCd: frm.doc.custom_zra_item_code,
                   itemClsCd: frm.doc.custom_zra_item_classification_code,
                   itemTyCd: frm.doc.custom_product_code,
-                  itemNm: frm.doc.item_name,
+                  itemNm: shortenedItemName, // Apply the shortened name
                   orgnNatCd: frm.doc.custom_zra_country_origin_code,
                   pkgUnitCd: frm.doc.custom_zra_packaging_unit_code,
                   qtyUnitCd: frm.doc.custom_zra_unit_quantity_code,
                   rrp: frm.doc.custom_recommended_retail_price,
                   useYn: "Y",
-
                   regrId: frm.doc.owner,
                   regrNm: frm.doc.owner,
                   modrId: frm.doc.modified_by,
@@ -167,7 +172,7 @@ frappe.ui.form.on(itemDoctypName, {
                 frappe.msgprint("Request queued. Please Refresh your tab");
               },
               error: (error) => {
-                // Error Handling is Defered to the Server
+                console.error("Error:", error);
               },
             });
           },

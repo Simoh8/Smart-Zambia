@@ -595,7 +595,7 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
     company_name = data["company_name"]
     headers = build_request_headers(company_name )
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("SAVE RRP ITEMS")
+    route_path = get_route_path("SAVE RRP ITEMS")
 
     if headers and server_url and route_path:
             url = f"{server_url}{route_path}"
@@ -617,9 +617,10 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
                 on_success_rrp_item_registration, document_name=data.get("name")
             )
             endpoint_builder.error_callback = on_error
+            # endpoint_builder.perform_remote_calls()
 
 
-            # Enqueue the task for asynchronous execution
+            # # Enqueue the task for asynchronous execution
             frappe.enqueue(
                 endpoint_builder.perform_remote_calls,
                 is_async=True,
@@ -737,7 +738,6 @@ def perform_sales_invoice_registration(request_data: str) -> dict | None:
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(
-            # on_success_sales_information_submission,
             invoice_type=invoice_type,
             document_name=document_name,
             company_name=company_name,
@@ -840,57 +840,89 @@ def save_stock_inventory(request_data: str) -> None:
 
 
 
-# @frappe.whitelist()
-# def bulk_register_item(docs_list: str) -> None:
-#     data = json.loads(docs_list)
-#     all_items = frappe.db.get_all("Item", {"custom_item_registered": 0}, ["name"])
-#     for record in data:
-#         for item in all_items:
-#             if record == item.name:
-#                 process_single_item(record)
+@frappe.whitelist()
+def bulk_register_item(docs_list: str) -> None:
+    data = json.loads(docs_list)
+    all_items = frappe.db.get_all("Item", {"custom_zra_item_registered_": 0}, ["name"])
+    for record in data:
+        for item in all_items:
+            if record == item.name:
+                process_single_item(record)
+                # frappe.throw(str(all_items))
 
 
-# @frappe.whitelist()
-# def process_single_item(record: str) -> None:
-#     """
-#     Process a single item for registration, construct the payload, and perform registration.
+@frappe.whitelist()
+def bulk_register_item(docs_list: str, is_rrp: bool = False) -> None:
+    """
+    Bulk registers items, supporting both normal and RRP item registration.
+
+    Args:
+        docs_list (str): JSON list of item names to be registered.
+        is_rrp (bool): If True, register items as RRP items; otherwise, register as normal items.
+    """
+    data = json.loads(docs_list)
+    all_items = frappe.db.get_all("Item", {"custom_zra_item_registered_": 0}, ["name"])
     
-#     Args:
-#         record (str): Name of the item to process.
-#     """
-#     item = frappe.get_doc("Item", record, for_update=False)
+    for record in data:
+        for item in all_items:
+            if record == item.name:
+                process_single_item(record, is_rrp=is_rrp)
+
+
+@frappe.whitelist()
+def process_single_item(record: str, is_rrp: bool = False) -> None:
+    """
+    Process a single item for registration, determining automatically if it's an RRP item.
     
-#     valuation_rate = item.valuation_rate if item.valuation_rate is not None else 0
+    Args:
+        record (str): Name of the item to process.
+    """
+    item = frappe.get_doc("Item", record, for_update=False)
+    
+    # Automatically determine if it's an RRP item
+    is_rrp = item.get("custom_has_a_recommended_retail_price_rrp_", False)
+    rrp_price = item.get("custom_recommended_retail_price")
 
-#     request_data = {
-#         "name": item.name,
-#         "company_name": frappe.defaults.get_user_default("Company"),
-#         "itemCd": item.custom_item_code_etims,
-#         "itemClsCd": item.custom_item_classification,
-#         "itemTyCd": item.custom_product_type,
-#         "itemNm": item.item_name,
-#         "temStdNm": None,
-#         "orgnNatCd": item.custom_etims_country_of_origin_code,
-#         "pkgUnitCd": item.custom_packaging_unit_code,
-#         "qtyUnitCd": item.custom_unit_of_quantity_code,
-#         "taxTyCd": item.get("custom_taxation_type", "B"),
-#         "btchNo": None,
-#         "bcd": None,
-#         "dftPrc": round(valuation_rate, 2),
-#         "grpPrcL1": None,
-#         "grpPrcL2": None,
-#         "grpPrcL3": None,
-#         "grpPrcL4": None,
-#         "grpPrcL5": None,
-#         "addInfo": None,
-#         "sftyQty": None,
-#         "isrcAplcbYn": "Y",
-#         "useYn": "Y",
-#         "regrId": split_user_mail(item.owner),
-#         "regrNm": item.owner,
-#         "modrId": split_user_mail(item.modified_by),
-#         "modrNm": item.modified_by,
-#     }
 
-#     make_zra_item_registration(request_data=json.dumps(request_data))
+    valuation_rate = item.valuation_rate if item.valuation_rate is not None else 0
+
+    request_data = {
+        "name": item.name,
+        "company_name": frappe.defaults.get_user_default("Company"),
+        "itemCd": item.custom_zra_item_code,
+        "itemClsCd": item.custom_zra_item_classification_code,
+        "itemTyCd": item.custom_product_code,
+        "itemNm": item.item_name,
+        "temStdNm": None,
+        "orgnNatCd": item.custom_zra_country_origin_code,
+        "pkgUnitCd": item.custom_zra_packaging_unit_code,
+        "qtyUnitCd": item.custom_zra_unit_quantity_code,
+        "taxTyCd": item.get("custom_zra_tax_type", "B"),
+        "btchNo": None,
+        "bcd": None,
+        "dftPrc": round(valuation_rate, 2),
+        "grpPrcL1": None,
+        "grpPrcL2": None,
+        "grpPrcL3": None,
+        "grpPrcL4": None,
+        "grpPrcL5": None,
+        "addInfo": None,
+        "sftyQty": None,
+        "isrcAplcbYn": "Y",
+        "useYn": "Y",
+        "regrId": split_user_mail(item.owner),
+        "regrNm": item.owner,
+        "modrId": split_user_mail(item.modified_by),
+        "modrNm": item.modified_by,
+    }
+
+    if is_rrp:
+        request_data["rrp"] = rrp_price
+
+    if is_rrp:
+        make_rrp_item_registration(request_data=json.dumps(request_data))
+    else:
+        make_zra_item_registration(request_data=json.dumps(request_data))
+
+
 

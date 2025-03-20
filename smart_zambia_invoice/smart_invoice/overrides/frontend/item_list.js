@@ -41,7 +41,7 @@ frappe.listview_settings[doctypeName].onload = function (listview) {
       .map((item) => item.name);
 
     frappe.call({
-      method: 'smart_zambia_invoice.smart_zambia.api.zra_api.bulk_register_item',
+      method: 'smart_zambia_invoice.smart_invoice.api.zra_api.bulk_register_item',
       args: {
         docs_list: itemsToRegister,
       },

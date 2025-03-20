@@ -66,7 +66,6 @@ frappe.ui.form.on("ZRA Smart Invoice Settings", {
             "smart_zambia_invoice.smart_invoice.background_jobs.jobs.refresh_code_lists",
           args: {},
 
-          // args: { request_data: { server_url: frm.doc.server_url } },
           callback: (response) => {
             // Handle callback
           },
@@ -83,7 +82,6 @@ frappe.ui.form.on("ZRA Smart Invoice Settings", {
               "smart_zambia_invoice.smart_invoice.background_jobs.jobs.get_item_classification_codes",
             args: {},
   
-            // args: { request_data: { server_url: frm.doc.server_url } },
             callback: (response) => {
               // Handle callback
             },

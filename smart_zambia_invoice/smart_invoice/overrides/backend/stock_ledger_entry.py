@@ -182,7 +182,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
 
 
         if record.is_return:
-            # frappe.throw(str(doc))
 
             if doc.actual_qty > 0:
                 payload["sarTyCd"] = "03"
@@ -211,7 +210,6 @@ def on_update(doc: Document, method: str | None = None) -> None:
             f"{doc.name}{doc.creation}{doc.modified}".encode(), usedforsecurity=False
         ).hexdigest()
 
-        # endpoint_maker.perform_remote_calls(),
 
 
         frappe.enqueue(
@@ -269,6 +267,8 @@ def get_stock_entry_movement_items_details(
                 )
 
     return items_list
+
+
 
 
 def fetch_stock_reconciliation_items_details(
@@ -366,6 +366,8 @@ def get_purchase_items_details_from_doc(
     return items_list
 
 
+
+
 def get_latest_items_details_from_doc(
     items: list[Document], all_present_items: list[Document]
 ) -> list[dict]:
@@ -406,6 +408,9 @@ def get_latest_items_details_from_doc(
                 )
 
     return items_list
+
+
+
 
 
 def get_warehouse_branch_id(warehouse_name: str) -> str | Literal[0]:
