@@ -37,11 +37,36 @@ class ErrorsObserver:
                 update_integration_request(
                     notifier.integration_requets.name,  # Using original spelling
                     status="Failed",
-                    error=notifier.error,
+                    error=str(notifier.error),  # Ensure error is stored as string
                     output=None,
                 )
-            
+
             zra_vsdc_logger.exception(notifier.error, exc_info=True)
+
+            frappe.log_error(
+                title="Critical Error",
+                message=str(notifier.error),  # Log full error for debugging
+                reference_doctype=notifier.doctype,
+                reference_name=notifier.document_name
+            )
+
+            # User-friendly message
+            user_friendly_message = (
+                "We are unable to process your request due to a connection issue. "
+                "The ZRA server is down, check your internet connection or try again later."
+            )
+
+            frappe.throw(user_friendly_message, title="Connection Error")
+            if notifier.error:
+                if notifier.integration_requets:  # Prevents 'NoneType' error
+                    update_integration_request(
+                        notifier.integration_requets.name,  # Using original spelling
+                        status="Failed",
+                        error=notifier.error,
+                        output=None,
+                    )
+                
+                zra_vsdc_logger.exception(notifier.error, exc_info=True)
 
             frappe.log_error(
                 title="Critical Error",
@@ -50,7 +75,7 @@ class ErrorsObserver:
                 reference_name=notifier.document_name
             )
 
-            frappe.throw(str(notifier.error), title="Critical Error")  # Avoids TypeError
+            frappe.throw(str(notifier.error), title="Critical Error")  
 
 class EndpointConstructor(BaseEndpointConstructor):
     def __init__(self) -> None:

@@ -101,41 +101,43 @@ def on_error(
 
 
 
-
-
 def fetch_branch_request_on_success(response: dict) -> None:
     for branch in response["data"]["bhfList"]:
-        doc = None
-
         try:
-            doc = frappe.get_doc(
-                "Branch",
-                {"branch": branch["bhfId"]},
-                for_update=True,
-            )
+            # Check if the branch exists
+            branch_doc = frappe.get_value("Branch", {"custom_branch_code": branch["bhfId"]}, "name")
 
-        except frappe.exceptions.DoesNotExistError:
-            doc = frappe.new_doc("Branch")
+            if branch_doc:
+                doc = frappe.get_doc("Branch", branch_doc)  # Fetch existing doc
+            else:
+                doc = frappe.new_doc("Branch")  # Create new doc
 
-        finally:
-            doc.branch = branch["bhfId"]
+            # Ensure mandatory fields are set
+            doc.branch = branch["bhfId"]  # Make sure this is assigned
             doc.custom_branch_code = branch["bhfId"]
-            doc.custom_pin = branch["tin"]
+            doc.custom_tpin = branch["tin"]
             doc.custom_branch_name = branch["bhfNm"]
             doc.custom_branch_status_code = branch["bhfSttsCd"]
-            doc.custom_county_name = branch["prvncNm"]
-            doc.custom_sub_county_name = branch["dstrtNm"]
-            doc.custom_tax_locality_name = branch["sctrNm"]
-            doc.custom_location_description = branch["locDesc"]
+            doc.custom_province_name = branch["prvncNm"] or "Lusaka"  # Prevent NoneType errors
+            doc.custom_district_name = branch["dstrtNm"] or "Lusaka"  # Handle missing district name
+            doc.custom_sector_name = branch["sctrNm"] or ""
+            doc.custom_location_description = branch["locDesc"] or "Lusaka"
             doc.custom_manager_name = branch["mgrNm"]
             doc.custom_manager_contact = branch["mgrTelNo"]
             doc.custom_manager_email = branch["mgrEmail"]
-            doc.custom_is_head_office = branch["hqYn"]
-            doc.custom_is_etims_branch = 1
+            doc.custom_head_branch_officeyn = branch["hqYn"]
+            doc.custom_is_zra_smart_invoice_branch = 1
 
-            doc.save()
+            if branch_doc:
+                doc.save()  # Update existing record
+            else:
+                doc.insert()  # Insert new record
 
+            frappe.db.commit()  # Commit changes to DB
 
+        except Exception as e:
+            frappe.log_error(f"Branch sync failed: {str(e)}", "Branch Sync Error")
+            frappe.throw(f"Failed to sync branch {branch['bhfId']}: {str(e)}")
 
 
 

@@ -29,14 +29,15 @@ def make_branch_request(request_data: str) -> None:
     headers = build_request_headers(company_name)
     
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("GET BRANCHES")
+    route_path = get_route_path("GET BRANCHES")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
-        request_date = last_req_date.strftime("%Y%m%d%H%M%S")
-
-        payload = build_common_payload(headers, last_req_date)
+        last_request_date = "20231215000000"  # Predefined last request date
+        payload = last_request_less_payload(headers)
+        payload["lastReqDt"] = last_request_date 
+        # frappe.throw(str(payload))
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -91,17 +92,16 @@ def perform_zra_notice_search(request_data: str) -> None:
     server_url = get_server_url(company_name)
 
     # Get route path and last request date
-    route_path, last_req_date = get_route_path("Notices Fetching")
-    last_req_date_str = last_req_date.strftime("%Y%m%d%H%M%S")
+    route_path = get_route_path("Notices Fetching")
 
-    request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
+    # request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
-        # Include tpin and bhfId in the payload
-        payload = build_common_payload(headers, last_req_date)
-
+        last_request_date = "20231215000000"  # Predefined last request date
+        payload = last_request_less_payload(headers)
+        payload["lastReqDt"] = last_request_date 
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -241,15 +241,18 @@ def perform_import_item_search(request_data: str) -> None:
         headers = build_request_headers(company_name)
         server_url = get_server_url(company_name)
 
-    route_path, last_req_date = get_route_path("GET IMPORTS")
+    route_path = get_route_path("GET IMPORTS")
 
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
-        common_payload = build_common_payload(headers, last_req_date)
+        common_payload = last_request_less_payload(headers)
 
-        payload = {**common_payload, "dclRefNum": "CX1100096839"}
-
+        payload = {
+            **common_payload,
+            "dclRefNum": "CX1100096839",
+            "lastReqDt": "20231215000000"  # Predefined last request date
+        }
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -262,7 +265,7 @@ def perform_import_item_search(request_data: str) -> None:
 
 
 
-# Not applicable to the zabian ZRA API for now but its working
+# Not applicable to the zambian ZRA API for now but its working
 
 @frappe.whitelist()
 def send_customer_insurance_details(request_data: str) -> None:
@@ -600,14 +603,10 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
     if headers and server_url and route_path:
             url = f"{server_url}{route_path}"
 
-            # Build the common payload fields
             common_payload = last_request_less_payload(headers)
 
-            # Exclude `name` and `company_name` from `data` and format the `itemList`
             item_data = {key: value for key, value in data.items() if key not in ["name", "company_name"]}
-            item_list = [item_data]  # Wrap the item data into a list for `itemList`
-
-            # Construct the payload in the required format
+            item_list = [item_data]  
             payload = {**common_payload, "itemList": item_list}
 
             endpoint_builder.headers = headers
@@ -617,10 +616,8 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
                 on_success_rrp_item_registration, document_name=data.get("name")
             )
             endpoint_builder.error_callback = on_error
-            # endpoint_builder.perform_remote_calls()
 
 
-            # # Enqueue the task for asynchronous execution
             frappe.enqueue(
                 endpoint_builder.perform_remote_calls,
                 is_async=True,
