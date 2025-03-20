@@ -7,8 +7,8 @@ from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides impor
 from smart_zambia_invoice.smart_invoice.utilities import last_request_less_payload
 from..overrides.backend.stock_ledger_entry import on_update
 from..overrides.backend.sales_invoice import on_submit
-
 from ..api.zra_api import save_stock_inventory,perform_zra_notice_search
+
 
 
 endpoint_maker = EndpointConstructor()
@@ -89,7 +89,7 @@ def submit_pos_invoices_information() -> None:
         for pos_invoice in all_pending_pos_invoices:
             doc = frappe.get_doc(
                 "POS Invoice", pos_invoice.name, for_update=False
-            )  # Refetch to get the document representation of the record
+            )  
 
             try:
                 on_submit(
@@ -116,15 +116,13 @@ def refresh_code_lists() -> str | None:
         common_payload = last_request_less_payload(headers)
         payload = {**common_payload,
             "lastReqDt": "20180101000000"
-        }  # Hard-coded to a this date to get all code lists.
+        }  
 
-        # frappe.throw(str(payload))
 
         endpoint_maker.headers = headers
         endpoint_maker.payload = payload
         endpoint_maker.error_callback = on_error
 
-        # Fetch and update codes obtained from CodeSearchReq endpoint
         endpoint_maker.url = url
         endpoint_maker.success_callback = run_updater_functions
         frappe.enqueue(
@@ -145,26 +143,23 @@ def get_item_classification_codes() -> str | None:
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
 
-    item_cls_route_path = get_route_path("Classification Codes")  # overwriting last_request_date since it's not used elsewhere for this task
-
+    item_cls_route_path = get_route_path("Classification Codes") 
     if headers and server_url and item_cls_route_path:
         url = f"{server_url}{item_cls_route_path}"
 
         common_payload = last_request_less_payload(headers)
         payload = {**common_payload,
             "lastReqDt": "20180101000000"
-        }  # Hard-coded to a this date to get all code lists.
+        }  
 
         endpoint_maker.url = url
         endpoint_maker.headers = headers
         endpoint_maker.payload = payload
         endpoint_maker.error_callback = on_error
 
-        # Fetch and update item classification codes from ItemClsSearchReq endpoint
         endpoint_maker.url = f"{server_url}{item_cls_route_path}"
         endpoint_maker.success_callback = update_item_classification_codes
 
-        # endpoint_maker.perform_remote_calls(doctype=None, document_name=None)
         frappe.enqueue(
             endpoint_maker.perform_remote_calls,
             is_async=True,
