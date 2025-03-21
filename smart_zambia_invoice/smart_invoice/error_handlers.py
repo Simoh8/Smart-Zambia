@@ -5,15 +5,16 @@ from .utilities import update_last_request_date
 
 
 def handle_errors(
-    response: dict[str, str],
+    response: dict[str, str | None],  # Allow None values
     route: str,
     document_name: str,
     doctype: str | Document | None = None,
     integration_request_name: str | None = None,
 ) -> None:
-    error_message, error_code = response["resultMsg"], response["resultCd"]
+    error_message = response.get("resultMsg") or "An unknown error occurred."
+    error_code = response.get("resultCd") or "Unknown Code"
 
-    zra_vsdc_logger.error("%s, Code: %s" % (error_message, error_code))
+    zra_vsdc_logger.error(f"{error_message}, Code: {error_code}")
 
     try:
         frappe.throw(
@@ -25,11 +26,13 @@ def handle_errors(
     except frappe.InvalidStatusError as error:
         frappe.log_error(
             frappe.get_traceback(with_context=True),
-            error,
+            str(error),
             reference_name=document_name,
             reference_doctype=doctype,
         )
         raise
 
     finally:
-        update_last_request_date(response["resultDt"], route)
+        result_dt = response.get("resultDt")
+        if result_dt:
+            update_last_request_date(result_dt, route)

@@ -23,7 +23,7 @@ class ZRASmartInvoiceSettings(Document):
 
     def before_insert(self) -> None:
         """Before Insertion Hook"""
-        route_path, last_req_date = get_route_path("device initialization")     
+        route_path = get_route_path("device initialization")     
         if route_path:
             url = f"{self.server_url}{route_path}"
             payload = {
@@ -60,8 +60,8 @@ class ZRASmartInvoiceSettings(Document):
 
                 if response["resultCd"] == "000":
                     info = response.get("data", {}).get("info", {})
-                    self.sales_control_unit_id = info.get("sdcId")
-                    self.company_name = info.get("taxprNm")  
+                    self.custom_sales_control_unit_id = info.get("sdcId")
+                    self.zra_company_name = info.get("taxprNm")  
                     self.company_tpin = info.get("tin")  
                     self.branch_name = info.get("bhfNm")  
                     self.branch_id = info.get("bhfId")  
@@ -69,7 +69,8 @@ class ZRASmartInvoiceSettings(Document):
                     self.manager_email = info.get("mgrEmail") 
                     self.manager_contract_number = info.get("mrcNo")  
                     self.manager_name = info.get("mgrNm") 
-                    self.location_description = info.get("locDesc")  
+                    self.location_description = info.get("locDesc") 
+                    self.mrc_number =info.get("mrcNo") 
 
                     update_last_request_date(response.get("resultDt"), route_path)
                     update_integration_request(

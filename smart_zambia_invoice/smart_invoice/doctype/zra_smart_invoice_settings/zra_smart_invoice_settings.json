@@ -18,6 +18,7 @@
   "other_details_section",
   "column_break_brag",
   "company_name",
+  "zra_company_name",
   "company_tpin",
   "country",
   "column_break_puna",
@@ -33,7 +34,8 @@
   "manager_email",
   "branch_office_id",
   "province_name",
-  "district_name"
+  "district_name",
+  "location_description"
  ],
  "fields": [
   {
@@ -217,11 +219,25 @@
    "in_standard_filter": 1,
    "label": "Country",
    "options": "Country"
+  },
+  {
+   "fieldname": "location_description",
+   "fieldtype": "Data",
+   "label": "Location Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "zra_company_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "ZRA Company Name",
+   "options": "Company"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-22 15:53:31.237794",
+ "modified": "2025-03-21 13:24:09.276920",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",

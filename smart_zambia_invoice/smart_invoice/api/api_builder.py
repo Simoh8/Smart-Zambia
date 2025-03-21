@@ -172,6 +172,10 @@ class EndpointConstructor(BaseEndpointConstructor):
             frappe.log_error(truncated_message)
             self.notify_observer()
 
+
+
+
+
 def update_integration_request(integration_request: str,status:Literal["Completed", "Failed"],output:str |None =None,error:str |None=None,) -> None:
 
     doc = frappe.get_doc("Integration Request", integration_request, for_update=True)

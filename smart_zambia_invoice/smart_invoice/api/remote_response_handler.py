@@ -74,8 +74,6 @@ def on_success_customer_insurance_details_submission(
 
 
 
-
-
 def on_error(
     response: dict | str,
     url: str | None = None,
@@ -112,16 +110,17 @@ def fetch_branch_request_on_success(response: dict) -> None:
             else:
                 doc = frappe.new_doc("Branch")  # Create new doc
 
-            # Ensure mandatory fields are set
             doc.branch = branch["bhfId"]  # Make sure this is assigned
             doc.custom_branch_code = branch["bhfId"]
             doc.custom_tpin = branch["tin"]
             doc.custom_branch_name = branch["bhfNm"]
             doc.custom_branch_status_code = branch["bhfSttsCd"]
-            doc.custom_province_name = branch["prvncNm"] or "Lusaka"  # Prevent NoneType errors
-            doc.custom_district_name = branch["dstrtNm"] or "Lusaka"  # Handle missing district name
-            doc.custom_sector_name = branch["sctrNm"] or ""
-            doc.custom_location_description = branch["locDesc"] or "Lusaka"
+            sector_name = branch["sctrNm"] or ""  # Get sector name if available
+
+            doc.custom_province_name = branch["prvncNm"] or sector_name  # Prevent NoneType errors
+            doc.custom_district_name = branch["dstrtNm"] or sector_name  # Handle missing district name
+            doc.custom_sector_name = sector_name 
+            doc.custom_location_description = branch["locDesc"] or sector_name
             doc.custom_manager_name = branch["mgrNm"]
             doc.custom_manager_contact = branch["mgrTelNo"]
             doc.custom_manager_email = branch["mgrEmail"]

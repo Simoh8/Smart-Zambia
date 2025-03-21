@@ -34,7 +34,7 @@ def make_branch_request(request_data: str) -> None:
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
-        last_request_date = "20231215000000"  # Predefined last request date
+        last_request_date = "20181215000000"  # Predefined last request date
         payload = last_request_less_payload(headers)
         payload["lastReqDt"] = last_request_date 
         # frappe.throw(str(payload))
@@ -99,7 +99,7 @@ def perform_zra_notice_search(request_data: str) -> None:
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
-        last_request_date = "20231215000000"  # Predefined last request date
+        last_request_date = "20181215000000"  # Predefined last request date
         payload = last_request_less_payload(headers)
         payload["lastReqDt"] = last_request_date 
 
@@ -251,7 +251,7 @@ def perform_import_item_search(request_data: str) -> None:
         payload = {
             **common_payload,
             "dclRefNum": "CX1100096839",
-            "lastReqDt": "20231215000000"  # Predefined last request date
+            "lastReqDt": "20181215000000"  # Predefined last request date
         }
 
         endpoint_builder.headers = headers
@@ -584,8 +584,6 @@ def save_item_composition(request_data: str) -> None:
                             <b>Ensure ALL Items are registered first to submit this composition</b>""",
                             title="Integration Error",
                         )
-
-
 
 
 
