@@ -15,7 +15,7 @@ from smart_zambia_invoice.smart_invoice.overrides.backend.sales_invoice import o
 from .api_builder import EndpointConstructor
 
 from .remote_response_handler import on_succesful_inventory_submission, on_succesfull_purchase_search_zra, on_success_item_classification_search, on_success_sales_information_submission,  on_success_customer_search, on_success_item_composition_submission, on_success_item_registration, on_success_customer_insurance_details_submission,on_success_customer_branch_details_submission,notices_search_on_success,on_error,fetch_branch_request_on_success, on_imported_items_search_success, on_success_rrp_item_registration, on_success_submit_inventory, on_success_user_details_submission, on_successful_fetch_latest_items
-from .. utilities import (build_request_headers,get_route_path, get_stock_balance, last_request_less_payload,make_get_request,split_user_mail,get_server_url,build_common_payload, truncate_user_id)
+from .. utilities import (build_request_headers,get_route_path, get_route_path_with_last_req_date, get_stock_balance, last_request_less_payload,make_get_request,split_user_mail,get_server_url,build_common_payload, truncate_user_id)
 
 endpoint_builder = EndpointConstructor()
 
@@ -262,6 +262,8 @@ def perform_import_item_search(request_data: str) -> None:
 
         endpoint_builder.perform_remote_calls()
         
+
+
 
 
 
@@ -520,7 +522,6 @@ def save_item_composition(request_data: str) -> None:
     company_name = data["company_name"]
 
     headers = build_request_headers(company_name)
-    print("headers are:", headers)
     server_url = get_server_url(company_name)
     route_path, last_req_date = get_route_path("SAVE ITEM COMPOSITION")
 
@@ -686,7 +687,7 @@ def perform_purchases_search_on_zra(request_data: str) -> None:
     company_name = data["company_name"]
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("GET PURCHASES")
+    route_path, last_req_date = get_route_path_with_last_req_date("GET PURCHASES")
     if headers and server_url and route_path:
         request_date = last_req_date.strftime("%Y%m%d%H%M%S")
         url = f"{server_url}{route_path}"

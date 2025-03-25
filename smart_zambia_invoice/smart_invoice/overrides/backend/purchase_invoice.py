@@ -57,7 +57,7 @@ def on_submit(doc: Document, method: str) -> None:
     company_name = doc.company
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_request_date = get_route_path("SAVE PURCHASES")
+    route_path = get_route_path("SAVE PURCHASES")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
@@ -81,61 +81,53 @@ def on_submit(doc: Document, method: str) -> None:
 
 
 
-
 def build_purchase_invoice_payload(doc: Document) -> dict:
-	series_no = extract_doc_series_number(doc)
-	items_list = get_items_details(doc)
-	taxation_type=get_taxation_types(doc)
-
-	payload = {
-		"invcNo": series_no,
-		"orgInvcNo": 0,
-		"spplrTin": doc.tax_id,
-		"spplrBhfId": doc.custom_supplier_branch_id,
-		"spplrNm": doc.supplier,
-		"spplrInvcNo": doc.bill_no,
-		"regTyCd": "A",
-		"pchsTyCd": doc.custom_zra_purchase_type_code_,  # Correct field name
-		"rcptTyCd": doc.custom_zra_receipt_type_code,
-		"pmtTyCd": doc.custom_zra_payment_type_code,
-		"pchsSttsCd": doc.custom_zra_purchase_status_code,
-		"cfmDt": None,
-		"pchsDt": "".join(str(doc.posting_date).split("-")),
-		"wrhsDt": None,
-		"cnclReqDt": "",
-		"cnclDt": "",
-		"rfdDt": None,
-		"totItemCnt": len(items_list),
-		
-		"taxRtA": taxation_type.get("A", {}).get("tax_rate", 0),
-		"taxRtB": taxation_type.get("B", {}).get("tax_rate", 0),
-		"taxRtC": taxation_type.get("C", {}).get("tax_rate", 0),
-		"taxRtD": taxation_type.get("D", {}).get("tax_rate", 0),
-		"taxRtE": taxation_type.get("E", {}).get("tax_rate", 0),
-		"taxAmtA": taxation_type.get("A", {}).get("tax_amount", 0),
-		"taxAmtB": taxation_type.get("B", {}).get("tax_amount", 0),
-		"taxAmtC": taxation_type.get("C", {}).get("tax_amount", 0),
-		"taxAmtD": taxation_type.get("D", {}).get("tax_amount", 0),
-		"taxAmtE": taxation_type.get("E", {}).get("tax_amount", 0),
-		"taxblAmtA": taxation_type.get("A", {}).get("taxable_amount", 0),
-		"taxblAmtB": taxation_type.get("B", {}).get("taxable_amount", 0),
-		"taxblAmtC": taxation_type.get("C", {}).get("taxable_amount", 0),
-		"taxblAmtD": taxation_type.get("D", {}).get("taxable_amount", 0),
-		"taxblAmtE": taxation_type.get("E", {}).get("taxable_amount", 0),
-		"totTaxblAmt": quantize_amount(doc.base_net_total),
-		"totTaxAmt": quantize_amount(doc.total_taxes_and_charges),
-		"totAmt": quantize_amount(doc.grand_total),
-		"remark": None,
-		"regrNm": doc.owner,
-		"regrId": split_user_mail(doc.owner),
-		"modrNm": doc.modified_by,
-		"modrId": split_user_mail(doc.modified_by),
-		"itemList": items_list,
-	}
-
-	return payload
+    series_no = extract_doc_series_number(doc)
+    items_list = get_items_details(doc)
+    taxation_type = get_taxation_types(doc)
+    
+    # Convert taxation_type list into a dictionary
+    taxation_dict = {item["tax_code"]: item for item in taxation_type}
+    
+    payload = {
+        "invcNo": series_no,
+        "orgInvcNo": 0,
+        "spplrTin": doc.tax_id,
+        "spplrBhfId": doc.custom_supplier_branch_id,
+        "spplrNm": doc.supplier,
+        "spplrInvcNo": doc.bill_no,
+        "regTyCd": "A",
+        "pchsTyCd": doc.custom_zra_purchase_type_code_,
+        "rcptTyCd": doc.custom_zra_receipt_type_code,
+        "pmtTyCd": doc.custom_zra_payment_type_code,
+        "pchsSttsCd": doc.custom_zra_purchase_status_code,
+        "cfmDt": None,
+        "pchsDt": "".join(str(doc.posting_date).split("-")),
+        "wrhsDt": None,
+        "cnclReqDt": "",
+        "cnclDt": "",
+        "rfdDt": None,
+        "totItemCnt": len(items_list),
+        "totTaxblAmt": quantize_amount(doc.base_net_total),
+        "totTaxAmt": quantize_amount(doc.total_taxes_and_charges),
+        "totAmt": quantize_amount(doc.grand_total),
+        "remark": None,
+        "regrNm": doc.owner,
+        "regrId": split_user_mail(doc.owner),
+        "modrNm": doc.modified_by,
+        "modrId": split_user_mail(doc.modified_by),
+        "itemList": items_list,
+    }
+    
+    return payload
 
 
+
+
+
+def get_tax_rate(taxTyCd):
+    """Fetch tax rate from ZRA Tax Type DocType."""
+    return float(frappe.db.get_value("ZRA Tax Type", {"code": taxTyCd}, "tax_rate_") or 0)
 
 
 
@@ -152,7 +144,6 @@ def get_items_details(doc: Document) -> list:
     items_list = []
 
     for index, item in enumerate(doc.items):
-        print(f"Item {index + 1} Details: {item.as_dict()}")
 
         vatCatCd = None
         iplCatCd = None
@@ -160,6 +151,7 @@ def get_items_details(doc: Document) -> list:
         exciseTxCatCd = None
 
         taxTyCd = getattr(item, "custom_taxation_type", "B")
+        taxRate = get_tax_rate(taxTyCd)  # Get the tax rate from ZRA Tax Type
 
         # Categorize tax types
         if taxTyCd in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"]:
@@ -174,10 +166,12 @@ def get_items_details(doc: Document) -> list:
         qty = abs(getattr(item, "qty", 0))
         prc = round(getattr(item, "base_rate", 0), 2)
         splyAmt = round(getattr(item, "base_amount", 0), 2)
-        dcRt = round(float(quantize_amount(float(getattr(item, "discount_percentage", 0) or 0))), 2)
-        dcAmt = round(float(quantize_amount(float(getattr(item, "discount_amount", 0) or 0))), 2)
+        dcRt = round(float(getattr(item, "discount_percentage", 0) or 0), 2)
+        dcAmt = round(float(getattr(item, "discount_amount", 0) or 0), 2)
         taxblAmt = round(float(getattr(item, "net_amount", 0) or 0), 2)
-        taxAmt = round(float(quantize_amount(float(getattr(item, "custom_tax_amount", 0) or 0))), 2)
+
+        # Calculate tax amounts
+        taxAmt = round(taxblAmt * (taxRate / 100), 2)
 
         # Allocate taxable amounts based on tax type
         vatTaxblAmt = taxblAmt if vatCatCd else 0
@@ -185,10 +179,11 @@ def get_items_details(doc: Document) -> list:
         exciseTaxblAmt = taxblAmt if exciseTxCatCd else 0
         tlTaxblAmt = taxblAmt if tlCatCd else 0
 
-        vatAmt = taxAmt if vatTaxblAmt > 0 else 0
-        iplAmt = taxAmt if iplTaxblAmt > 0 else 0
-        exciseTxAmt = taxAmt if exciseTaxblAmt > 0 else 0
-        tlAmt = taxAmt if tlTaxblAmt > 0 else 0
+        # Assign tax amounts
+        vatAmt = taxAmt if vatCatCd else 0
+        iplAmt = taxAmt if iplCatCd else 0
+        exciseTxAmt = taxAmt if exciseTxCatCd else 0
+        tlAmt = taxAmt if tlCatCd else 0
 
         totAmt = round(taxblAmt + taxAmt, 2)
 
@@ -228,11 +223,10 @@ def get_items_details(doc: Document) -> list:
             "itemExprDt": None,
         })
 
+        # Debugging print statement
+        print(f"Item: {item.item_name}, Tax Type: {taxTyCd}, Tax Rate: {taxRate}, Taxable Amount: {taxblAmt}, Tax Amount: {taxAmt}")
+
     return items_list
-
-
-
-
 
 
 def validate_item_registration(items):

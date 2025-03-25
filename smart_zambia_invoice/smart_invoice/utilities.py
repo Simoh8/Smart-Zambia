@@ -247,8 +247,40 @@ def get_route_path(
 
     results = frappe.db.sql(query, (search_field,), as_dict=True)
 
-    if results:
-        return results[0]["route_path"]
+    if results: 
+        return results[0]["route_path"] 
+    return None
+
+
+
+
+def get_route_path_with_last_req_date(
+    search_field: str,
+    child_doctype: str = "ZRA VSDC Route Table Item"
+) -> tuple[str, str] | None:
+    """
+    Fetch the route path and last request date from the child table based on the search field.
+
+    Args:
+        search_field (str): The path function to search for.
+        child_doctype (str): The child DocType containing the route data.
+
+    Returns:
+        tuple[str, str] | None: The route path and last request date, or None if not found.
+    """
+    query = f"""
+        SELECT
+            path AS route_path, 
+            last_req_date AS last_request_date
+        FROM `tab{child_doctype}`
+        WHERE path_function LIKE %s
+        LIMIT 1
+    """
+
+    results = frappe.db.sql(query, (search_field,), as_dict=True)
+
+    if results: 
+        return (results[0]["route_path"] , results[0]["last_request_date"])
     return None
 
 
