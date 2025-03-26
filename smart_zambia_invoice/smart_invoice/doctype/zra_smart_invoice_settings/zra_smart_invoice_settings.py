@@ -10,7 +10,7 @@ from frappe.integrations.utils import create_request_log
 from frappe.model.document import Document
 from ... api.api_builder import update_integration_request
 
-from ...utilities import (get_route_path,is_valid_tpin,make_post_request,update_last_request_date)
+from ...utilities import (get_route_path,update_last_request_date)
 
 
 class ZRASmartInvoiceSettings(Document):

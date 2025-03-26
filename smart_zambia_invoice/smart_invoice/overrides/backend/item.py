@@ -65,7 +65,7 @@ def before_insert(doc: Document, method: str) -> None:
         "sftyQty": None,
         "manufactuterTpin": None,
         "manufacturerItemCd": None,
-        "rrp": doc.custom_recommended_retail_price or 1000.00,  # Use field if set, else default
+        "rrp": doc.standard_rate or 0.00,  # Use field if set, else default
         "svcChargeYn": "Y",
         "rentalYn": "N",
         "useYn": "Y",

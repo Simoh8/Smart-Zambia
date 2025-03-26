@@ -767,6 +767,7 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
 
 
         totAmt = round(taxblAmt + taxAmt, 2)
+        # frappe.throw(str(item.as_dict()))
 
         items_list.append({
             "itemSeq": item.idx,
@@ -797,8 +798,11 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             "taxTyCd": taxTyCd,
             "taxblAmt": abs(taxblAmt),
             "taxAmt": abs(taxAmt),
-            "totAmt": abs(totAmt)
+            "totAmt": abs(totAmt),
+            "has_rrp": getattr(item, "custom_has_a_recommended_retail_price_rrp_", 0)  # 0 means unchecked, 1 means checked
         })
+        frappe.throw(str(items_list))
+
 
     return items_list
 
@@ -881,6 +885,8 @@ from datetime import datetime
 def round_decimal(value, places=4):
     """Rounds a number to the specified decimal places."""
     return float(Decimal(str(value)).quantize(Decimal(f'1.{"0" * places}'), rounding=ROUND_HALF_UP))
+
+
 
 def build_invoice_payload(
     invoice: Document, invoice_type_identifier: Literal["S", "C"], company_name: str
