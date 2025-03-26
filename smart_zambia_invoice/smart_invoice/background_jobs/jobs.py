@@ -165,7 +165,7 @@ def get_item_classification_codes() -> str | None:
             is_async=True,
             queue="long",
             timeout=1200,
-            doctype="ZRA Smart Invoice Settings",
+            doctype="ZRA Item Classification",
         )
 
         return "succeeded"

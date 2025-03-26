@@ -29,15 +29,12 @@ def make_branch_request(request_data: str) -> None:
     headers = build_request_headers(company_name)
     
     server_url = get_server_url(company_name)
-    route_path = get_route_path("GET BRANCHES")
+    route_path, last_req_date = get_route_path_with_last_req_date("GET BRANCHES")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
-        last_request_date = "20181215000000"  # Predefined last request date
-        payload = last_request_less_payload(headers)
-        payload["lastReqDt"] = last_request_date 
-        # frappe.throw(str(payload))
+        payload = last_request_less_payload(headers, last_req_date )
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -92,16 +89,14 @@ def perform_zra_notice_search(request_data: str) -> None:
     server_url = get_server_url(company_name)
 
     # Get route path and last request date
-    route_path = get_route_path("Notices Fetching")
+    route_path, last_req_date = get_route_path_with_last_req_date("Notices Fetching")
 
     # request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
-        last_request_date = "20181215000000"  # Predefined last request date
-        payload = last_request_less_payload(headers)
-        payload["lastReqDt"] = last_request_date 
+        payload = last_request_less_payload(headers, last_req_date)
 
         endpoint_builder.headers = headers
         endpoint_builder.url = url
@@ -241,17 +236,16 @@ def perform_import_item_search(request_data: str) -> None:
         headers = build_request_headers(company_name)
         server_url = get_server_url(company_name)
 
-    route_path = get_route_path("GET IMPORTS")
+    route_path ,last_req_date = get_route_path_with_last_req_date("GET IMPORTS")
 
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
-        common_payload = last_request_less_payload(headers)
+        common_payload = last_request_less_payload(headers, last_req_date)
 
         payload = {
             **common_payload,
             "dclRefNum": "CX1100096839",
-            "lastReqDt": "20181215000000"  # Predefined last request date
         }
 
         endpoint_builder.headers = headers
@@ -523,7 +517,7 @@ def save_item_composition(request_data: str) -> None:
 
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("SAVE ITEM COMPOSITION")
+    route_path, last_req_date = get_route_path_with_last_req_date("SAVE ITEM COMPOSITION")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
