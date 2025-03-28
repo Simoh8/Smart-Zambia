@@ -12,6 +12,7 @@ from ... api.api_builder import update_integration_request
 
 from ...utilities import (get_route_path,update_last_request_date)
 
+import aiohttp
 
 class ZRASmartInvoiceSettings(Document):
 
