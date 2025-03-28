@@ -2,7 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "ZRA VSDC Routes",
-  "modified": "2025-03-07 08:47:16.628125",
+  "modified": "2025-03-28 13:00:37.585617",
   "name": "ZRA VSDC Routes",
   "zra_vscd_routes": [
    {
@@ -150,15 +150,6 @@
     "path_function": "UPDATE IMPORT ITEMS"
    },
    {
-    "last_req_date": "2024-12-06 15:30:44",
-    "parent": "ZRA VSDC Routes",
-    "parentfield": "zra_vscd_routes",
-    "parenttype": "ZRA VSDC Routes",
-    "path": "/trnsSales/saveSales",
-    "path_description": "This endpoint facilitates the submission of sales data from the third-party system into Smart Invoice. ",
-    "path_function": "SAVE SALES"
-   },
-   {
     "last_req_date": "2024-12-06 15:30:47",
     "parent": "ZRA VSDC Routes",
     "parentfield": "zra_vscd_routes",
@@ -229,6 +220,15 @@
     "path": "/stockMaster/saveStockMaster",
     "path_description": "saving stock master ",
     "path_function": "SAVE STOCK MASTER"
+   },
+   {
+    "last_req_date": "2025-03-05 10:06:29",
+    "parent": "ZRA VSDC Routes",
+    "parentfield": "zra_vscd_routes",
+    "parenttype": "ZRA VSDC Routes",
+    "path": "/trnsSales/saveSales",
+    "path_description": "saving sales invoice ",
+    "path_function": "SAVE SALES INVOICE"
    }
   ]
  }

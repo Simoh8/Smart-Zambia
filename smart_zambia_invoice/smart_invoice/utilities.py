@@ -1,6 +1,7 @@
 
 import base64
 from decimal import ROUND_DOWN, Decimal
+import json
 from urllib.parse import quote, unquote
 from urllib.parse import urlsplit, urlunsplit
 import re
@@ -710,6 +711,8 @@ def get_real_name(doctype, field_name, value, target_field):
         return None
 
 
+
+
 def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, float, None]]]:
     """Iterates over the invoice items and correctly assigns tax amounts based on tax type codes.
 
@@ -741,7 +744,13 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             exciseTxCatCd = taxTyCd
 
         qty = abs(getattr(item, "qty", 0))
-        prc = round(getattr(item, "base_rate", 0), 2)
+        prc = round(
+            getattr(item, "base_price_list_rate", 0) 
+            if getattr(item, "custom_has_a_recommended_retail_price_rrp_", 0) == 1 
+            else getattr(item, "base_rate", 0), 
+            2
+        )       
+
         splyAmt = round(getattr(item, "base_amount", 0), 2)
         dcRt = round(getattr(item, "discount_percentage", 0), 2)
         dcAmt = round(getattr(item, "discount_amount", 0), 2)
@@ -799,14 +808,10 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             "taxblAmt": abs(taxblAmt),
             "taxAmt": abs(taxAmt),
             "totAmt": abs(totAmt),
-            "has_rrp": getattr(item, "custom_has_a_recommended_retail_price_rrp_", 0)  # 0 means unchecked, 1 means checked
         })
-        frappe.throw(str(items_list))
 
 
     return items_list
-
-
 
 
 

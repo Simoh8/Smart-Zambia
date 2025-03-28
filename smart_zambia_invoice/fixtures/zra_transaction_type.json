@@ -44,17 +44,6 @@
   "sort_order": 1
  },
  {
-  "code": "N",
-  "code_description": "Sales and purchase type : Normal",
-  "code_name": "Normal",
-  "docstatus": 0,
-  "doctype": "ZRA Transaction Type",
-  "modified": "2024-11-21 10:51:54.848915",
-  "name": "Normal",
-  "remark": null,
-  "sort_order": 2
- },
- {
   "code": "P",
   "code_description": "Sales and purchase type : Proforma",
   "code_name": "Proforma",
@@ -86,5 +75,16 @@
   "name": "Copy",
   "remark": null,
   "sort_order": 1
+ },
+ {
+  "code": "N",
+  "code_description": "Sales and purchase type : Normal",
+  "code_name": "Normal",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Type",
+  "modified": "2024-11-21 10:51:54.848915",
+  "name": "Normal",
+  "remark": null,
+  "sort_order": 2
  }
 ]

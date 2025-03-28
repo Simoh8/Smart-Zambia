@@ -18,6 +18,8 @@ from ...utilities import split_user_mail
     details="Use the Register Item button in Item record",
 )
 
+
+
 def before_insert(doc: Document, method: str) -> None:
     """Item doctype before insertion hook"""
     
@@ -26,6 +28,8 @@ def before_insert(doc: Document, method: str) -> None:
     iplCatCd = None
     tlCatCd = None
     exciseTxCatCd = None
+
+
 
     # Check tax type and assign the appropriate category
     tax_type = doc.custom_zra_tax_type
