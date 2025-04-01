@@ -117,7 +117,7 @@ class ZRASmartInvoiceSettings(Document):
                     error,
                 )
 
-        if self.auto_create_branch_accounting_dimension and self.is_active:
+        if self.auto_create_branch_accounting_dimension and self.is_active_:
             if frappe.db.exists("Accounting Dimension", "Branch", cache=False):
                 return
 
