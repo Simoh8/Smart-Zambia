@@ -15,6 +15,7 @@
   "is_active_",
   "column_break_mzbs",
   "environment",
+  "auto_create_branch_accounting_dimension",
   "other_details_section",
   "column_break_brag",
   "company_name",
@@ -233,11 +234,18 @@
    "in_standard_filter": 1,
    "label": "ZRA Company Name",
    "options": "Company"
+  },
+  {
+   "default": "0",
+   "description": "Enabling this creates the \"Branch\" Accounting Dimension which is Recommended for all P&L transactions.",
+   "fieldname": "auto_create_branch_accounting_dimension",
+   "fieldtype": "Check",
+   "label": " Auto Create Branch Accounting Dimension"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-21 13:24:09.276920",
+ "modified": "2025-04-01 08:22:29.996324",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",

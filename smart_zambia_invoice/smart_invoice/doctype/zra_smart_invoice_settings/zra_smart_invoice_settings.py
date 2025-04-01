@@ -22,6 +22,7 @@ class ZRASmartInvoiceSettings(Document):
             self.message = None
             self.error_title = None
 
+
     def before_insert(self) -> None:
         """Before Insertion Hook"""
         route_path = get_route_path("device initialization")     
@@ -41,9 +42,10 @@ class ZRASmartInvoiceSettings(Document):
             )
             try:
                 response = requests.post(url, json=payload, timeout=10).json()
-                
+
                 if not response or "resultCd" not in response:
                     self.error_title = "Unexpected API Response"
+                    self.error_code = "Unknown"
                     error_message = f"Response from {url}: {response}"
                     zra_vsdc_logger.error(error_message, exc_info=True)
                     frappe.log_error(
@@ -59,7 +61,10 @@ class ZRASmartInvoiceSettings(Document):
                     )
                     frappe.throw("Server Error. Check logs.")
 
+                self.error_code = response["resultCd"]  # Store the error/result code
+                
                 if response["resultCd"] == "000":
+                    # Success Case - Extract Data
                     info = response.get("data", {}).get("info", {})
                     self.custom_sales_control_unit_id = info.get("sdcId")
                     self.zra_company_name = info.get("taxprNm")  
@@ -71,16 +76,14 @@ class ZRASmartInvoiceSettings(Document):
                     self.manager_contract_number = info.get("mrcNo")  
                     self.manager_name = info.get("mgrNm") 
                     self.location_description = info.get("locDesc") 
-                    self.mrc_number =info.get("mrcNo") 
+                    self.mrc_number = info.get("mrcNo") 
 
-                    update_last_request_date(response.get("resultDt"), route_path)
-                    update_integration_request(
-                        integration_request.name,
-                        "Completed",
-                        output=f'{response.get("resultMsg", "Success")}, {response["resultCd"]}',
-                        error=None,
-                    )
+                elif response["resultCd"] == "902":
+                    # Device Already Installed - Data is NULL
+                    frappe.msgprint("Device is already installed, proceeding with saved settings.")
+
                 else:
+                    # Handle Other Error Cases
                     error_message = f'{response.get("resultMsg", "Error")}, {response["resultCd"]}'
                     update_integration_request(
                         integration_request.name,
@@ -89,11 +92,21 @@ class ZRASmartInvoiceSettings(Document):
                         error=error_message,
                     )
                     handle_errors(response, route_path, self.name, "ZRA Smart Invoice Settings")
+                    frappe.throw(error_message)  # Stop saving in case of other errors
+
+                # Mark Request as Completed
+                update_last_request_date(response.get("resultDt"), route_path)
+                update_integration_request(
+                    integration_request.name,
+                    "Completed",
+                    output=f'{response.get("resultMsg", "Success")}, {response["resultCd"]}',
+                    error=None,
+                )
 
             except requests.exceptions.ConnectionError as error:
                 self.log_and_throw_error(
                     integration_request,
-                    "Connection failed during initialisation",
+                    "Connection failed during initialization",
                     error,
                 )
 
@@ -104,7 +117,7 @@ class ZRASmartInvoiceSettings(Document):
                     error,
                 )
 
-        if self.autocreate_branch_dimension and self.is_active:
+        if self.auto_create_branch_accounting_dimension and self.is_active:
             if frappe.db.exists("Accounting Dimension", "Branch", cache=False):
                 return
 
@@ -120,6 +133,8 @@ class ZRASmartInvoiceSettings(Document):
                 },
             )
             dimension.save()
+
+
 
 
 
