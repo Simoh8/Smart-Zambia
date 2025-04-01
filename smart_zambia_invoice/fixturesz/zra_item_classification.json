@@ -1,0 +1,14 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "ZRA Item Classification",
+  "is_major_target": 1,
+  "is_used": 1,
+  "item_classification_code": "00",
+  "item_classification_level": 0,
+  "item_classification_name": null,
+  "modified": "2025-04-01 07:52:56.675819",
+  "name": "00",
+  "taxation_type_code": null
+ }
+]

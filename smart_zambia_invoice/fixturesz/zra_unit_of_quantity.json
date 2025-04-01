@@ -5,7 +5,7 @@
   "code_name": "yard",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.991937",
+  "modified": "2025-03-21 11:31:41.944465",
   "name": "YRD"
  },
  {
@@ -14,7 +14,7 @@
   "code_name": "tube",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.975424",
+  "modified": "2025-03-21 11:31:41.927585",
   "name": "TU"
  },
  {
@@ -23,7 +23,7 @@
   "code_name": "tonne (metric ton)",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.966945",
+  "modified": "2025-03-21 11:31:41.919493",
   "name": "TNE"
  },
  {
@@ -32,7 +32,7 @@
   "code_name": "sheet",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.957364",
+  "modified": "2025-03-21 11:31:41.909728",
   "name": "ST"
  },
  {
@@ -41,7 +41,7 @@
   "code_name": "set",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.948799",
+  "modified": "2025-03-21 11:31:41.901258",
   "name": "SET"
  },
  {
@@ -50,7 +50,7 @@
   "code_name": "roll",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.940040",
+  "modified": "2025-03-21 11:31:41.892762",
   "name": "RO"
  },
  {
@@ -59,7 +59,7 @@
   "code_name": "reel",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.930841",
+  "modified": "2025-03-21 11:31:41.884338",
   "name": "RL"
  },
  {
@@ -68,7 +68,7 @@
   "code_name": "pair",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.921923",
+  "modified": "2025-03-21 11:31:41.875790",
   "name": "PR"
  },
  {
@@ -77,7 +77,7 @@
   "code_name": "plate",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.912977",
+  "modified": "2025-03-21 11:31:41.865394",
   "name": "PG"
  },
  {
@@ -86,7 +86,7 @@
   "code_name": "packet",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.904141",
+  "modified": "2025-03-21 11:31:41.856012",
   "name": "PA"
  },
  {
@@ -95,7 +95,7 @@
   "code_name": "part per thousand",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.895810",
+  "modified": "2025-03-21 11:31:41.848324",
   "name": "NX"
  },
  {
@@ -104,7 +104,7 @@
   "code_name": "Number",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.887178",
+  "modified": "2025-03-21 11:31:41.840663",
   "name": "NO"
  },
  {
@@ -113,7 +113,7 @@
   "code_name": "megawatt hour (1000 kW.h)",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.877171",
+  "modified": "2025-03-21 11:31:41.832911",
   "name": "MWT"
  },
  {
@@ -122,7 +122,7 @@
   "code_name": "metre",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.868382",
+  "modified": "2025-03-21 11:31:41.824956",
   "name": "MTR"
  },
  {
@@ -131,7 +131,7 @@
   "code_name": "milligram",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.858645",
+  "modified": "2025-03-21 11:31:41.816915",
   "name": "MGM"
  },
  {
@@ -140,7 +140,7 @@
   "code_name": "Cubic Metre",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.849938",
+  "modified": "2025-03-21 11:31:41.808011",
   "name": "M3"
  },
  {
@@ -149,7 +149,7 @@
   "code_name": "Square metre",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.153914",
+  "modified": "2025-03-21 11:31:42.104925",
   "name": "M2"
  },
  {
@@ -158,7 +158,7 @@
   "code_name": "Month",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.082109",
+  "modified": "2025-03-21 11:31:42.034919",
   "name": "M"
  },
  {
@@ -167,7 +167,7 @@
   "code_name": "Litre",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.822909",
+  "modified": "2025-03-21 11:31:41.783192",
   "name": "LTR"
  },
  {
@@ -176,7 +176,7 @@
   "code_name": "link",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.813671",
+  "modified": "2025-03-21 11:31:41.774463",
   "name": "LK"
  },
  {
@@ -185,7 +185,7 @@
   "code_name": "pound",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.805598",
+  "modified": "2025-03-21 11:31:41.765929",
   "name": "LBR"
  },
  {
@@ -194,7 +194,7 @@
   "code_name": "Litre",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.797454",
+  "modified": "2025-03-21 11:31:41.757328",
   "name": "L"
  },
  {
@@ -203,7 +203,7 @@
   "code_name": "kilowatt",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.789069",
+  "modified": "2025-03-21 11:31:41.749093",
   "name": "KWT"
  },
  {
@@ -212,7 +212,7 @@
   "code_name": "kilometre",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.780325",
+  "modified": "2025-03-21 11:31:41.740988",
   "name": "KTM"
  },
  {
@@ -221,7 +221,7 @@
   "code_name": "Gross",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.763034",
+  "modified": "2025-03-21 11:31:41.724760",
   "name": "GRO"
  },
  {
@@ -230,7 +230,7 @@
   "code_name": "Gallon",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.744316",
+  "modified": "2025-03-21 11:31:41.706061",
   "name": "GLL"
  },
  {
@@ -239,7 +239,7 @@
   "code_name": "Dozen",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.736225",
+  "modified": "2025-03-21 11:31:41.697763",
   "name": "DZ"
  },
  {
@@ -248,7 +248,7 @@
   "code_name": "Drum",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.727646",
+  "modified": "2025-03-21 11:31:41.689369",
   "name": "DR"
  },
  {
@@ -257,7 +257,7 @@
   "code_name": "CARAT",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.718668",
+  "modified": "2025-03-21 11:31:41.680757",
   "name": "CR"
  },
  {
@@ -266,7 +266,7 @@
   "code_name": "centimetre",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.709767",
+  "modified": "2025-03-21 11:31:41.670728",
   "name": "CMT"
  },
  {
@@ -275,7 +275,7 @@
   "code_name": "Cell",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.701163",
+  "modified": "2025-03-21 11:31:41.662138",
   "name": "CEL"
  },
  {
@@ -284,7 +284,7 @@
   "code_name": "Can",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.691715",
+  "modified": "2025-03-21 11:31:41.652807",
   "name": "CA"
  },
  {
@@ -293,7 +293,7 @@
   "code_name": "box",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.682331",
+  "modified": "2025-03-21 11:31:41.644528",
   "name": "BX"
  },
  {
@@ -302,7 +302,7 @@
   "code_name": "BLL Barrel (petroleum) (158,987 dm3)",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.673359",
+  "modified": "2025-03-21 11:31:41.636479",
   "name": "BLL"
  },
  {
@@ -311,7 +311,7 @@
   "code_name": "block",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.664304",
+  "modified": "2025-03-21 11:31:41.628463",
   "name": "BL"
  },
  {
@@ -320,7 +320,7 @@
   "code_name": "bag",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.654201",
+  "modified": "2025-03-21 11:31:41.620376",
   "name": "BG"
  },
  {
@@ -329,7 +329,7 @@
   "code_name": "bundle",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.645126",
+  "modified": "2025-03-21 11:31:41.612206",
   "name": "BE"
  },
  {
@@ -338,7 +338,7 @@
   "code_name": "Barrel",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.635986",
+  "modified": "2025-03-21 11:31:41.602095",
   "name": "BA"
  },
  {
@@ -347,7 +347,7 @@
   "code_name": "Pack",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.001490",
+  "modified": "2025-03-21 11:31:41.952378",
   "name": "P1"
  },
  {
@@ -356,7 +356,7 @@
   "code_name": "Each",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.009623",
+  "modified": "2025-03-21 11:31:41.960677",
   "name": "EA"
  },
  {
@@ -365,7 +365,7 @@
   "code_name": "Pallet",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.017874",
+  "modified": "2025-03-21 11:31:41.970606",
   "name": "PL"
  },
  {
@@ -374,7 +374,7 @@
   "code_name": "Each",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.026269",
+  "modified": "2025-03-21 11:31:41.980269",
   "name": "EACH"
  },
  {
@@ -383,7 +383,7 @@
   "code_name": "Feet",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.035186",
+  "modified": "2025-03-21 11:31:41.988833",
   "name": "Ft"
  },
  {
@@ -392,7 +392,7 @@
   "code_name": "Millilitre",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.181190",
+  "modified": "2025-03-21 11:31:42.131911",
   "name": "MM"
  },
  {
@@ -401,7 +401,7 @@
   "code_name": "Inches",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.054177",
+  "modified": "2025-03-21 11:31:42.007733",
   "name": "In"
  },
  {
@@ -410,7 +410,7 @@
   "code_name": "Ounce",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.063139",
+  "modified": "2025-03-21 11:31:42.016640",
   "name": "Oz"
  },
  {
@@ -419,7 +419,7 @@
   "code_name": "Year",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.073187",
+  "modified": "2025-03-21 11:31:42.026660",
   "name": "YR"
  },
  {
@@ -428,7 +428,7 @@
   "code_name": "Week",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.090624",
+  "modified": "2025-03-21 11:31:42.043015",
   "name": "Wk"
  },
  {
@@ -437,7 +437,7 @@
   "code_name": "Day",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.099289",
+  "modified": "2025-03-21 11:31:42.051277",
   "name": "D"
  },
  {
@@ -446,7 +446,7 @@
   "code_name": "Hour",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.108169",
+  "modified": "2025-03-21 11:31:42.059589",
   "name": "hr"
  },
  {
@@ -455,7 +455,7 @@
   "code_name": "Hectare",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.117229",
+  "modified": "2025-03-21 11:31:42.069195",
   "name": "ha"
  },
  {
@@ -464,7 +464,7 @@
   "code_name": "Square yards",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.127183",
+  "modified": "2025-03-21 11:31:42.078116",
   "name": "yd2"
  },
  {
@@ -473,7 +473,7 @@
   "code_name": "Square feet",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.136179",
+  "modified": "2025-03-21 11:31:42.087858",
   "name": "ft2"
  },
  {
@@ -482,7 +482,7 @@
   "code_name": "Square centimetre",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.145154",
+  "modified": "2025-03-21 11:31:42.096552",
   "name": "cm2"
  },
  {
@@ -491,7 +491,7 @@
   "code_name": "Pints",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.162644",
+  "modified": "2025-03-21 11:31:42.113960",
   "name": "pt"
  },
  {
@@ -500,7 +500,7 @@
   "code_name": "Quarts",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.172358",
+  "modified": "2025-03-21 11:31:42.123454",
   "name": "qt"
  },
  {
@@ -509,7 +509,7 @@
   "code_name": "Meter/Minute",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.190131",
+  "modified": "2025-03-21 11:31:42.140127",
   "name": "2X"
  },
  {
@@ -518,7 +518,7 @@
   "code_name": "Microliter",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.200291",
+  "modified": "2025-03-21 11:31:42.148868",
   "name": "4G"
  },
  {
@@ -527,7 +527,7 @@
   "code_name": "Microfarad",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.209205",
+  "modified": "2025-03-21 11:31:42.157283",
   "name": "4O"
  },
  {
@@ -536,7 +536,7 @@
   "code_name": "Pikofarad",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.218173",
+  "modified": "2025-03-21 11:31:42.167016",
   "name": "4T"
  },
  {
@@ -545,7 +545,7 @@
   "code_name": "Ampere",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.227131",
+  "modified": "2025-03-21 11:31:42.175087",
   "name": "A"
  },
  {
@@ -554,7 +554,7 @@
   "code_name": "Gigaohm",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.236231",
+  "modified": "2025-03-21 11:31:42.184479",
   "name": "A87"
  },
  {
@@ -563,7 +563,7 @@
   "code_name": "Gram/Cubic meter",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.246036",
+  "modified": "2025-03-21 11:31:42.193304",
   "name": "A93"
  },
  {
@@ -572,7 +572,7 @@
   "code_name": "Acre",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.254987",
+  "modified": "2025-03-21 11:31:42.201534",
   "name": "ACR"
  },
  {
@@ -581,7 +581,7 @@
   "code_name": "Kilogram/cubic decimeter",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.263522",
+  "modified": "2025-03-21 11:31:42.209752",
   "name": "B34"
  },
  {
@@ -590,7 +590,7 @@
   "code_name": "Kilomol",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.272637",
+  "modified": "2025-03-21 11:31:42.217955",
   "name": "B45"
  },
  {
@@ -599,7 +599,7 @@
   "code_name": "Kilonewton",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.281604",
+  "modified": "2025-03-21 11:31:42.226722",
   "name": "B47"
  },
  {
@@ -608,7 +608,7 @@
   "code_name": "Meganewton",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.290467",
+  "modified": "2025-03-21 11:31:42.235117",
   "name": "B73"
  },
  {
@@ -617,7 +617,7 @@
   "code_name": "Megohm",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.299640",
+  "modified": "2025-03-21 11:31:42.243801",
   "name": "B75"
  },
  {
@@ -626,7 +626,7 @@
   "code_name": "Megavolt",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.308437",
+  "modified": "2025-03-21 11:31:42.252083",
   "name": "B78"
  },
  {
@@ -635,7 +635,7 @@
   "code_name": "Microampere",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.317164",
+  "modified": "2025-03-21 11:31:42.260631",
   "name": "B84"
  },
  {
@@ -644,7 +644,7 @@
   "code_name": "Bag",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.326008",
+  "modified": "2025-03-21 11:31:42.269372",
   "name": "BAG"
  },
  {
@@ -653,7 +653,7 @@
   "code_name": "bar",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.334371",
+  "modified": "2025-03-21 11:31:42.277036",
   "name": "BAR"
  },
  {
@@ -662,7 +662,7 @@
   "code_name": "Bottle",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.342833",
+  "modified": "2025-03-21 11:31:42.286804",
   "name": "BOT"
  },
  {
@@ -671,7 +671,7 @@
   "code_name": "Becquerel/kilogram",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.351402",
+  "modified": "2025-03-21 11:31:42.294493",
   "name": "BQK"
  },
  {
@@ -680,7 +680,7 @@
   "code_name": "Millifarad",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.360163",
+  "modified": "2025-03-21 11:31:42.302452",
   "name": "C10"
  },
  {
@@ -689,7 +689,7 @@
   "code_name": "Mol per cubic meter",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.368590",
+  "modified": "2025-03-21 11:31:42.310989",
   "name": "C36"
  },
  {
@@ -698,7 +698,7 @@
   "code_name": "Mol per liter",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.379180",
+  "modified": "2025-03-21 11:31:42.319140",
   "name": "C38"
  },
  {
@@ -707,7 +707,7 @@
   "code_name": "Nanoampere",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.387821",
+  "modified": "2025-03-21 11:31:42.329476",
   "name": "C39"
  },
  {
@@ -716,7 +716,7 @@
   "code_name": "Cubic centimeter/second",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.396440",
+  "modified": "2025-03-21 11:31:42.337859",
   "name": "C3S"
  },
  {
@@ -725,7 +725,7 @@
   "code_name": "Nanofarad",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.405170",
+  "modified": "2025-03-21 11:31:42.346376",
   "name": "C41"
  },
  {
@@ -734,7 +734,7 @@
   "code_name": "Newton/Square millimeter",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.413814",
+  "modified": "2025-03-21 11:31:42.354652",
   "name": "C56"
  },
  {
@@ -743,7 +743,7 @@
   "code_name": "Cubic centimeter",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.422471",
+  "modified": "2025-03-21 11:31:42.362893",
   "name": "CCM"
  },
  {
@@ -752,7 +752,7 @@
   "code_name": "Candela",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.431500",
+  "modified": "2025-03-21 11:31:42.373131",
   "name": "CD"
  },
  {
@@ -761,7 +761,7 @@
   "code_name": "Cubic decimeter",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.440706",
+  "modified": "2025-03-21 11:31:42.382214",
   "name": "CDM"
  },
  {
@@ -770,7 +770,7 @@
   "code_name": "COUNT",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.449584",
+  "modified": "2025-03-21 11:31:42.390630",
   "name": "CT"
  },
  {
@@ -779,7 +779,7 @@
   "code_name": "DEKALITRES",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.458521",
+  "modified": "2025-03-21 11:31:42.398692",
   "name": "DL"
  },
  {
@@ -788,7 +788,7 @@
   "code_name": "DRY METRIC TONNES",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.467463",
+  "modified": "2025-03-21 11:31:42.407864",
   "name": "DMT"
  },
  {
@@ -797,7 +797,7 @@
   "code_name": "ENGINE CAPACITY",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.476315",
+  "modified": "2025-03-21 11:31:42.416050",
   "name": "EC"
  },
  {
@@ -806,7 +806,7 @@
   "code_name": "HUNDRED KILOWATT HOURS",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.486284",
+  "modified": "2025-03-21 11:31:42.425629",
   "name": "HKH"
  },
  {
@@ -815,7 +815,7 @@
   "code_name": "METAL PER CENT (GRADE) OF AG - SILVER",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.494495",
+  "modified": "2025-03-21 11:31:42.436071",
   "name": "AG"
  },
  {
@@ -824,7 +824,7 @@
   "code_name": "METAL PER CENT (GRADE) OF AU - GOLD",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.503028",
+  "modified": "2025-03-21 11:31:42.443909",
   "name": "AU"
  },
  {
@@ -833,7 +833,7 @@
   "code_name": "METAL PER CENT (GRADE) OF CO - COBALT",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.511387",
+  "modified": "2025-03-21 11:31:42.451699",
   "name": "CO"
  },
  {
@@ -842,7 +842,7 @@
   "code_name": "METAL PER CENT (GRADE) OF CU - COPPER",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.519600",
+  "modified": "2025-03-21 11:31:42.459680",
   "name": "CU"
  },
  {
@@ -851,7 +851,7 @@
   "code_name": "MILIGRAMMES",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.527789",
+  "modified": "2025-03-21 11:31:42.467770",
   "name": "MG"
  },
  {
@@ -860,7 +860,7 @@
   "code_name": "MINUTES OF AIR TIME",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.535933",
+  "modified": "2025-03-21 11:31:42.475876",
   "name": "MAT"
  },
  {
@@ -869,7 +869,7 @@
   "code_name": "PER ONE HUNDRED",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.544226",
+  "modified": "2025-03-21 11:31:42.484068",
   "name": "P100"
  },
  {
@@ -878,7 +878,7 @@
   "code_name": "PER TEN",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.552540",
+  "modified": "2025-03-21 11:31:42.491880",
   "name": "P10"
  },
  {
@@ -887,7 +887,7 @@
   "code_name": "QUINTAL",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:25.560624",
+  "modified": "2025-03-21 11:31:42.499915",
   "name": "QL"
  },
  {
@@ -896,7 +896,7 @@
   "code_name": "Pieces/item [Number]",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.983620",
+  "modified": "2025-03-21 11:31:41.935845",
   "name": "U"
  },
  {
@@ -905,7 +905,7 @@
   "code_name": "Kilo-Gramme",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.771676",
+  "modified": "2025-03-21 11:31:41.733026",
   "name": "KG"
  },
  {
@@ -914,7 +914,7 @@
   "code_name": "Cap",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.626405",
+  "modified": "2025-03-21 11:31:41.593894",
   "name": "AV"
  },
  {
@@ -923,7 +923,7 @@
   "code_name": "Gram",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.752551",
+  "modified": "2025-03-21 11:31:41.715929",
   "name": "GRM"
  },
  {
@@ -932,7 +932,7 @@
   "code_name": "Pair",
   "docstatus": 0,
   "doctype": "ZRA Unit of Quantity",
-  "modified": "2025-04-01 09:28:24.610246",
+  "modified": "2025-03-21 11:31:41.577235",
   "name": "4B"
  }
 ]

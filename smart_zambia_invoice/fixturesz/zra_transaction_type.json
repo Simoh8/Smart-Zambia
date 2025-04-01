@@ -1,0 +1,90 @@
+[
+ {
+  "code": "T",
+  "code_description": "Sales and purchase type : Training",
+  "code_name": "Training",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Type",
+  "modified": "2024-11-05 15:27:35.484639",
+  "name": "T",
+  "remark": null,
+  "sort_order": 4
+ },
+ {
+  "code": "P",
+  "code_description": "Sales and purchase type : Proforma",
+  "code_name": "Proforma",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Type",
+  "modified": "2024-11-05 15:27:35.521953",
+  "name": "P",
+  "remark": "Proforma Invoice",
+  "sort_order": 3
+ },
+ {
+  "code": "N",
+  "code_description": " Sales and purchase type : Normal",
+  "code_name": "Normal",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Type",
+  "modified": "2024-11-05 15:27:35.544413",
+  "name": "N",
+  "remark": null,
+  "sort_order": 2
+ },
+ {
+  "code": "C",
+  "code_description": "Sales and purchase type : Copy",
+  "code_name": "Copy",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Type",
+  "modified": "2024-11-05 15:27:35.557838",
+  "name": "C",
+  "remark": null,
+  "sort_order": 1
+ },
+ {
+  "code": "P",
+  "code_description": "Sales and purchase type : Proforma",
+  "code_name": "Proforma",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Type",
+  "modified": "2024-11-21 10:51:54.868491",
+  "name": "Proforma",
+  "remark": "Proforma Invoice",
+  "sort_order": 3
+ },
+ {
+  "code": "T",
+  "code_description": "Sales and purchase type : Training",
+  "code_name": "Training",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Type",
+  "modified": "2024-11-21 10:51:54.891418",
+  "name": "Training",
+  "remark": null,
+  "sort_order": 4
+ },
+ {
+  "code": "C",
+  "code_description": "Sales and purchase type : Copy Transaction",
+  "code_name": "Copy",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Type",
+  "modified": "2024-11-21 10:51:54.820294",
+  "name": "Copy",
+  "remark": null,
+  "sort_order": 1
+ },
+ {
+  "code": "N",
+  "code_description": "Sales and purchase type : Normal",
+  "code_name": "Normal",
+  "docstatus": 0,
+  "doctype": "ZRA Transaction Type",
+  "modified": "2024-11-21 10:51:54.848915",
+  "name": "Normal",
+  "remark": null,
+  "sort_order": 2
+ }
+]
