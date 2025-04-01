@@ -21,7 +21,7 @@ fixtures = [
     "ZRA Unit of Quantity",
     "ZRA Packaging Unit",
     "ZRA Transaction Progress",
-    "ZRA Smart Invoice Settings",
+    # "ZRA Smart Invoice Settings",
     # "ZRA Item Classification",
     "ZRA Import Item Status",
     "ZRA Credit Note Reason",
