@@ -2,7 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "ZRA VSDC Routes",
-  "modified": "2025-04-01 10:01:11.630534",
+  "modified": "2025-04-01 12:45:42.491434",
   "name": "ZRA VSDC Routes",
   "zra_vscd_routes": [
    {
@@ -15,7 +15,7 @@
     "path_function": "device initialization"
    },
    {
-    "last_req_date": "2024-12-06 15:26:37",
+    "last_req_date": "2018-01-01 15:26:37",
     "parent": "ZRA VSDC Routes",
     "parentfield": "zra_vscd_routes",
     "parenttype": "ZRA VSDC Routes",
@@ -24,7 +24,7 @@
     "path_function": "Standard Codes (Constants)"
    },
    {
-    "last_req_date": "2024-12-06 15:26:37",
+    "last_req_date": "2018-01-01 15:26:37",
     "parent": "ZRA VSDC Routes",
     "parentfield": "zra_vscd_routes",
     "parenttype": "ZRA VSDC Routes",
@@ -33,7 +33,7 @@
     "path_function": "Classification Codes"
    },
    {
-    "last_req_date": "2024-12-06 15:26:54",
+    "last_req_date": "2018-01-01 15:26:37",
     "parent": "ZRA VSDC Routes",
     "parentfield": "zra_vscd_routes",
     "parenttype": "ZRA VSDC Routes",
@@ -51,7 +51,7 @@
     "path_function": "SAVE BRANCH USER"
    },
    {
-    "last_req_date": "2024-12-06 15:27:00",
+    "last_req_date": "2018-01-01 15:26:37",
     "parent": "ZRA VSDC Routes",
     "parentfield": "zra_vscd_routes",
     "parenttype": "ZRA VSDC Routes",
