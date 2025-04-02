@@ -824,7 +824,7 @@ def success(success_codes: list) -> str:
     :return: A formatted success message.
     """
     if success_codes:
-        return f"Successfully entered codes: {', '.join(success_codes)}"
+        return f"Successfully entered codes: {', '.join(map(str, success_codes))}"
     return "No codes were successfully entered."
 
 def duplicate(duplicate_codes: list) -> str:
@@ -835,9 +835,8 @@ def duplicate(duplicate_codes: list) -> str:
     :return: A formatted duplicate message.
     """
     if duplicate_codes:
-        return f"Duplicate codes (not entered): {', '.join(duplicate_codes)}"
+        return f"Duplicate codes (not entered): {', '.join(map(str, duplicate_codes))}"
     return "No duplicate codes were found."
-
 
 
 

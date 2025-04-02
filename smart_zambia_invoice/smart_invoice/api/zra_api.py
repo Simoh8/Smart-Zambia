@@ -36,7 +36,6 @@ def make_branch_request(request_data: str) -> None:
 
         payload = last_request_less_payload(headers, last_req_date )
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = fetch_branch_request_on_success
@@ -98,7 +97,6 @@ def perform_zra_notice_search(request_data: str) -> None:
 
         payload = last_request_less_payload(headers, last_req_date)
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = notices_search_on_success
@@ -128,7 +126,6 @@ def perform_customer_search(request_data: str) -> None:
         url = f"{server_url}{route_path}"
         payload = {"custmTpin": data["tax_id"]}
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(
@@ -195,7 +192,6 @@ def submit_branch_customer_details(request_data: str) -> None:
         payload = {**common_payload, **specific_payload}
 
         # Configure the endpoint builder
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(
@@ -248,7 +244,6 @@ def perform_import_item_search(request_data: str) -> None:
             "dclRefNum": "CX1100096839",
         }
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = on_imported_items_search_success
@@ -286,7 +281,6 @@ def send_customer_insurance_details(request_data: str) -> None:
             "modrId": split_user_mail(data["modifier_id"]),
         }
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(
@@ -334,7 +328,6 @@ def submit_zra_branch_user_details(request_data: str) -> None:
         payload = {**common_payload, **custom_payload}
 
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(
@@ -381,7 +374,6 @@ def fetch_customer_info(request_data: str) -> None:
         custom_payload = {"custmTpin": data["tax_id"]}
         payload= {**common_payload, **custom_payload}         
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(on_success_customer_search, document_name=data["name"])
@@ -423,7 +415,6 @@ def make_zra_item_registration(request_data: str) -> dict | None:
             data_to_send = {key: value for key, value in data.items() if key not in ["name", "company_name"]}
             payload = {**common_payload, **data_to_send}
 
-            endpoint_builder.headers = headers
             endpoint_builder.url = url
             endpoint_builder.payload = payload
             endpoint_builder.success_callback = partial(
@@ -465,7 +456,7 @@ def fetch_Previous_registered_zra_items(request_data: str, frm: dict = None) -> 
         request_date = last_req_date.strftime("%Y%m%d%H%M%S")
         payload = build_common_payload(headers, last_req_date)
 
-        endpoint_builder.headers = headers
+      
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = lambda response: on_successful_fetch_latest_items(frm, response)  # Pass frm here if available
@@ -494,7 +485,6 @@ def fetch_rrp_latest_items(request_data: str, frm: dict = None) -> None:  # Defa
         request_date = last_req_date.strftime("%Y%m%d%H%M%S")
         payload = build_common_payload(headers, last_req_date)
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = lambda response: on_successful_fetch_latest_items(frm, response)  # Pass frm here if available
@@ -553,7 +543,6 @@ def save_item_composition(request_data: str) -> None:
                         payload= {**common_payload, **composition_payload}         
 
 
-                        endpoint_builder.headers = headers
                         endpoint_builder.url = url
                         endpoint_builder.payload = payload
                         endpoint_builder.success_callback = partial(on_success_item_composition_submission,
@@ -602,7 +591,6 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
             item_list = [item_data]
             payload = {**common_payload, "itemList": item_list}
 
-            endpoint_builder.headers = headers
             endpoint_builder.url = url
             endpoint_builder.payload = payload
             endpoint_builder.success_callback = partial(
@@ -653,7 +641,6 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
 #         payload = build_common_payload(headers, last_req_date)
 
 
-#         endpoint_builder.headers = headers
 #         endpoint_builder.url = url
 #         endpoint_builder.payload = payload
 #         endpoint_builder.success_callback = on_success_item_classification_search
@@ -690,7 +677,6 @@ def perform_purchases_search_on_zra(request_data: str) -> None:
         payload = build_common_payload(headers, last_req_date)
 
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = on_succesfull_purchase_search_zra
@@ -725,7 +711,6 @@ def perform_sales_invoice_registration(request_data: str) -> dict | None:
         invoice_number = data.get("cisInvcNo", "")
         tpin = data.get("custTpin", "")
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(
@@ -804,7 +789,6 @@ def save_stock_inventory(request_data: str) -> None:
         }
 
 
-        endpoint_builder.headers = headers
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = partial(

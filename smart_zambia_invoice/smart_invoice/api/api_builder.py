@@ -129,7 +129,7 @@ class EndpointConstructor(BaseEndpointConstructor):
 
 
     def perform_remote_calls(self, doctype: Document | str | None = None, document_name: str | None = None) -> None:
-        if not all([self._url, self._headers, self._success_callback_handler, self._error_callback_handler]):
+        if not all([self._url, self._success_callback_handler, self._error_callback_handler]):
             frappe.throw(
                 "Missing configuration: URL, headers, success_callback, or error_callback are required.",
                 title="Critical Setup Error",
