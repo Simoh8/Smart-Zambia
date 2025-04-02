@@ -71,8 +71,7 @@
    "default": "http://localhost:8080/zrasandboxvsdc",
    "fieldname": "server_url",
    "fieldtype": "Data",
-   "label": "Server URL",
-   "read_only": 1
+   "label": "Server URL"
   },
   {
    "fieldname": "other_details_section",
@@ -245,7 +244,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-01 08:22:29.996324",
+ "modified": "2025-04-02 08:32:58.240125",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Smart Invoice Settings",
