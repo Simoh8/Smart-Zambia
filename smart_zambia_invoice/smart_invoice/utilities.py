@@ -211,7 +211,6 @@ def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str
         headers = {
             "tpin": settings.get("company_tpin"),  
             "bhfId": settings.get("branch_id"), 
-            "Content-Type": "application/json"
         }
 
         return headers

@@ -144,7 +144,6 @@ class EndpointConstructor(BaseEndpointConstructor):
             data=self._payload,
             is_remote_request=True,
             service_name="vscd",
-            request_headers=self._headers,
             url=self._url,
             reference_docname=document_name,
             reference_doctype=doctype,

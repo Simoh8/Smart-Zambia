@@ -77,33 +77,31 @@ def ping_zra_server(request_data: str) -> None:
 
 
         
-# searching for the new notices available from zra
+# Searching for the new notices available from ZRA
 @frappe.whitelist()
 def perform_zra_notice_search(request_data: str) -> None:
     data: dict = json.loads(request_data)
     company_name = data["company_name"]
-    headers = build_request_headers(company_name)
-
+    headers = build_request_headers(company_name)  # Keep headers for payload construction
 
     server_url = get_server_url(company_name)
 
     # Get route path and last request date
     route_path, last_req_date = get_route_path_with_last_req_date("Notices Fetching")
 
-    # request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
-
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
 
-        payload = last_request_less_payload(headers, last_req_date)
+        payload = last_request_less_payload(headers, last_req_date)  # Use headers only here
 
         endpoint_builder.url = url
         endpoint_builder.payload = payload
         endpoint_builder.success_callback = notices_search_on_success
         endpoint_builder.error_callback = on_error
 
+        # Remove headers from perform_remote_calls
         endpoint_builder.perform_remote_calls(doctype="ZRA Smart Invoice Settings", document_name=data.get("name", None))
-        
+
 
                         
                         
