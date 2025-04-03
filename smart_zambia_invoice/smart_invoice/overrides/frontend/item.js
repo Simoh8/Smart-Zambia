@@ -3,6 +3,8 @@ const itemDoctypName = "Item";
 frappe.ui.form.on(itemDoctypName, {
   refresh: function (frm) {
     const companyName = frappe.boot.sysdefaults.company;
+    const getUserID = (email) => email.includes("@") ? email.split("@")[0] : email.substring(0, 20);
+
 
     // if (frm.doc.custom_zra_item_registered_) {
     //   frm.toggle_enable("custom_zra_item_classification_code", false);
@@ -88,10 +90,11 @@ frappe.ui.form.on(itemDoctypName, {
                   svcChargeYn: "Y",
                   rentalYn: "N",
                   useYn: "Y",
-                  regrId: frm.doc.owner,
-                  regrNm: frm.doc.owner,
-                  modrId: frm.doc.modified_by,
-                  modrNm: frm.doc.modified_by,
+                  regrId: getUserID(frm.doc.owner),
+                  regrNm: getUserID(frm.doc.owner),
+                  modrId: getUserID(frm.doc.modified_by),
+                  modrNm: getUserID(frm.doc.modified_by),
+            
                 },
               },
               callback: (response) => {
@@ -121,8 +124,8 @@ frappe.ui.form.on(itemDoctypName, {
                   itemName: frm.doc.item_code,
                   remainq: frm.doc.stock_levels,
                   itemCd: frm.doc.custom_zra_item_classification_code,
-                  registered_by: frm.doc.owner,
-                  modified_by: frm.doc.modified_by,
+                  registered_by: getUserID(frm.doc.owner),
+                  modified_by: getUserID(frm.doc.modified_by),
                 },
               },
               callback: (response) => {},
@@ -163,10 +166,11 @@ frappe.ui.form.on(itemDoctypName, {
                   qtyUnitCd: frm.doc.custom_zra_unit_quantity_code,
                   rrp: frm.doc.standard_rate,
                   useYn: "Y",
-                  regrId: frm.doc.owner,
-                  regrNm: frm.doc.owner,
-                  modrId: frm.doc.modified_by,
-                  modrNm: frm.doc.modified_by,
+                  regrId: getUserID(frm.doc.owner),
+                  regrNm: getUserID(frm.doc.owner),
+                  modrId: getUserID(frm.doc.modified_by),
+                  modrNm: getUserID(frm.doc.modified_by),
+            
                 },
               },
               callback: (response) => {

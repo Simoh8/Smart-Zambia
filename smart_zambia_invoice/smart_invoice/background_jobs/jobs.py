@@ -117,8 +117,6 @@ def refresh_code_lists() -> str | None:
         payload = {**common_payload,
             "lastReqDt": "20180101000000"
         }  
-
-
         endpoint_maker.headers = headers
         endpoint_maker.payload = payload
         endpoint_maker.error_callback = on_error

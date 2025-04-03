@@ -211,6 +211,7 @@ def build_request_headers(company_name: str, branch_id: str = "001") -> dict[str
         headers = {
             "tpin": settings.get("company_tpin"),  
             "bhfId": settings.get("branch_id"), 
+            "Content-Type": "application/json"
         }
 
         return headers
@@ -1006,7 +1007,7 @@ def build_invoice_payload(
         "modrNm": invoice.modified_by,
         "itemList": items_list,  
     }
-    # frappe.throw(str(payload))
+    frappe.throw(str(payload))
 
 
     return payload

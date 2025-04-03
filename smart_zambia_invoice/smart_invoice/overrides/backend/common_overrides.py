@@ -50,6 +50,7 @@ def on_submit_override_generic_invoices(
         )
         endpoint_builder.error_callback = on_error
         endpoint_builder.perform_remote_calls()
+        # frappe.throw(str(payload))
 
         # frappe.enqueue(
         #     endpoint_builder.perform_remote_calls,

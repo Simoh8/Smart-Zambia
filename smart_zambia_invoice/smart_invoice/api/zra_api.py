@@ -409,7 +409,6 @@ def make_zra_item_registration(request_data: str) -> dict | None:
             # Build the common payload fields
             common_payload = last_request_less_payload(headers)
 
-            # Exclude `name` and `company_name` from `data`
             data_to_send = {key: value for key, value in data.items() if key not in ["name", "company_name"]}
             payload = {**common_payload, **data_to_send}
 
