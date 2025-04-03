@@ -717,13 +717,14 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
     """Iterates over the invoice items and correctly assigns tax amounts based on tax type codes.
 
     Args:
-        invoice (Document): The invoice
+        invoice (Document): The invoice.
 
     Returns:
-        List[Dict[str, Union[str, int, float, None]]]: The parsed data as a list of dictionaries
+        List[Dict[str, Union[str, int, float, None]]]: The parsed data as a list of dictionaries.
     """
 
     taxation_types = get_taxation_types(invoice)  
+    # frappe.throw(str(taxation_types))
     items_list = []
 
     for index, item in enumerate(invoice.items):
@@ -749,36 +750,32 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             if getattr(item, "custom_has_a_recommended_retail_price_rrp_", 0) == 1 
             else getattr(item, "base_rate", 0), 
             2
-        )       
+        )
 
-        splyAmt = round(getattr(item, "base_amount", 0), 2)
-        dcRt = round(getattr(item, "discount_percentage", 0), 2)
-        dcAmt = round(getattr(item, "discount_amount", 0), 2)
+        dcRt = abs(round(float(getattr(item, "discount_percentage", 0) or 0), 2))
+        dcAmt = abs(round(float(getattr(item, "discount_amount", 0) or 0), 2))
 
         taxation_type = getattr(item, "custom_zra_taxation_type", None)
-
         tax_data = next((tax for tax in taxation_types if tax["item_code"] == getattr(item, "item_code", "")), {})
 
-        taxblAmt = round(tax_data.get("taxable_amount", 0), 2)
-        taxAmt = round(tax_data.get("tax_amount", 0), 2)  # Keep original sign
+        taxblAmt = abs(round(float(tax_data.get("taxable_amount", 0) or 0), 2))
+        taxAmt = abs(round(float(tax_data.get("tax_amount", 0) or 0), 2))  
 
-        # Correct allocation based on tax type code
+        # Correct tax category allocation
         vatTaxblAmt = taxblAmt if taxTyCd in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"] else 0
         iplTaxblAmt = taxblAmt if taxTyCd in ["IPL1", "IPL2"] else 0
         exciseTaxblAmt = taxblAmt if taxTyCd in ["EXEEG", "ECM"] else 0
         tlTaxblAmt = taxblAmt if taxTyCd == "TL" else 0
 
-        # Assign tax amounts without forcing them to zero
-        vatAmt = taxAmt if bool(vatTaxblAmt) else 0
-        iplAmt = taxAmt if bool(iplTaxblAmt) else 0
-        exciseTxAmt = taxAmt if bool(exciseTaxblAmt) else 0
-        tlAmt = taxAmt if bool(tlTaxblAmt) else 0
+        # Assign tax amounts only to the relevant category
+        vatAmt = taxAmt if vatTaxblAmt > 0 else 0
+        iplAmt = taxAmt if iplTaxblAmt > 0 else 0
+        exciseTxAmt = taxAmt if exciseTaxblAmt > 0 else 0
+        tlAmt = taxAmt if tlTaxblAmt > 0 else 0
 
+        totAmt = abs(round(taxblAmt + taxAmt, 2))
 
-        totAmt = round(taxblAmt + taxAmt, 2)
-        # frappe.throw(str(item.as_dict()))
-
-        items_list.append({
+        item_data = {
             "itemSeq": item.idx,
             "itemCd": getattr(item, "custom_zra_item_code", ""),
             "itemClsCd": getattr(item, "custom_zra_item_classification_code", ""),
@@ -787,32 +784,35 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             "pkgUnitCd": getattr(item, "custom_zra_packaging_unit_code", ""),
             "pkg": 1,
             "qtyUnitCd": getattr(item, "custom_zra_unit_of_quantity_code", ""),
-            "qty": abs(item.qty),
-            "prc": abs(prc),
-            "splyAmt": abs(splyAmt),
-            "dcRt": abs(dcRt),
-            "dcAmt": abs(dcAmt),
-            "tlTaxblAmt": abs(tlTaxblAmt),
+            "qty": qty,
+            "prc": prc,
+            "dcRt": dcRt,
+            "dcAmt": dcAmt,
+            "splyAmt": abs(round(float(getattr(item, "base_amount", 0) or 0), 2)),
+            "tlTaxblAmt": tlTaxblAmt,
             "vatCatCd": vatCatCd,
-            "iplTaxblAmt": abs(iplTaxblAmt),
-            "exciseTaxblAmt": abs(exciseTaxblAmt),
+            "iplTaxblAmt": iplTaxblAmt,
+            "exciseTaxblAmt": exciseTaxblAmt,
             "exciseTxCatCd": exciseTxCatCd,
-            "vatTaxblAmt": abs(vatTaxblAmt),
-            "exciseTxAmt": abs(exciseTxAmt),
-            "vatAmt": abs(vatAmt),
-            "tlAmt": abs(tlAmt),
-            "iplAmt": abs(iplAmt),
+            "vatTaxblAmt": vatTaxblAmt,
+            "exciseTxAmt": exciseTxAmt,
+            "vatAmt": vatAmt,
+            "tlAmt": tlAmt,
+            "iplAmt": iplAmt,
             "iplCatCd": iplCatCd,
             "tlCatCd": tlCatCd,
             "taxTyCd": taxTyCd,
-            "taxblAmt": abs(taxblAmt),
-            "taxAmt": abs(taxAmt),
-            "totAmt": abs(totAmt),
-        })
+            "taxblAmt": taxblAmt,
+            "taxAmt": taxAmt,
+            "totAmt": totAmt,
+        }
 
+        items_list.append(item_data)
+
+        # Log the item for debugging
+        frappe.logger().info(f"Processed Item: {item_data}")
 
     return items_list
-
 
 
 
@@ -857,7 +857,7 @@ def get_taxation_types(doc):
 
     for item in getattr(doc, "items", []):
         taxation_type = getattr(item, "custom_zra_taxation_type", None)
-        net_amount = abs(getattr(item, "net_amount", 0))  # Ensure net_amount is positive
+        net_amount = abs(getattr(item, "base_amount", 0))  # Ensure net_amount is positive
 
         if not taxation_type:
             frappe.logger().warning(f"Missing taxation type for item {getattr(item, 'item_code', 'Unknown')}")
@@ -922,6 +922,7 @@ def build_invoice_payload(
 
     taxation_data = get_taxation_types(invoice)  
     items_list = get_invoice_items_list(invoice)
+    # frappe.throw(str(items_list))
 
     tax_types = [
         "A", "B", "C1", "C2", "C3", "D", "RVAT", "E", "F", "IPL1", "IPL2",
@@ -986,12 +987,10 @@ def build_invoice_payload(
         "rfdRsnCd": rfdRsnCd,  
         "totItemCnt": len(items_list),
         **taxation_summary,  
-
         "totTaxblAmt": tot_taxable_amt,
         "totTaxAmt": tot_tax_amt,
         "cashDcRt": round_decimal(invoice.get("additional_discount_percentage", 0), 2),
         "cashDcAmt": round_decimal(invoice.get("discount_amount", 0), 2),
-
         "totAmt": abs(round_decimal(invoice.get("grand_total", 0), 2)),  # Ensure total amount is absolute
         "prchrAcptcYn": "Y",
         "remark": None,
