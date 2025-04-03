@@ -594,18 +594,18 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
                 on_success_rrp_item_registration, document_name=data.get("name")
             )
             endpoint_builder.error_callback = on_error
-            endpoint_builder.perform_remote_calls()
+            # endpoint_builder.perform_remote_calls()
 
 
-            # frappe.enqueue(
-            #     endpoint_builder.perform_remote_calls,
-            #     is_async=True,
-            #     queue="default",
-            #     timeout=300,
-            #     doctype="Item",
-            #     document_name=data["name"],
-            #     job_name=f"{data['name']}_register_item",
-            # )
+            frappe.enqueue(
+                endpoint_builder.perform_remote_calls,
+                is_async=True,
+                queue="default",
+                timeout=300,
+                doctype="Item",
+                document_name=data["name"],
+                job_name=f"{data['name']}_register_item",
+            )
 
 
 
