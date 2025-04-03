@@ -118,7 +118,7 @@ def perform_customer_search(request_data: str) -> None:
 
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_request_date = get_route_path("GET CUSTOMERS")
+    route_path = get_route_path("GET CUSTOMERS")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
@@ -163,7 +163,7 @@ def submit_branch_customer_details(request_data: str) -> None:
     company_name = data["company_name"]
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("SAVE BRANCH CUSTOMER")
+    route_path = get_route_path("SAVE BRANCH CUSTOMER")
 
 
     if headers and server_url and route_path:
@@ -306,7 +306,7 @@ def submit_zra_branch_user_details(request_data: str) -> None:
     company_name = data["company_name"]
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("SAVE BRANCH USER")
+    route_path = get_route_path("SAVE BRANCH USER")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
@@ -362,7 +362,7 @@ def fetch_customer_info(request_data: str) -> None:
 
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("GET CUSTOMERS")
+    route_path = get_route_path("GET CUSTOMERS")
 
     if headers and server_url and route_path:
         url = f"{server_url}{route_path}"
