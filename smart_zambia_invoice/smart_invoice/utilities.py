@@ -1007,7 +1007,7 @@ def build_invoice_payload(
         "modrNm": invoice.modified_by,
         "itemList": items_list,  
     }
-    frappe.throw(str(payload))
+    # frappe.throw(str(payload))
 
 
     return payload
