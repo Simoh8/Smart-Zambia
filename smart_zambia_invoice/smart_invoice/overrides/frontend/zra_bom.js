@@ -27,7 +27,7 @@ frappe.ui.form.on(doctype, {
                 company_name: companyName,
                 item_name: frm.doc.item,
                 quantity: frm.doc.quantity,
-                registration_id: frm.doc.owner,
+                registration_id: getUserID(frm.doc.owner),
                 item_code: itemCode,
                 items: frm.doc.items,
               },

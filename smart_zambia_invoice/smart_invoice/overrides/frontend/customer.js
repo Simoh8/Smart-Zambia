@@ -7,6 +7,8 @@ const doctypeName = "Customer";
 frappe.ui.form.on(doctypeName, {
   refresh: async function (frm) {
     const companyName = frappe.boot.sysdefaults.company;
+    const getUserID = (email) => email.includes("@") ? email.split("@")[0] : email.substring(0, 20);
+
 
     // Only show the "Fetch Customer Details" button if custom_details_submitted_successfully is false
     if (!frm.is_new() && frm.doc.tax_id && frm.doc.custom_details_submitted_successfully) {
@@ -46,8 +48,8 @@ frappe.ui.form.on(doctypeName, {
                 customer_pin: frm.doc.tax_id,
                 customer_name: frm.doc.customer_name,
                 company_name: companyName,
-                registration_id: frm.doc.owner,
-                modifier_id: frm.doc.modified_by,
+                registration_id: getUserID(frm.doc.owner),
+                modifier_id: getUserID(frm.doc.modified_by),
                 customer_remarks: frm.doc.customer_details || "",
                 customer_address: frm.doc.custom_location_address || "", // Default empty string if missing
                 customer_phone: frm.doc.custom_phone_number || "",  // Default empty string if missing
