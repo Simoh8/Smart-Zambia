@@ -153,7 +153,6 @@ class EndpointConstructor(BaseEndpointConstructor):
             response = asyncio.run(make_post_request(self._url, self._payload, self._headers))
             print("The payload used is ", self._payload)
             print("The response got is :", response)
-            # frappe.throw(str(self._payload))
 
             if response["resultCd"] == "000":
                 self._success_callback_handler(response)
