@@ -5,36 +5,23 @@ frappe.ui.form.on("ZRA Smart Invoice Settings", {
   refresh(frm) {
     ensure_only_one_checkbox(frm);
 
-    if (!frm.is_new() && frm.doc.is_active) {
+    if (!frm.is_new() && frm.doc.is_active_) {
       const actions = [
         {
           label: __("Get Latest Notices"),
           method:
             "smart_zambia_invoice.smart_invoice.api.zra_api.perform_zra_notice_search",
-          args: { name: frm.doc.name, company_name: frm.doc.company },
+          args: { 
+            name: frm.doc.name,
+            company_name: frm.doc.company_name },
         },
         {
           label: __("Update Codes"),
           method:
-            "smart_zambia_invoice.smart_invoice.api.zra_api.get_item_classification_codes",
-          args: { name: frm.doc.name, company_name: frm.doc.company },
+            "smart_zambia_invoice.smart_invoice.api.zra_api.perform_zra_item_code_classification_search",
+          args: { name: frm.doc.name, company_name: frm.doc.company_name },
         },
-        {
-          label: __("Get Item Classification Codes"),
-          method:
-            "smart_zambia_invoice.smart_invoice.api.zra_api.ping_zra_server",
-          args: {},
-        },
-        {
-          label: __("Update Stock Movements"),
-          method:
-            "smart_zambia_invoice.smart_invoice.api.zra_api.ping_zra_server",
-          args: {
-            name: frm.doc.name,
-            company_name: frm.doc.company,
-            branch_id: frm.doc.bhfid,
-          },
-        },
+  
       ];
 
       actions.forEach((action) => {

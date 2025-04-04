@@ -5,10 +5,9 @@ import aiohttp.client_exceptions
 from  frappe.integrations.utils import create_request_log
 from frappe.model.document import Document
 
+import frappe
 import asyncio
 import aiohttp
-
-import frappe
 from frappe.model.document import Document
 from ..utilities import make_post_request
 from ..zra_logger import zra_vsdc_logger
@@ -31,6 +30,7 @@ class BaseEndpointConstructor:
 
 
 class ErrorsObserver:
+
     def update(self, notifier: BaseEndpointConstructor) -> None:
         if notifier.error:
             if notifier.integration_requets:  # Prevents 'NoneType' error

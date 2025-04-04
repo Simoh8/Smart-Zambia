@@ -19,7 +19,7 @@ frappe.ui.form.on(parentDoctype, {
       settingsDoctypeName,
       {
         is_active_: 1,
-        bhfid: frm.doc.branch,
+        branch_id: frm.doc.branch,
         company_name: frappe.defaults.get_user_default('Company'),
       },
       [

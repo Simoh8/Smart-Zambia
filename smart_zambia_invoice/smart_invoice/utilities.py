@@ -723,8 +723,7 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
         List[Dict[str, Union[str, int, float, None]]]: The parsed data as a list of dictionaries.
     """
 
-    taxation_types = get_taxation_types(invoice)  
-    # frappe.throw(str(taxation_types))
+    taxation_types = get_taxation_types(invoice)
     items_list = []
 
     for index, item in enumerate(invoice.items):
@@ -752,14 +751,19 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             2
         )
 
-        dcRt = abs(round(float(getattr(item, "discount_percentage", 0) or 0), 2))
-        dcAmt = abs(round(float(getattr(item, "discount_amount", 0) or 0), 2))
+        # If item is RRP, set dcRt and dcAmt to 0
+        if getattr(item, "custom_has_a_recommended_retail_price_rrp_", 0) == 1:
+            dcRt = 0.0
+            dcAmt = 0.0
+        else:
+            dcRt = abs(round(float(getattr(item, "discount_percentage", 0) or 0), 2))
+            dcAmt = abs(round(float(getattr(item, "discount_amount", 0) or 0), 2))
 
         taxation_type = getattr(item, "custom_zra_taxation_type", None)
         tax_data = next((tax for tax in taxation_types if tax["item_code"] == getattr(item, "item_code", "")), {})
 
         taxblAmt = abs(round(float(tax_data.get("taxable_amount", 0) or 0), 2))
-        taxAmt = abs(round(float(tax_data.get("tax_amount", 0) or 0), 2))  
+        taxAmt = abs(round(float(tax_data.get("tax_amount", 0) or 0), 2))
 
         # Correct tax category allocation
         vatTaxblAmt = taxblAmt if taxTyCd in ["A", "B", "C1", "C2", "C3", "D", "E", "RVAT"] else 0
@@ -775,6 +779,9 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
 
         totAmt = abs(round(taxblAmt + taxAmt, 2))
 
+        # Check if the item is an RRP item, and set splyAmt to prc if so
+        splyAmt = prc if getattr(item, "custom_has_a_recommended_retail_price_rrp_", 0) == 1 else abs(round(float(getattr(item, "base_amount", 0) or 0), 2))
+
         item_data = {
             "itemSeq": item.idx,
             "itemCd": getattr(item, "custom_zra_item_code", ""),
@@ -788,7 +795,7 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             "prc": prc,
             "dcRt": dcRt,
             "dcAmt": dcAmt,
-            "splyAmt": abs(round(float(getattr(item, "base_amount", 0) or 0), 2)),
+            "splyAmt": splyAmt,  # Use splyAmt as calculated above
             "tlTaxblAmt": tlTaxblAmt,
             "vatCatCd": vatCatCd,
             "iplTaxblAmt": iplTaxblAmt,
@@ -813,7 +820,6 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
         frappe.logger().info(f"Processed Item: {item_data}")
 
     return items_list
-
 
 
 def success(success_codes: list) -> str:
@@ -852,35 +858,47 @@ def clean_invc_no(invoice_name):
 
 
 
-
-import frappe
-
 def get_taxation_types(doc):
-    taxation_list = []  
+    taxation_list = []
 
     for item in getattr(doc, "items", []):
         item_dict = item.as_dict()
 
-        # Determine net amount
+        # Check if item has an RRP and calculate net amount based on base_price_list_rate
         if item_dict.get("custom_has_a_recommended_retail_price_rrp_") == 1:
+            # If it's an RRP, use the base_price_list_rate and quantity
             net_amount = abs(item_dict.get("base_price_list_rate", 0)) * abs(item_dict.get("qty", 1))
+
         else:
-            net_amount = abs(item_dict.get("base_amount", 0))  # Default to base_amount
+            # Otherwise, use the base_amount for calculation
+            net_amount = abs(item_dict.get("base_amount", 0))
+
+        # Ensure net_amount is always positive
+        if net_amount <= 0:
+            frappe.logger().warning(f"Invalid net amount for item {item_dict.get('item_code', 'Unknown')} - Defaulting to 0")
+            net_amount = 0  # Defaulting to 0 if missing or invalid value
 
         taxation_type = item_dict.get("custom_zra_taxation_type")
 
         if not taxation_type:
             frappe.logger().warning(f"Missing taxation type for item {item_dict.get('item_code', 'Unknown')}")
-            continue
+            continue  # Skip item if taxation type is missing
 
+        # Retrieve the tax rate from the ZRA Tax Type
         tax_rate = frappe.db.get_value("ZRA Tax Type", taxation_type, "tax_rate_")
-        tax_rate = float(tax_rate) if tax_rate else 0  
+        tax_rate = float(tax_rate) if tax_rate else 0  # Default tax rate to 0 if no value is found
 
-        taxable_amount = net_amount / (1 + (tax_rate / 100)) if tax_rate > 0 else net_amount
+        # Calculate taxable amount (considering the tax rate if applicable)
+        if tax_rate > 0:
+            taxable_amount = net_amount / (1 + (tax_rate / 100))  # Pre-tax amount
+        else:
+            taxable_amount = net_amount  # No tax, keep the net amount as taxable amount
         taxable_amount = abs(round(taxable_amount, 2))  # Ensure taxable_amount is positive
 
+        # Calculate the tax amount
         tax_amount = abs(round(taxable_amount * (tax_rate / 100), 2))  # Ensure tax_amount is positive
 
+        # Append the item taxation data to the list
         taxation_list.append({
             "item_code": item_dict.get("item_code", "Unknown"),
             "taxation_type": taxation_type,
@@ -890,7 +908,8 @@ def get_taxation_types(doc):
             "tax_amount": tax_amount
         })
 
-    return taxation_list  
+    return taxation_list
+
 
 
 from decimal import Decimal, ROUND_HALF_UP

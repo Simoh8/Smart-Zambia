@@ -615,43 +615,43 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
 
 
 
-# @frappe.whitelist()
-# def perform_zra_item_code_classification_search(request_data: str) -> None:
-#     data: dict = json.loads(request_data)
-#     company_name = data["company_name"]
-#     headers = build_request_headers(company_name)
+@frappe.whitelist()
+def perform_zra_item_code_classification_search(request_data: str) -> None:
+    data: dict = json.loads(request_data)
+    company_name = data["company_name"]
+    headers = build_request_headers(company_name)
 
 
-#     server_url = get_server_url(company_name)
+    server_url = get_server_url(company_name)
 
-#     # Get route path and last request date
-#     route_path, last_req_date = get_route_path("Classification Codes")
-#     last_req_date_str = last_req_date.strftime("%Y%m%d%H%M%S")
+    # Get route path and last request date
+    route_path, last_req_date = get_route_path_with_last_req_date("Classification Codes")
+    last_req_date_str = last_req_date.strftime("%Y%m%d%H%M%S")
 
-#     request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
+    request_date = add_to_date(datetime.now(), years=-1).strftime("%Y%m%d%H%M%S")
 
-#     if headers and server_url and route_path:
-#         url = f"{server_url}{route_path}"
-
-
-#         # Include tpin and bhfId in the payload
-#         payload = build_common_payload(headers, last_req_date)
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
 
 
-#         endpoint_builder.url = url
-#         endpoint_builder.payload = payload
-#         endpoint_builder.success_callback = on_success_item_classification_search
-#         endpoint_builder.error_callback = on_error
+        # Include tpin and bhfId in the payload
+        payload = build_common_payload(headers, last_req_date)
 
-#         # endpoint_builder.perform_remote_calls(doctype="ZRA Item Classification", document_name=data.get("name", None))
-#         frappe.enqueue(
-#                 endpoint_builder.perform_remote_calls,
-#                 is_async=True,
-#                 queue="default",
-#                 timeout=300,
-#                 doctype="ZRA Item Classification",
-#                 job_name=f"_register_item_calssification",
-#             )
+
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = on_success_item_classification_search
+        endpoint_builder.error_callback = on_error
+
+        # endpoint_builder.perform_remote_calls(doctype="ZRA Item Classification", document_name=data.get("name", None))
+        frappe.enqueue(
+                endpoint_builder.perform_remote_calls,
+                is_async=True,
+                queue="default",
+                timeout=300,
+                doctype="ZRA Item Classification",
+                job_name=f"_register_item_calssification",
+            )
 
 
 
