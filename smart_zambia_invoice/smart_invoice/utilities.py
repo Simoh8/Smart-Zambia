@@ -712,7 +712,6 @@ def get_real_name(doctype, field_name, value, target_field):
 
 
 
-
 def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, float, None]]]:
     """Iterates over the invoice items and correctly assigns tax amounts based on tax type codes.
 
@@ -756,8 +755,13 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             dcRt = 0.0
             dcAmt = 0.0
         else:
-            dcRt = abs(round(float(getattr(item, "discount_percentage", 0) or 0), 2))
             dcAmt = abs(round(float(getattr(item, "discount_amount", 0) or 0), 2))
+            splyAmt = abs(round(float(getattr(item, "base_amount", 0) or 0), 2))
+
+            # Calculate discount rate from discount amount (if splyAmt is greater than 0)
+            dcRt = 0.0  # Default value if no discount
+            if splyAmt > 0:
+                dcRt = abs(round((dcAmt / splyAmt) * 100, 2))  # Calculate discount rate
 
         taxation_type = getattr(item, "custom_zra_taxation_type", None)
         tax_data = next((tax for tax in taxation_types if tax["item_code"] == getattr(item, "item_code", "")), {})
@@ -793,8 +797,8 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
             "qtyUnitCd": getattr(item, "custom_zra_unit_of_quantity_code", ""),
             "qty": qty,
             "prc": prc,
-            "dcRt": dcRt,
-            "dcAmt": dcAmt,
+            "dcRt": 0,
+            "dcAmt": 0,
             "splyAmt": splyAmt,  # Use splyAmt as calculated above
             "tlTaxblAmt": tlTaxblAmt,
             "vatCatCd": vatCatCd,
@@ -820,6 +824,11 @@ def get_invoice_items_list(invoice: Document) -> List[Dict[str, Union[str, int, 
         frappe.logger().info(f"Processed Item: {item_data}")
 
     return items_list
+
+
+
+
+
 
 
 def success(success_codes: list) -> str:
