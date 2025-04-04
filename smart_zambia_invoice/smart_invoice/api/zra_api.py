@@ -252,54 +252,6 @@ def perform_import_item_search(request_data: str) -> None:
 
 
 
-
-
-# Not applicable to the zambian ZRA API for now but its working
-
-@frappe.whitelist()
-def send_customer_insurance_details(request_data: str) -> None:
-    data: dict = json.loads(request_data)
-
-    company_name = data["company_name"]
-
-    headers = build_request_headers(company_name)
-    server_url = get_server_url(company_name)
-    route_path = get_route_path("BhfInsuranceSaveReq")
-
-    if headers and server_url and route_path:
-        url = f"{server_url}{route_path}"
-        payload = {
-            "isrccCd": data["insurance_code"],
-            "isrccNm": data["insurance_name"],
-            "isrcRt": round(data["premium_rate"], 0),
-            "useYn": "Y",
-            "regrNm": data["registration_id"],
-            "regrId": split_user_mail(data["registration_id"]),
-            "modrNm": data["modifier_id"],
-            "modrId": split_user_mail(data["modifier_id"]),
-        }
-
-        endpoint_builder.url = url
-        endpoint_builder.payload = payload
-        endpoint_builder.success_callback = partial(
-            on_success_customer_insurance_details_submission, document_name=data["name"]
-        )
-        endpoint_builder.error_callback = on_error
-
-        frappe.enqueue(
-            endpoint_builder.perform_remote_calls,
-            is_async=True,
-            queue="default",
-            timeout=300,
-            doctype="Customer",
-            document_name=data["name"],
-            job_name=f"{data['name']}_submit_insurance_information",
-        )
-
-
-
-
-
 @frappe.whitelist()
 def submit_zra_branch_user_details(request_data: str) -> None:
     data: dict = json.loads(request_data)
@@ -820,7 +772,6 @@ def bulk_register_item(docs_list: str) -> None:
         for item in all_items:
             if record == item.name:
                 process_single_item(record)
-                # frappe.throw(str(all_items))
 
 
 @frappe.whitelist()

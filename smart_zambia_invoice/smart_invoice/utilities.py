@@ -919,90 +919,76 @@ def round_decimal(value, places=4):
 
 
 
+
+from decimal import Decimal
+
+TAX_TYPES = [
+    "A", "B", "C1", "C2", "C3", "D", "RVAT", "E", "F",
+    "IPL1", "IPL2", "TL", "ECM", "EXEEG", "TOT"
+]
+
+def build_taxation_summary(taxation_data: list[dict]) -> dict[str, Decimal]:
+    summary = {f"{prefix}{t}": Decimal(0) for t in TAX_TYPES for prefix in ("taxblAmt", "taxAmt", "taxRt")}
+
+    for entry in taxation_data:
+        t_type = entry.get("taxation_type")
+        if t_type in TAX_TYPES:
+            summary[f"taxblAmt{t_type}"] += Decimal(str(entry.get("taxable_amount", 0)))
+            summary[f"taxAmt{t_type}"] += Decimal(str(entry.get("tax_amount", 0)))
+            summary[f"taxRt{t_type}"] = Decimal(str(entry.get("tax_rate", 0.0)))
+
+    return {k: round_decimal(v, 4) for k, v in summary.items()}
+
+
+
 def build_invoice_payload(
     invoice: Document, invoice_type_identifier: Literal["S", "C"], company_name: str
 ) -> dict[str, str | int | float]:
     """
-    Converts relevant invoice data to a JSON payload.
+    Converts invoice data to a JSON payload for submission.
 
     Args:
-        invoice (Document): The Invoice record to generate data from.
-        invoice_type_identifier (Literal["S", "C"]): The Invoice type identifier.
-            S for Sales Invoice, C for Credit Notes.
-        company_name (str): The company name used to fetch the valid settings doctype record.
+        invoice (Document): Invoice document.
+        invoice_type_identifier (Literal["S", "C"]): 'S' for Sales, 'C' for Credit Note.
+        company_name (str): Used to fetch company-specific configurations.
 
     Returns:
-        dict[str, str | int | float]: The payload.
+        dict: Formatted invoice payload.
     """
-
-    post_time = invoice.posting_time
-    if isinstance(post_time, timedelta):
-        post_time = str(post_time)
-
+    post_time = str(invoice.posting_time) if isinstance(invoice.posting_time, timedelta) else invoice.posting_time
     posting_date = make_datetime_from_string(
         f"{invoice.posting_date} {post_time[:8].replace('.', '')}",
-        format="%Y-%m-%d %H:%M:%S",
+        format="%Y-%m-%d %H:%M:%S"
     )
-
     validated_date = posting_date.strftime("%Y%m%d%H%M%S")
     sales_date = posting_date.strftime("%Y%m%d")
 
-    taxation_data = get_taxation_types(invoice)  
+    taxation_summary = build_taxation_summary(get_taxation_types(invoice))
     items_list = get_invoice_items_list(invoice)
-    
-    tax_types = [
-        "A", "B", "C1", "C2", "C3", "D", "RVAT", "E", "F", "IPL1", "IPL2",
-        "TL", "ECM", "EXEEG", "TOT"
-    ]
-    
-    taxation_summary = {f"taxblAmt{t}": Decimal(0) for t in tax_types}
-    taxation_summary.update({f"taxAmt{t}": Decimal(0) for t in tax_types})
-    taxation_summary.update({f"taxRt{t}": Decimal(0) for t in tax_types}) 
+    total_amount = sum(item["splyAmt"] for item in items_list)
 
-    for tax_entry in taxation_data:
-        tax_type = tax_entry.get("taxation_type")  
-        if tax_type in tax_types:
-            taxation_summary[f"taxblAmt{tax_type}"] += Decimal(str(tax_entry.get("taxable_amount", 0)))
-            taxation_summary[f"taxAmt{tax_type}"] += Decimal(str(tax_entry.get("tax_amount", 0)))
-            taxation_summary[f"taxRt{tax_type}"] = Decimal(str(tax_entry.get("tax_rate", 0.0)))
+    # Cash discount
+    cash_discount_rate = round_decimal(invoice.get("additional_discount_percentage", 0), 2)
+    cash_discount_amount = abs(round_decimal(total_amount * (cash_discount_rate / 100), 2))
 
-    for key in taxation_summary.keys():
-        taxation_summary[key] = round_decimal(taxation_summary[key], 4)
+    # Invoice name handling
+    invoice_name = clean_invc_no(invoice.name) if invoice.amended_from else invoice.name
 
-    # Ensure all amounts are absolute (no negatives in returns)
-    tot_taxable_amt = abs(round_decimal(sum(taxation_summary[f"taxblAmt{t}"] for t in tax_types), 4))
-    tot_tax_amt = abs(round_decimal(sum(taxation_summary[f"taxAmt{t}"] for t in tax_types), 4))
-
-    invoice_name = invoice.name
-    if invoice.amended_from:
-        invoice_name = clean_invc_no(invoice_name)
-
-    # Handling Returns (Credit Notes)
-    orgSdcId = None
-    cnclDt = None
-    rfdDt = None
-    rfdRsnCd = None
-
-    if invoice_type_identifier == "C":  
-        original_invoice = frappe.get_doc("Sales Invoice", invoice.return_against) if invoice.return_against else None
+    # Return/credit note data
+    org_sdc_id = cncl_date = refund_date = refund_reason = None
+    if invoice_type_identifier == "C" and invoice.return_against:
+        original_invoice = frappe.get_doc("Sales Invoice", invoice.return_against)
         if original_invoice:
-            orgSdcId = original_invoice.custom_vscd_id 
-            cnclDt = validated_date  
-            rfdDt = sales_date  
-            rfdRsnCd = invoice.get("custom_zra_credit_note_reason", "")  
+            org_sdc_id = original_invoice.custom_vscd_id
+            cncl_date = refund_date = sales_date
+            refund_reason = invoice.get("custom_zra_credit_note_reason", "")
 
-    # Calculate total amount dynamically based on items (RRP-based calculation)
-    total_amount = sum(item['splyAmt'] for item in items_list)
-
-    # Calculate cash discount amount based on the new total amount and cash discount rate
-    cash_dc_rt = round_decimal(invoice.get("additional_discount_percentage", 0), 2)  # Cash discount rate
-    cash_dc_amt = abs(round_decimal(total_amount * (cash_dc_rt / 100), 2))  # Calculate cash discount amount
+    # Tax summaries
+    total_taxable = abs(round_decimal(sum(taxation_summary[f"taxblAmt{t}"] for t in TAX_TYPES), 4))
+    total_tax = abs(round_decimal(sum(taxation_summary[f"taxAmt{t}"] for t in TAX_TYPES), 4))
 
     payload = {
-        "orgInvcNo": (
-            0 if invoice_type_identifier == "S"
-            else frappe.get_doc("Sales Invoice", invoice.return_against).custom_receipt_number
-        ),
+        "orgInvcNo": 0 if invoice_type_identifier == "S" else frappe.get_doc("Sales Invoice", invoice.return_against).custom_receipt_number,
         "cisInvcNo": invoice_name,
         "custTpin": invoice.get("tax_id", ""),
         "custNm": invoice.get("customer", ""),
@@ -1014,17 +1000,20 @@ def build_invoice_payload(
         "salesDt": sales_date,
         "stockRlsDt": validated_date,
 
-        "orgSdcId": orgSdcId,  
-        "cnclDt": cnclDt,  
-        "rfdDt": cnclDt,  
-        "rfdRsnCd": rfdRsnCd,  
+        "orgSdcId": org_sdc_id,
+        "cnclDt": cncl_date,
+        "rfdDt": refund_date,
+        "rfdRsnCd": refund_reason,
+
         "totItemCnt": len(items_list),
-        **taxation_summary,  
-        "totTaxblAmt": tot_taxable_amt,
-        "totTaxAmt": tot_tax_amt,
-        "cashDcRt": cash_dc_rt,
-        "cashDcAmt": cash_dc_amt,  # Use calculated cash discount amount
-        "totAmt": abs(round_decimal(total_amount - cash_dc_amt, 2)),  # Adjust total amount by cash discount
+        **taxation_summary,
+
+        "totTaxblAmt": total_taxable,
+        "totTaxAmt": total_tax,
+        "cashDcRt": cash_discount_rate,
+        "cashDcAmt": cash_discount_amount,
+        "totAmt": abs(round_decimal(total_amount - cash_discount_amount, 2)),
+
         "prchrAcptcYn": "Y",
         "remark": None,
         "regrId": split_user_mail(invoice.owner),
@@ -1037,10 +1026,14 @@ def build_invoice_payload(
         "regrNm": invoice.owner,
         "modrId": split_user_mail(invoice.modified_by),
         "modrNm": invoice.modified_by,
-        "itemList": items_list,  
+        "itemList": items_list,
     }
 
     return payload
+
+
+
+
 
 
 def extract_doc_series_number(document: Document) -> int | None:
