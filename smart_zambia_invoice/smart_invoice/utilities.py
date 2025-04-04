@@ -951,8 +951,7 @@ def build_invoice_payload(
 
     taxation_data = get_taxation_types(invoice)  
     items_list = get_invoice_items_list(invoice)
-    # frappe.throw(str(items_list))
-
+    
     tax_types = [
         "A", "B", "C1", "C2", "C3", "D", "RVAT", "E", "F", "IPL1", "IPL2",
         "TL", "ECM", "EXEEG", "TOT"
@@ -994,6 +993,13 @@ def build_invoice_payload(
             rfdDt = sales_date  
             rfdRsnCd = invoice.get("custom_zra_credit_note_reason", "")  
 
+    # Calculate total amount dynamically based on items (RRP-based calculation)
+    total_amount = sum(item['splyAmt'] for item in items_list)
+
+    # Calculate cash discount amount based on the new total amount and cash discount rate
+    cash_dc_rt = round_decimal(invoice.get("additional_discount_percentage", 0), 2)  # Cash discount rate
+    cash_dc_amt = abs(round_decimal(total_amount * (cash_dc_rt / 100), 2))  # Calculate cash discount amount
+
     payload = {
         "orgInvcNo": (
             0 if invoice_type_identifier == "S"
@@ -1018,9 +1024,9 @@ def build_invoice_payload(
         **taxation_summary,  
         "totTaxblAmt": tot_taxable_amt,
         "totTaxAmt": tot_tax_amt,
-        "cashDcRt": round_decimal(invoice.get("additional_discount_percentage", 0), 2),
-        "cashDcAmt": round_decimal(invoice.get("discount_amount", 0), 2),
-        "totAmt": abs(round_decimal(invoice.get("grand_total", 0), 2)),  # Ensure total amount is absolute
+        "cashDcRt": cash_dc_rt,
+        "cashDcAmt": cash_dc_amt,  # Use calculated cash discount amount
+        "totAmt": abs(round_decimal(total_amount - cash_dc_amt, 2)),  # Adjust total amount by cash discount
         "prchrAcptcYn": "Y",
         "remark": None,
         "regrId": split_user_mail(invoice.owner),
@@ -1035,14 +1041,8 @@ def build_invoice_payload(
         "modrNm": invoice.modified_by,
         "itemList": items_list,  
     }
-    # frappe.throw(str(payload))
-
 
     return payload
-
-
-
-
 
 
 def extract_doc_series_number(document: Document) -> int | None:
