@@ -86,7 +86,7 @@ With the setup complete, you can now proceed to:
 
 - Always start in **Sandbox mode** for testing before switching to **Production**.
 - Make sure your server has internet access and can reach the ZRA endpoints.
-- For multiple branches, repeat the setup steps per branch, each with its own **Branch ID** and **VSDC Serial**.
+- For multiple branches, repeat the setup steps per branch, each with its own **Branch ID** but same  **VSDC Serial**.
 
 ---
 
