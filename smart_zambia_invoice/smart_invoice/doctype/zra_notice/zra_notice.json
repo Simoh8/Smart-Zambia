@@ -14,7 +14,8 @@
   "notice_number",
   "notice_registration_datetime",
   "section_break_nwft",
-  "notice_contents"
+  "notice_contents",
+  "amended_from"
  ],
  "fields": [
   {
@@ -62,12 +63,23 @@
    "fieldname": "notice_contents",
    "fieldtype": "Text Editor",
    "label": "Notice Contents"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "ZRA Notice",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-04-03 19:36:58.742485",
+ "modified": "2025-04-04 08:26:50.570616",
  "modified_by": "Administrator",
  "module": "Smart Invoice",
  "name": "ZRA Notice",
@@ -96,6 +108,7 @@
    "report": 1,
    "role": "All",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
