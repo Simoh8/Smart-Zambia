@@ -1,99 +1,93 @@
-How to Setup Smart Zambia Invoice
-
-# Smart Invoice – Configuration Settings
-
-The **Smart Invoice** app integrates with the **ZRA (Zambia Revenue Authority)** system to facilitate the issuance of electronic fiscal invoices (Smart Invoices). Below are the configuration settings that must be properly set up to ensure smooth integration and compliance.
+Absolutely! Here’s an expanded and more structured version of your setup instructions for the **Smart Invoice Zambia** app, written in a user-friendly and professional "Getting Started" format:
 
 ---
 
-## Environment Configuration
+# 🚀 Getting Started with the Smart Invoice Zambia App
 
-### 🔁 SandBox/Test Environment (`sandboxtest_environment_`)
-- **Description:** This is a secure test environment provided by ZRA.
-- **Purpose:** Used during the testing phase to validate API integrations.
-- **Note:** It simulates live functionalities without affecting actual taxpayer data.
+This guide walks you through the **initial setup steps** required to successfully configure and start using the **Smart Invoice Zambia** app, which integrates with the **Zambia Revenue Authority (ZRA)** for compliant e-invoicing.
 
 ---
 
-### ✅ Production Environment (`production_environment_`)
-- **Description:** This is the **live** environment used for real-time invoice issuance.
-- **Purpose:** API calls here interact with actual ZRA systems and taxpayer data.
-- **Note:** Only enable this after successfully completing testing in the sandbox environment.
+## ✅ Prerequisites
+
+Before setting up the app, make sure the following is done:
+
+### 🔹 1. ZRA Portal Setup
+- You **must have at least one branch registered** on the [ZRA e-invoicing portal](https://www.zra.org.zm/).
+- Ensure your **VSDC device** is provisioned and linked to your registered branch.
+- Obtain your **Branch ID** and **VSDC Device Serial Number** from the ZRA portal.
 
 ---
 
-### 🌐 Server URL (`server_url`)
-- **Description:** The base URL for ZRA API requests.
-- **Example:**
-  - Sandbox: `http://localhost:8080/zrasandboxvsdc`
-  - Production: (as provided by ZRA)
-- **Usage:** Should correspond to the selected environment.
+## ⚙️ Step 1: Configure Smart Invoice Settings
+
+Navigate to **ZRA Smart Invoice Settings** in your ERP system, and fill in the required fields:
+
+### Environment Settings:
+- **SandBox/Test Environment:** Enable for testing in ZRA’s sandbox environment.
+- **Production Environment:** Enable when ready to send live data to ZRA.
+- **Server URL:** Enter the correct ZRA API URL based on the environment (e.g., sandbox or production).
+- **Is Active:** Toggle to activate Smart Invoice functionality.
+- **Environment:** Choose between `Sandbox` and `Production`.
+
+### Accounting & System Settings:
+- **Auto Create Branch Accounting Dimension:** Enable to automatically create a branch dimension for tracking financials per branch.
+
+### Company and Branch Details:
+- **Company Name:** Select your ERPNext company.
+- **ZRA Company Name:** Enter the official name as registered with ZRA.
+- **Company TPIN:** Enter your ZRA-issued TPIN.
+- **Country:** Set to `Zambia`.
+- **Branch Name:** Provide your branch's local name.
+- **Branch ID:** Use the ID provided by ZRA for this branch.
+- **VSDC Device Serial Number:** Enter the device serial number assigned by ZRA.
+
+> 📝 **Tip:** All details must match your ZRA portal records exactly for proper API communication.
 
 ---
 
-### 🔘 Is Active (`is_active_`)
-- **Description:** Toggle to enable or disable Smart Invoice integration.
-- **Purpose:** Allows temporary disabling without losing settings.
+## ⚡ Step 2: Load Standard ZRA Codes
+
+Once the **ZRA Smart Invoice Settings** are saved:
+
+1. Look for a dropdown button called **"ZRA Actions"** on the same settings form.
+2. Click on:
+   - ✅ **Get Standard Codes** – This fetches default tax types, units of measure, and industry classifications required for ZRA integration.
+   - ✅ **Get Item Codes** – This fetches product codes and classifications used in item mapping.
+
+> These operations run in the background and prepare your system for compliance with ZRA data requirements.
 
 ---
 
-### 🌍 Environment (`environment`)
-- **Options:** `Sandbox`, `Production`
-- **Description:** Defines the operating environment for the app.
-- **Purpose:** Determines the endpoint behavior and data handling.
+## 👤 Step 3: Add a Default "Walk-In" Customer
+
+For retail or cash sales where the customer doesn’t have a TPIN:
+
+1. Create a new customer named `Walk-in Customer` (or similar).
+2. Set the **Tax ID (TPIN)** of the customer to:  
+   ```
+   1000000000
+   ```
+
+> This is the **ZRA-provided default TPIN** for unidentified or non-registered customers.
 
 ---
 
-## Accounting Configuration
+## ✅ Step 4: You're Ready!
 
-### 🧾 Auto Create Branch Accounting Dimension (`auto_create_branch_accounting_dimension`)
-- **Description:** When enabled, this automatically creates a **Branch** accounting dimension.
-- **Purpose:** Helps track P&L (Profit and Loss) per branch.
-- **Recommendation:** It is advised to keep this enabled for businesses with multiple branches.
-
----
-
-## Company & Branch Details
-
-### 🏢 Company Name (`company_name`)
-- **Description:** ERPNext company name to be used in invoices.
-- **Input:** Must match the company profile within your ERP system.
+With the setup complete, you can now proceed to:
+- ✅ Register **branch users** and associate them with the branch.
+- ✅ Start issuing **Sales Invoices** and **Purchase Invoices** that will sync with ZRA in real time.
+- ✅ Monitor invoice status and communication logs within your ERP system.
 
 ---
 
-### 🏢 ZRA Company Name (`zra_company_name`)
-- **Description:** Official company name as registered with ZRA.
-- **Note:** This must exactly match the name on the ZRA portal for compliance.
+## 🧠 Notes
+
+- Always start in **Sandbox mode** for testing before switching to **Production**.
+- Make sure your server has internet access and can reach the ZRA endpoints.
+- For multiple branches, repeat the setup steps per branch, each with its own **Branch ID** and **VSDC Serial**.
 
 ---
 
-### 🔢 Company TPIN (`company_tpin`)
-- **Description:** Taxpayer Identification Number registered with ZRA.
-- **Format:** 9-digit numeric (e.g., `1017138037`)
-
----
-
-### 🌍 Country (`country`)
-- **Description:** The operating country for the company.
-- **Default:** Zambia
-
----
-
-### 🏬 Branch Name (`branch_name`)
-- **Description:** Name of the branch issuing invoices.
-
----
-
-### 🆔 Branch ID (`branch_id`)
-- **Description:** Unique identifier assigned to each branch by ZRA.
-- **Note:** Must correspond to the branch registration on the ZRA system.
-
----
-
-### 🔒 VSDC Device Serial Number (`vsdc_device_serial_number`)
-- **Description:** Serial number of the **Virtual Sales Data Controller (VSDC)** device provided by ZRA.
-- **Purpose:** Required for invoice validation and authentication during submission.
-
----
-
-Let me know if you’d like this turned into a README.md format or integrated into your ERPNext app as in-app field tooltips or help texts.
+Let me know if you'd like this formatted as a README.md for your app repo or converted into an ERPNext Help Article!
