@@ -19,6 +19,8 @@ from aiohttp import ClientTimeout, InvalidURL
 from frappe.model.document import Document
 from frappe.utils import cint
 from .zra_logger import zra_vsdc_logger
+from decimal import Decimal, ROUND_HALF_UP
+from datetime import datetime
 
 
 
@@ -152,8 +154,6 @@ def get_server_url(company_name: str, branch_id: str = "001") -> str | None:
         return server_url
 
     return
-
-
 
 
 
@@ -457,22 +457,13 @@ def get_qr_code(data: str) -> str:
     Returns:
         str: The QR Code.
     """
-    qr_code_bytes = get_qr_code_bytes(data, format="PNG")
+    qr_code_bytes = fetch_qr_code_bytes(data, format="PNG")
     base_64_string = bytes_to_base64_string(qr_code_bytes)
 
     return add_file_info(base_64_string)
 
 
 
-
-def get_qr_code_bytes(data: bytes | str, format: str = "PNG") -> bytes:
-    """Create a QR code and return the bytes."""
-    img = qrcode.make(data)
-
-    buffered = BytesIO()
-    img.save(buffered, format=format)
-
-    return buffered.getvalue()
 
 
 
@@ -873,7 +864,6 @@ def get_taxation_types(doc):
     for item in getattr(doc, "items", []):
         item_dict = item.as_dict()
 
-        # Check if item has an RRP and calculate net amount based on base_price_list_rate
         if item_dict.get("custom_has_a_recommended_retail_price_rrp_") == 1:
             # If it's an RRP, use the base_price_list_rate and quantity
             net_amount = abs(item_dict.get("base_price_list_rate", 0)) * abs(item_dict.get("qty", 1))
@@ -921,8 +911,7 @@ def get_taxation_types(doc):
 
 
 
-from decimal import Decimal, ROUND_HALF_UP
-from datetime import datetime
+
 
 def round_decimal(value, places=4):
     """Rounds a number to the specified decimal places."""
