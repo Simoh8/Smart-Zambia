@@ -242,7 +242,7 @@ scheduler_events = {
 	"all": [
 		"smart_zambia_invoice.smart_invoice.background_jobs.jobs.send_item_inventory_information",
         "smart_zambia_invoice.smart_invoice.background_jobs.jobs.send_stock_update_information",
-                "smart_zambia_invoice.smart_invoice.background_jobs.jobs.get_item_classification_codes"
+        "smart_zambia_invoice.smart_invoice.background_jobs.jobs.get_item_classification_codes"
 
         
 

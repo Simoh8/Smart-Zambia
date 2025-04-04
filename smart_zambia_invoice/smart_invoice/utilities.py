@@ -852,35 +852,45 @@ def clean_invc_no(invoice_name):
 
 
 
+
+import frappe
+
 def get_taxation_types(doc):
     taxation_list = []  
 
     for item in getattr(doc, "items", []):
-        taxation_type = getattr(item, "custom_zra_taxation_type", None)
-        net_amount = abs(getattr(item, "base_amount", 0))  # Ensure net_amount is positive
+        item_dict = item.as_dict()
+
+        # Determine net amount
+        if item_dict.get("custom_has_a_recommended_retail_price_rrp_") == 1:
+            net_amount = abs(item_dict.get("base_price_list_rate", 0)) * abs(item_dict.get("qty", 1))
+        else:
+            net_amount = abs(item_dict.get("base_amount", 0))  # Default to base_amount
+
+        taxation_type = item_dict.get("custom_zra_taxation_type")
 
         if not taxation_type:
-            frappe.logger().warning(f"Missing taxation type for item {getattr(item, 'item_code', 'Unknown')}")
+            frappe.logger().warning(f"Missing taxation type for item {item_dict.get('item_code', 'Unknown')}")
             continue
 
         tax_rate = frappe.db.get_value("ZRA Tax Type", taxation_type, "tax_rate_")
         tax_rate = float(tax_rate) if tax_rate else 0  
 
         taxable_amount = net_amount / (1 + (tax_rate / 100)) if tax_rate > 0 else net_amount
-        taxable_amount = abs(round(taxable_amount, 2))  # Ensure taxable_amount is always positive
+        taxable_amount = abs(round(taxable_amount, 2))  # Ensure taxable_amount is positive
 
-        tax_amount = abs(round(taxable_amount * (tax_rate / 100), 2))  # Ensure tax_amount is always positive
+        tax_amount = abs(round(taxable_amount * (tax_rate / 100), 2))  # Ensure tax_amount is positive
 
         taxation_list.append({
-            "item_code": getattr(item, "item_code", "Unknown"),
+            "item_code": item_dict.get("item_code", "Unknown"),
             "taxation_type": taxation_type,
             "tax_rate": tax_rate,
+            "net_amount": net_amount,  # Include the final net amount
             "taxable_amount": taxable_amount,
             "tax_amount": tax_amount
         })
 
     return taxation_list  
-
 
 
 from decimal import Decimal, ROUND_HALF_UP
