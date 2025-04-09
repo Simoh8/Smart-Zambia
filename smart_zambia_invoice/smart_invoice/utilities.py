@@ -1017,7 +1017,7 @@ def build_invoice_payload(
         "prchrAcptcYn": "Y",
         "remark": None,
         "regrId": split_user_mail(invoice.owner),
-        "lpoNumber": None,
+        "lpoNumber": invoice.get("custom_lpo_number", ""),
         "currencyTyCd": invoice.get("currency", "ZMW"),
         "exchangeRt": round_decimal(invoice.get("conversion_rate", 1.0), 4),
         "destnCountryCd": "",
