@@ -564,9 +564,6 @@ def make_rrp_item_registration(request_data: str) -> dict | None:
 
 
 
-
-
-
 @frappe.whitelist()
 def perform_zra_item_code_classification_search(request_data: str) -> None:
     data: dict = json.loads(request_data)
@@ -595,15 +592,15 @@ def perform_zra_item_code_classification_search(request_data: str) -> None:
         endpoint_builder.success_callback = on_success_item_classification_search
         endpoint_builder.error_callback = on_error
 
-        # endpoint_builder.perform_remote_calls(doctype="ZRA Item Classification", document_name=data.get("name", None))
-        frappe.enqueue(
-                endpoint_builder.perform_remote_calls,
-                is_async=True,
-                queue="default",
-                timeout=300,
-                doctype="ZRA Item Classification",
-                job_name=f"_register_item_calssification",
-            )
+        endpoint_builder.perform_remote_calls(doctype="ZRA Item Classification", document_name=data.get("name", None))
+        # frappe.enqueue(
+        #         endpoint_builder.perform_remote_calls,
+        #         is_async=True,
+        #         queue="default",
+        #         timeout=300,
+        #         doctype="ZRA Item Classification",
+        #         job_name=f"_register_item_calssification",
+        #     )
 
 
 
