@@ -407,6 +407,42 @@ def convert_qr_code_to_base64(qr_code_data):
 
 
 
+# def on_success_sales_information_submission(
+#     response: dict,
+#     invoice_type: str,
+#     document_name: str,
+#     company_name: str,
+#     invoice_number: int | str,
+#     tpin: str,
+#     branch_id: str = "00",
+# ) -> None:
+#     try:
+#         response_data = response["data"]
+
+
+#         frappe.db.set_value(
+#             invoice_type,
+#             document_name,
+#             {
+#                 "custom_receipt_number": response_data["rcptNo"],
+#                 "custom_zra_internal_data": response_data["intrlData"],
+#                 "custom_zra_receipt_signature": response_data["rcptSign"],
+#                 "custom_zra_control_unit_time": response_data["vsdcRcptPbctDate"],
+#                 "custom_has_it_been_successfully_submitted": 1,
+#                 "custom_zra_submission_sequence_number": invoice_number,
+#                 "custom_vscd_id":response_data["sdcId"],
+#                 "custom_qr_code_details": get_qr_code(response_data["qrCodeUrl"]),
+#             },
+#         )
+#         show_success_message("The Sales Invoice has been succesfully registered on the ZRA Portal")
+
+
+#     except KeyError as e:
+#         frappe.throw(f"Missing expected field in the response: {str(e)}")
+#     except Exception as e:
+#         frappe.throw(f"An error occurred while processing the submission: {str(e)}")
+
+
 def on_success_sales_information_submission(
     response: dict,
     invoice_type: str,
@@ -414,44 +450,53 @@ def on_success_sales_information_submission(
     company_name: str,
     invoice_number: int | str,
     tpin: str,
+    payload: dict,
     branch_id: str = "00",
 ) -> None:
     try:
         response_data = response["data"]
-        print("The print data looks like ", response_data)
 
-        # Extracting the relevant fields from the response data
-        receipt_signature = response_data["rcptSign"]
-        receipt_number = response_data["rcptNo"]
-        internal_data = response_data["intrlData"]
-        control_unit_time = response_data["vsdcRcptPbctDate"]
-        custom_vscd_id=response_data["sdcId"]  
+        def format_value(val):
+            return f"{val:,.2f}" if isinstance(val, (int, float)) else val or "0.00"
 
-        qr_code = get_qr_code(response_data["qrCodeUrl"])
+        # Map payload tax fields to custom DocType fields
+        tax_field_mapping = {
+            "taxblAmtA": "custom_tax_a_amount",
+            "taxAmtA": "custom_zra_tax_a_",
+            "taxblAmtB": "custom_tax_b_amount",
+            "taxAmtB": "custom_tax_b_amounts",
+            "taxblAmtC1": "custom_tax_c1_amount",
+            "taxAmtC1": "custom_tax_c1",
+            "taxblAmtC2": "custom_tax_amount_c2",
+            "taxAmtC2": "custom_tax_c2",
+            "taxblAmtC3": "custom_tax_amount_c3",
+            "taxAmtC3": "custom_tax_c3_",
+        }
 
-        frappe.db.set_value(
-            invoice_type,
-            document_name,
-            {
-                "custom_receipt_number": receipt_number,
-                "custom_zra_internal_data": internal_data,
-                "custom_zra_receipt_signature": receipt_signature,
-                "custom_zra_control_unit_time": control_unit_time,
-                "custom_has_it_been_successfully_submitted": 1,
-                "custom_zra_submission_sequence_number": invoice_number,
-                "custom_vscd_id":custom_vscd_id,
-                "custom_qr_code_details": qr_code,
-            },
-        )
-        show_success_message("The Sales Invoice has been succesfully registered on the ZRA Portal")
+        # Static fields from response
+        updated_fields = {
+            "custom_receipt_number": response_data["rcptNo"],
+            "custom_zra_internal_data": response_data["intrlData"],
+            "custom_zra_receipt_signature": response_data["rcptSign"],
+            "custom_zra_control_unit_time": response_data["vsdcRcptPbctDate"],
+            "custom_has_it_been_successfully_submitted": 1,
+            "custom_zra_submission_sequence_number": invoice_number,
+            "custom_vscd_id": response_data["sdcId"],
+            "custom_qr_code_details": get_qr_code(response_data["qrCodeUrl"]),
+        }
 
+        # Add formatted tax fields from payload
+        for payload_key, custom_field in tax_field_mapping.items():
+            updated_fields[custom_field] = format_value(payload.get(payload_key))
+
+        # Update the document in DB
+        frappe.db.set_value(invoice_type, document_name, updated_fields)
+        show_success_message("The Sales Invoice has been successfully registered on the ZRA Portal")
 
     except KeyError as e:
         frappe.throw(f"Missing expected field in the response: {str(e)}")
     except Exception as e:
         frappe.throw(f"An error occurred while processing the submission: {str(e)}")
-
-
 
 
 

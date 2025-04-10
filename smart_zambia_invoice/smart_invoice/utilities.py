@@ -940,7 +940,6 @@ def build_taxation_summary(taxation_data: list[dict]) -> dict[str, Decimal]:
     return {k: round_decimal(v, 4) for k, v in summary.items()}
 
 
-
 def build_invoice_payload(
     invoice: Document, invoice_type_identifier: Literal["S", "C"], company_name: str
 ) -> dict[str, str | int | float]:
@@ -983,6 +982,7 @@ def build_invoice_payload(
             cncl_date = refund_date = sales_date
             refund_reason = invoice.get("custom_zra_credit_note_reason", "")
 
+
     # Tax summaries
     total_taxable = abs(round_decimal(sum(taxation_summary[f"taxblAmt{t}"] for t in TAX_TYPES), 4))
     total_tax = abs(round_decimal(sum(taxation_summary[f"taxAmt{t}"] for t in TAX_TYPES), 4))
@@ -1001,8 +1001,8 @@ def build_invoice_payload(
         "stockRlsDt": validated_date,
 
         "orgSdcId": org_sdc_id,
-        "cnclDt": cncl_date,
-        "rfdDt": refund_date,
+        "cnclDt": validated_date,
+        "rfdDt": validated_date,
         "rfdRsnCd": refund_reason,
 
         "totItemCnt": len(items_list),

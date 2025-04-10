@@ -47,6 +47,7 @@ def on_submit_override_generic_invoices(
             company_name=company_name,
             tpin=headers.get("tpin"),
             branch_id=headers.get("bhfId"),
+            payload=payload
         )
         endpoint_builder.error_callback = on_error
         endpoint_builder.perform_remote_calls()
