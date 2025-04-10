@@ -1,11 +1,12 @@
 from collections import defaultdict
 from functools import partial
+import json
 
 import frappe
 from frappe.model.document import Document
 from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
 from frappe.utils import get_link_to_form
-from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides import last_request_less_payload 
+from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides import last_request_less_payload, on_submit_override_generic_invoices 
 
 from ...api.api_builder import EndpointConstructor
 from ...api.remote_response_handler import (
@@ -52,6 +53,10 @@ def validate(doc: Document, method: str) -> None:
 
 
 def on_submit(doc: Document, method: str) -> None:
+    if doc.is_return:
+        on_submit_override_generic_invoices(doc, "Purchase Invoice")
+        return
+
     validate_item_registration(doc.items)
 
     company_name = doc.company
@@ -65,6 +70,7 @@ def on_submit(doc: Document, method: str) -> None:
         common_payload = last_request_less_payload(headers)
         invoice_payload = build_purchase_invoice_payload(doc)
         payload = {**common_payload, **invoice_payload}
+
         endpoints_maker.url = url
         endpoints_maker.headers = headers
         endpoints_maker.payload = payload
@@ -75,6 +81,7 @@ def on_submit(doc: Document, method: str) -> None:
         endpoints_maker.error_callback = on_error
 
         endpoints_maker.perform_remote_calls()
+
 
 
 
@@ -223,9 +230,6 @@ def get_items_details(doc: Document) -> list:
             "itemExprDt": None,
         })
 
-        # Debugging print statement
-        print(f"Item: {item.item_name}, Tax Type: {taxTyCd}, Tax Rate: {taxRate}, Taxable Amount: {taxblAmt}, Tax Amount: {taxAmt}")
-
     return items_list
 
 
@@ -253,4 +257,40 @@ def validation_message(item_code):
         item_link = get_link_to_form("Item", item_doc.name)
         frappe.throw(f"Specify the Tax Type for the item: {item_link}")
 
+        
 
+
+@frappe.whitelist()
+def perform_sales_invoice_registration(request_data: str) -> dict | None:
+    data: dict = json.loads(request_data)
+    company_name = data["company_name"]
+    headers = build_request_headers(company_name)
+    server_url = get_server_url(company_name)
+    route_path, last_req_date = get_route_path("SAVE SALES")
+
+    if headers and server_url and route_path:
+        url = f"{server_url}{route_path}"
+
+        # Common payload with tpin and bhfId from headers
+        common_payload = last_request_less_payload(headers)
+
+        # Merge common payload and request data
+        payload = {**common_payload, **data}
+        # Fetch additional required data for callback
+        invoice_type = "Sales Invoice"  # Example: replace with appropriate DocType if different
+        document_name = data["name"]
+        invoice_number = data.get("cisInvcNo", "")
+        tpin = data.get("custTpin", "")
+
+        endpoint_builder.url = url
+        endpoint_builder.payload = payload
+        endpoint_builder.success_callback = partial(
+            invoice_type=invoice_type,
+            document_name=document_name,
+            company_name=company_name,
+            invoice_number=invoice_number,
+            tpin=tpin,
+        )
+        endpoint_builder.error_callback = on_error
+
+        endpoint_builder.perform_remote_calls()
