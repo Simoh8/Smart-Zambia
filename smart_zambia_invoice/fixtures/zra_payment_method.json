@@ -50,16 +50,6 @@
   "sort_order": 4
  },
  {
-  "code": "01",
-  "code_description": "CASH",
-  "code_name": "CASH",
-  "docstatus": 0,
-  "doctype": "ZRA Payment Method",
-  "modified": "2024-11-05 12:36:26.333990",
-  "name": "CASH",
-  "sort_order": 1
- },
- {
   "code": "03",
   "code_description": "CASH/CREDIT",
   "code_name": "CASH/CREDIT",
@@ -68,5 +58,15 @@
   "modified": "2024-11-05 12:36:26.382596",
   "name": "CASH/CREDIT",
   "sort_order": 3
+ },
+ {
+  "code": "01",
+  "code_description": "CASH",
+  "code_name": "CASH",
+  "docstatus": 0,
+  "doctype": "ZRA Payment Method",
+  "modified": "2024-11-05 12:36:26.333990",
+  "name": "CASH",
+  "sort_order": 1
  }
 ]

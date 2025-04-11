@@ -91,6 +91,8 @@ def on_submit(doc: Document, method: str) -> None:
         endpoints_maker.perform_remote_calls()
 
 
+
+
 def build_purchase_invoice_payload(doc: Document) -> dict:
     series_no = extract_doc_series_number(doc)
     items_list = get_items_details(doc)
@@ -296,12 +298,11 @@ def perform_debit_invoice_registration(document_name: str, company_name: str) ->
         document_name=document_name,
         company_name=company_name,
         invoice_number=invoice_number,
+        payload=full_payload,
         tpin=tpin,
     )
     endpoints_maker.error_callback = on_error
-    # frappe.throw(str(full_payload))
 
-    # Fire!
     endpoints_maker.perform_remote_calls()
 
     return {"status": "submitted", "invoice": document_name}
@@ -312,8 +313,8 @@ def perform_debit_invoice_registration(document_name: str, company_name: str) ->
 
 
 
-def build_debit_invoice_payload(invoice_name):
 
+def build_debit_invoice_payload(invoice_name):
     invoice = frappe.get_doc("Purchase Invoice", invoice_name)
     items = get_items_details(invoice)
 
@@ -345,10 +346,12 @@ def build_debit_invoice_payload(invoice_name):
         total_taxable += taxbl_amt
         total_tax += tax_amt
 
-        # If you want to remove negative signs from each item field:
+        # Corrected Total Amount calculation
+        item["totAmt"] = abs(item["splyAmt"] - item["vatAmt"])  # Total amount = Supply Amount - VAT Amount
+
+        # Ensure positive values for fields
         item["taxblAmt"] = abs(item.get("taxblAmt", 0))
         item["taxAmt"] = abs(item.get("taxAmt", 0))
-        item["totAmt"] = abs(item.get("totAmt", 0))
         item["splyAmt"] = abs(item.get("splyAmt", 0))
         item["vatTaxblAmt"] = abs(item.get("vatTaxblAmt", 0))
         item["vatAmt"] = abs(item.get("vatAmt", 0))
@@ -356,7 +359,7 @@ def build_debit_invoice_payload(invoice_name):
     payload = {
         "orgInvcNo": invoice.custom_original_smart_invoice_number,
         "cisInvcNo": invoice.name,
-        "custTpin":"1017138037" ,
+        "custTpin": "1017138037",
         "custNm": invoice.company,
         "salesTyCd": "N",
         "rcptTyCd": "D",

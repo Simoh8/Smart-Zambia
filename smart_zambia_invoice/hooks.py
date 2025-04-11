@@ -12,40 +12,40 @@ require_app =["frappe/erpnext"]
 
 fixtures = [
     # "ZRA Tax Type",
-    # "ZRA VSDC Routes",
-    # # "ZRA Registered Purchase",
-    # # "ZRA Registered Purchases Items",
+    "ZRA VSDC Routes",
+    # "ZRA Registered Purchase",
+    # "ZRA Registered Purchases Items",
     # # "Smart Zambia Country",
-    # "ZRA Transaction Type",
-    # "ZRA Payment Method",
+    "ZRA Transaction Type",
+    "ZRA Payment Method",
     # "ZRA Unit of Quantity",
     # "ZRA Packaging Unit",
     # "ZRA Transaction Progress",
     # # "ZRA Smart Invoice Settings",
     # # "ZRA Item Classification",
-    # "ZRA Import Item Status",
-    # "ZRA Credit Note Reason",
-    # "ZRA Purchase Receipt Type",
-    # "ZRA Product Type",
-    # "ZRA Registered Imported Item",
+    "ZRA Import Item Status",
+    "ZRA Credit Note Reason",
+    "ZRA Purchase Receipt Type",
+    "ZRA Product Type",
+    "ZRA Registered Imported Item",
     {
         "doctype": "Custom Field",
         "filters": [
             ["dt", "in", [
-                        #   "Item",
+                          "Item",
                           "Sales Invoice",
-                        #   "Sales Invoice Item",
-                        #   "BOM", 
-                        #   "Branch",
-                        #   "Supplier",
-                        #   "Warehouse",
-                        #   "Customer Group",
-                        #   "Customer",
-                        #   "Item Tax Template",
-                        #   "Purchase Invoice",
-                        #   "Purchase Invoice Item",
-                        #   "Stock Ledger Entry",
-                        #   "POS Invoice Item",
+                          "Sales Invoice Item",
+                          "BOM", 
+                          "Branch",
+                          "Supplier",
+                          "Warehouse",
+                          "Customer Group",
+                          "Customer",
+                          "Item Tax Template",
+                          "Purchase Invoice",
+                          "Purchase Invoice Item",
+                          "Stock Ledger Entry",
+                          "POS Invoice Item",
                           ]
                         ], 
             ["is_system_generated", "=", 0]  # Exclude system-generated fields
@@ -53,8 +53,8 @@ fixtures = [
     },
     {
         "doctype": "Print Format",
-        "filters": [["name", "in", ["ZRA Invoice"]]]  # Export only this print format
-    }
+        "filters": [["name", "in", ["ZRA Invoice", "ZRA Debit Note", "ZRA Credit Format"]]]
+    },
 ]
 
 before_uninstall = "smart_zambia_invoice.uninstall.cleanup_custom_fields"
