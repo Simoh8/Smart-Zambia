@@ -1,12 +1,15 @@
 from collections import defaultdict
 from functools import partial
 import json
+import frappe
+from functools import partial
+from frappe import _
 
 import frappe
 from frappe.model.document import Document
 from erpnext.controllers.taxes_and_totals import get_itemised_tax_breakup_data
 from frappe.utils import get_link_to_form
-from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides import last_request_less_payload, on_submit_override_generic_invoices 
+from smart_zambia_invoice.smart_invoice.overrides.backend.common_overrides import last_request_less_payload, on_submit_override_generic_invoices, on_success_sales_information_submission 
 
 from ...api.api_builder import EndpointConstructor
 from ...api.remote_response_handler import (
@@ -14,9 +17,12 @@ from ...api.remote_response_handler import (
 	on_succesful_purchase_invoice_submission,
 	
 )
-from ...utilities import (build_request_headers,extract_doc_series_number,get_route_path,get_server_url,quantize_amount,split_user_mail,get_taxation_types)
+from ...utilities import (build_request_headers,extract_doc_series_number,get_route_path, get_route_path_with_last_req_date,get_server_url,quantize_amount,split_user_mail,get_taxation_types)
 
 
+import frappe
+from frappe.utils import now_datetime
+from decimal import Decimal
 
 endpoints_maker = EndpointConstructor()
 
@@ -53,9 +59,9 @@ def validate(doc: Document, method: str) -> None:
 
 
 def on_submit(doc: Document, method: str) -> None:
-    if doc.is_return:
-        on_submit_override_generic_invoices(doc, "Purchase Invoice")
-        return
+    # if doc.is_return:
+    #     on_submit_override_generic_invoices(doc, "Purchase Invoice")
+    #     return
 
     validate_item_registration(doc.items)
 
@@ -260,37 +266,144 @@ def validation_message(item_code):
         
 
 
+
 @frappe.whitelist()
-def perform_sales_invoice_registration(request_data: str) -> dict | None:
-    data: dict = json.loads(request_data)
-    company_name = data["company_name"]
+def perform_debit_invoice_registration(document_name: str, company_name: str) -> dict | None:
     headers = build_request_headers(company_name)
     server_url = get_server_url(company_name)
-    route_path, last_req_date = get_route_path("SAVE SALES")
+    route_path, last_req_date= get_route_path_with_last_req_date("SAVE SALES INVOICE")
 
-    if headers and server_url and route_path:
-        url = f"{server_url}{route_path}"
+    if not (headers and server_url and route_path):
+        return 
+        pass
 
-        # Common payload with tpin and bhfId from headers
-        common_payload = last_request_less_payload(headers)
+    try:
+        invoice_payload = build_debit_invoice_payload(document_name)
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Payload Build Failed")
+        frappe.throw(_("Failed to build invoice payload."))
 
-        # Merge common payload and request data
-        payload = {**common_payload, **data}
-        # Fetch additional required data for callback
-        invoice_type = "Sales Invoice"  # Example: replace with appropriate DocType if different
-        document_name = data["name"]
-        invoice_number = data.get("cisInvcNo", "")
-        tpin = data.get("custTpin", "")
+    common_payload = last_request_less_payload(headers)
+    full_payload = {**common_payload, **invoice_payload}
 
-        endpoint_builder.url = url
-        endpoint_builder.payload = payload
-        endpoint_builder.success_callback = partial(
-            invoice_type=invoice_type,
-            document_name=document_name,
-            company_name=company_name,
-            invoice_number=invoice_number,
-            tpin=tpin,
-        )
-        endpoint_builder.error_callback = on_error
+    invoice_type = "Purchase Invoice"
+    invoice_number = full_payload.get("cisInvcNo", "")
+    tpin = full_payload.get("custTpin", "")
 
-        endpoint_builder.perform_remote_calls()
+    # Setup remote call
+    endpoints_maker.url = f"{server_url}{route_path}"
+    endpoints_maker.payload = full_payload
+    endpoints_maker.success_callback = partial(
+        on_success_sales_information_submission,
+        invoice_type=invoice_type,
+        document_name=document_name,
+        company_name=company_name,
+        invoice_number=invoice_number,
+        tpin=tpin,
+    )
+    endpoints_maker.error_callback = on_error
+    frappe.throw(str(full_payload))
+
+    # Fire!
+    endpoints_maker.perform_remote_calls()
+
+    return {"status": "submitted", "invoice": document_name}
+
+
+
+
+
+
+
+def build_debit_invoice_payload(invoice_name):
+
+    invoice = frappe.get_doc("Purchase Invoice", invoice_name)
+    items = get_items_details(invoice)
+
+    tax_codes = [
+        "A", "B", "C1", "C2", "C3", "D", "RVAT", "E", "F",
+        "IPL1", "IPL2", "TL", "ECM", "EXEEG"
+    ]
+
+    tax_aggregates = {
+        code: {
+            "taxblAmt": Decimal("0.00"),
+            "taxAmt": Decimal("0.00"),
+            "taxRt": Decimal(str(get_tax_rate(code)))
+        } for code in tax_codes
+    }
+
+    total_taxable = Decimal("0.00")
+    total_tax = Decimal("0.00")
+
+    for item in items:
+        code = item.get("taxTyCd")
+        taxbl_amt = Decimal(item.get("taxblAmt", 0))
+        tax_amt = Decimal(item.get("taxAmt", 0))
+
+        if code in tax_aggregates:
+            tax_aggregates[code]["taxblAmt"] += taxbl_amt
+            tax_aggregates[code]["taxAmt"] += tax_amt
+
+        total_taxable += taxbl_amt
+        total_tax += tax_amt
+
+        # If you want to remove negative signs from each item field:
+        item["taxblAmt"] = abs(item.get("taxblAmt", 0))
+        item["taxAmt"] = abs(item.get("taxAmt", 0))
+        item["totAmt"] = abs(item.get("totAmt", 0))
+        item["splyAmt"] = abs(item.get("splyAmt", 0))
+        item["vatTaxblAmt"] = abs(item.get("vatTaxblAmt", 0))
+        item["vatAmt"] = abs(item.get("vatAmt", 0))
+
+    payload = {
+        "orgInvcNo": invoice.name,
+        "cisInvcNo": invoice.name,
+        "custTpin": tpin,
+        "custNm": invoice.supplier_name,
+        "salesTyCd": "N",
+        "rcptTyCd": "D",
+        "pmtTyCd": "01",
+        "salesSttsCd": "02",
+        "cfmDt": now_datetime().strftime("%Y%m%d%H%M%S"),
+        "salesDt": invoice.posting_date.strftime("%Y%m%d"),
+        "stockRlsDt": None,
+        "cnclReqDt": None,
+        "cnclDt": None,
+        "rfdDt": None,
+        "rfdRsnCd": None,
+        "totItemCnt": len(items),
+        "totTaxblAmt": float(abs(total_taxable)),
+        "totTaxAmt": float(abs(total_tax)),
+        "cashDcRt": 0,
+        "cashDcAmt": 0,
+        "totAmt": float(abs(invoice.grand_total)),
+        "prchrAcptcYn": "N",
+        "remark": invoice.remarks or "",
+        "regrId": "ADMIN",
+        "regrNm": "ADMIN",
+        "modrId": "ADMIN",
+        "modrNm": "ADMIN",
+        "saleCtyCd": "1",
+        "lpoNumber": getattr(invoice, "lpo_number", None),
+        "currencyTyCd": invoice.currency,
+        "exchangeRt": str(invoice.conversion_rate or 1),
+        "destnCountryCd": "",
+        "dbtRsnCd": "03",
+        "invcAdjustReason": "Omitted Item"
+    }
+
+    # Add tax fields before item list
+    for code in tax_codes:
+        payload[f"taxblAmt{code}"] = float(abs(tax_aggregates[code]["taxblAmt"]))
+        payload[f"taxAmt{code}"] = float(abs(tax_aggregates[code]["taxAmt"]))
+        payload[f"taxRt{code}"] = float(tax_aggregates[code]["taxRt"])
+
+    payload["taxblAmtTot"] = 0
+    payload["taxAmtTot"] = 0
+    payload["taxRtTot"] = 0
+
+    # Final section: item list
+    payload["itemList"] = items
+
+    return payload

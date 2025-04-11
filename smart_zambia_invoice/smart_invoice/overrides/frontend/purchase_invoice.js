@@ -8,12 +8,14 @@ frappe.ui.form.on(parentDoctype, {
       frm.toggle_reqd('set_warehouse', true);
     }
 
-    if (frm.doc.is_return && frm.doc.docstatus < 2) {
+    if (frm.doc.docstatus === 1 && frm.doc.is_return) {
       frm.add_custom_button(__('Submit to ZRA'), function () {
         frappe.call({
-          method: 'your_app.your_module.doctype.your_method.submit_to_zra', // 🔁 update with real method path
+          method: 'smart_zambia_invoice.smart_invoice.overrides.backend.purchase_invoice.perform_debit_invoice_registration', // 🔁 replace with actual method path
           args: {
-            docname: frm.doc.name
+            document_name: frm.doc.name,
+            company_name: frm.doc.company
+
           },
           callback: function (r) {
             if (r.message) {
@@ -21,7 +23,7 @@ frappe.ui.form.on(parentDoctype, {
             }
           }
         });
-      });
+      }, __('ZRA Actions')); // 👉 This groups the button under "ZRA Actions"
     }
   },
 

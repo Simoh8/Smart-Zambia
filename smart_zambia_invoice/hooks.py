@@ -102,7 +102,8 @@ doctype_js = {
     "BOM": "smart_invoice/overrides/frontend/zra_bom.js",
     "Item": "smart_invoice/overrides/frontend/item.js",
     "Customer": "smart_invoice/overrides/frontend/customer.js",
-    "Sales Invoice": "smart_invoice/overrides/frontend/sales_invoice.js"
+    "Sales Invoice": "smart_invoice/overrides/frontend/sales_invoice.js",
+    "Purchase Invoice": "smart_invoice/overrides/frontend/Purchase_invoice.js"
 
 
 }
