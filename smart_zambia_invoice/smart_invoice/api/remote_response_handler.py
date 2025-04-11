@@ -407,40 +407,40 @@ def convert_qr_code_to_base64(qr_code_data):
 
 
 
-# def on_success_sales_information_submission(
-#     response: dict,
-#     invoice_type: str,
-#     document_name: str,
-#     company_name: str,
-#     invoice_number: int | str,
-#     tpin: str,
-#     branch_id: str = "00",
-# ) -> None:
-#     try:
-#         response_data = response["data"]
+def on_success_debit_sales_information_submission(
+    response: dict,
+    invoice_type: str,
+    document_name: str,
+    company_name: str,
+    invoice_number: int | str,
+    tpin: str,
+    branch_id: str = "00",
+) -> None:
+    try:
+        response_data = response["data"]
 
 
-#         frappe.db.set_value(
-#             invoice_type,
-#             document_name,
-#             {
-#                 "custom_receipt_number": response_data["rcptNo"],
-#                 "custom_zra_internal_data": response_data["intrlData"],
-#                 "custom_zra_receipt_signature": response_data["rcptSign"],
-#                 "custom_zra_control_unit_time": response_data["vsdcRcptPbctDate"],
-#                 "custom_has_it_been_successfully_submitted": 1,
-#                 "custom_zra_submission_sequence_number": invoice_number,
-#                 "custom_vscd_id":response_data["sdcId"],
-#                 "custom_qr_code_details": get_qr_code(response_data["qrCodeUrl"]),
-#             },
-#         )
-#         show_success_message("The Sales Invoice has been succesfully registered on the ZRA Portal")
+        frappe.db.set_value(
+            invoice_type,
+            document_name,
+            {
+                "custom_zra_receipt_number": response_data["rcptNo"],
+                "custom_zra_internal_data": response_data["intrlData"],
+                "custom_zra_receipt_signature": response_data["rcptSign"],
+                "custom_zra_control_unit_time": response_data["vsdcRcptPbctDate"],
+                "custom_has_it_been_successfully_submitted": 1,
+                "custom_zra_submission_sequence_number": invoice_number,
+                "custom_vscd_id":response_data["sdcId"],
+                "custom_qr_code_details": get_qr_code(response_data["qrCodeUrl"]),
+            },
+        )
+        show_success_message("The Sales Invoice has been succesfully registered on the ZRA Portal")
 
 
-#     except KeyError as e:
-#         frappe.throw(f"Missing expected field in the response: {str(e)}")
-#     except Exception as e:
-#         frappe.throw(f"An error occurred while processing the submission: {str(e)}")
+    except KeyError as e:
+        frappe.throw(f"Missing expected field in the response: {str(e)}")
+    except Exception as e:
+        frappe.throw(f"An error occurred while processing the submission: {str(e)}")
 
 
 def on_success_sales_information_submission(
@@ -701,7 +701,7 @@ def on_succesful_purchase_invoice_submission(response: dict, document_name: str)
         "Purchase Invoice",
         document_name,
         {
-            "custom_has_it_been_submitted_successfully": 1,
+            "custom_has_it_been_successfully_submitted": 1,
         },
     )
 

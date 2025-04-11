@@ -15,6 +15,7 @@ from ...api.api_builder import EndpointConstructor
 from ...api.remote_response_handler import (
 	on_error,
 	on_succesful_purchase_invoice_submission,
+	on_success_debit_sales_information_submission,
 	
 )
 from ...utilities import (build_request_headers,extract_doc_series_number,get_route_path, get_route_path_with_last_req_date,get_server_url,quantize_amount,split_user_mail,get_taxation_types)
@@ -59,11 +60,12 @@ def validate(doc: Document, method: str) -> None:
 
 
 def on_submit(doc: Document, method: str) -> None:
-    # if doc.is_return:
-    #     on_submit_override_generic_invoices(doc, "Purchase Invoice")
-    #     return
-
     validate_item_registration(doc.items)
+
+    if doc.is_return:
+        # If it's a return (debit invoice), send to ZRA via debit registration
+        perform_debit_invoice_registration(doc.name, doc.company)
+        return  # Skip the rest for debit invoices
 
     company_name = doc.company
     headers = build_request_headers(company_name)
@@ -81,17 +83,12 @@ def on_submit(doc: Document, method: str) -> None:
         endpoints_maker.headers = headers
         endpoints_maker.payload = payload
         endpoints_maker.success_callback = partial(
-            on_succesful_purchase_invoice_submission, 
+            on_succesful_purchase_invoice_submission,
             document_name=doc.name
         )
         endpoints_maker.error_callback = on_error
 
         endpoints_maker.perform_remote_calls()
-
-
-
-
-
 
 
 def build_purchase_invoice_payload(doc: Document) -> dict:
@@ -294,7 +291,7 @@ def perform_debit_invoice_registration(document_name: str, company_name: str) ->
     endpoints_maker.url = f"{server_url}{route_path}"
     endpoints_maker.payload = full_payload
     endpoints_maker.success_callback = partial(
-        on_success_sales_information_submission,
+        on_success_debit_sales_information_submission,
         invoice_type=invoice_type,
         document_name=document_name,
         company_name=company_name,
@@ -302,7 +299,7 @@ def perform_debit_invoice_registration(document_name: str, company_name: str) ->
         tpin=tpin,
     )
     endpoints_maker.error_callback = on_error
-    frappe.throw(str(full_payload))
+    # frappe.throw(str(full_payload))
 
     # Fire!
     endpoints_maker.perform_remote_calls()
@@ -357,10 +354,10 @@ def build_debit_invoice_payload(invoice_name):
         item["vatAmt"] = abs(item.get("vatAmt", 0))
 
     payload = {
-        "orgInvcNo": invoice.name,
+        "orgInvcNo": invoice.custom_original_smart_invoice_number,
         "cisInvcNo": invoice.name,
-        "custTpin": tpin,
-        "custNm": invoice.supplier_name,
+        "custTpin":"1017138037" ,
+        "custNm": invoice.company,
         "salesTyCd": "N",
         "rcptTyCd": "D",
         "pmtTyCd": "01",
